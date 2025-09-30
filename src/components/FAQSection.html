@@ -1,0 +1,49 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire para la Sección de FAQ.
+  Se necesita un controlador `accordion_controller.js`.
+  - Lógica: Una acción `toggle(event)` que busca el panel de respuesta asociado al botón presionado y alterna su visibilidad.
+-->
+<section id="faq" class="py-20 lg:py-32 bg-white/50" data-controller="accordion">
+  <div class="container mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="font-display font-bold text-display-lg text-foreground mb-6">
+        Preguntas
+        <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          frecuentes
+        </span>
+      </h2>
+      <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+        Resolvemos las dudas más comunes sobre cUPido y su funcionamiento
+      </p>
+    </div>
+    <div class="max-w-3xl mx-auto">
+      <div class="space-y-4">
+        <!-- FAQ 1 -->
+        <div class="card-floating overflow-hidden">
+          <button type="button" class="w-full text-left p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200" data-action="click->accordion#toggle">
+            <h3 class="font-display font-semibold text-lg text-foreground pr-4">¿Quién puede usar cUPido?</h3>
+            <svg class="w-5 h-5 text-primary flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+          </button>
+          <div class="px-6 pb-6 hidden">
+            <p class="text-muted-foreground leading-relaxed">cUPido está exclusivamente para estudiantes y personal académico con correo institucional verificado (.edu). Esto garantiza que todos los usuarios pertenezcan a la comunidad universitaria y crea un ambiente más seguro y confiable.</p>
+          </div>
+        </div>
+        <!-- FAQ 2 -->
+        <div class="card-floating overflow-hidden">
+          <button type="button" class="w-full text-left p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200" data-action="click->accordion#toggle">
+            <h3 class="font-display font-semibold text-lg text-foreground pr-4">¿Cómo funciona el sistema de matches?</h3>
+            <svg class="w-5 h-5 text-muted-foreground flex-shrink-0" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="px-6 pb-6 hidden">
+            <p class="text-muted-foreground leading-relaxed">Si ambos usuarios deslizan 'me gusta', se crea un match y se habilita el chat instantáneo. Nuestro algoritmo considera afinidades académicas, intereses compartidos y preferencias establecidas en tu perfil para sugerir conexiones más relevantes.</p>
+          </div>
+        </div>
+        <!-- Add other FAQs similarly -->
+      </div>
+      <div class="text-center mt-12">
+        <p class="text-muted-foreground mb-4">¿No encuentras la respuesta que buscas?</p>
+        <button class="text-primary hover:text-accent transition-colors font-medium">Contáctanos para más ayuda</button>
+      </div>
+    </div>
+  </div>
+</section>
