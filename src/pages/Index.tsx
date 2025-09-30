@@ -1,12 +1,78 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from 'react';
+import Header from '@/components/Header';
+import Preloader from '@/components/Preloader';
+import FloatingGif from '@/components/FloatingGif';
+import HeroSection from '@/components/HeroSection';
+import IntroNarrativa from '@/components/IntroNarrativa';
+import FeaturesSection from '@/components/FeaturesSection';
+import HowItWorksSection from '@/components/HowItWorksSection';
+import SafetySection from '@/components/SafetySection';
+import TestimonialsSection from '@/components/TestimonialsSection';
+import FAQSection from '@/components/FAQSection';
+import CTAFinalSection from '@/components/CTAFinalSection';
+import Footer from '@/components/Footer';
+import AuthModals from '@/components/AuthModals';
 
 const Index = () => {
+  const [showPreloader, setShowPreloader] = useState(true);
+  const [showFloatingGif, setShowFloatingGif] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+
+  const handlePreloaderComplete = () => {
+    setShowPreloader(false);
+    setShowFloatingGif(true);
+  };
+
+  const openLogin = () => {
+    setShowLogin(true);
+    setShowSignup(false);
+  };
+
+  const openSignup = () => {
+    setShowSignup(true);
+    setShowLogin(false);
+  };
+
+  const closeModals = () => {
+    setShowLogin(false);
+    setShowSignup(false);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="min-h-screen bg-background">
+      {/* Preloader */}
+      {showPreloader && (
+        <Preloader onComplete={handlePreloaderComplete} />
+      )}
+
+      {/* Floating GIF ornament */}
+      <FloatingGif isVisible={showFloatingGif} />
+
+      {/* Main content */}
+      <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-600'}>
+        <Header onLoginClick={openLogin} onSignupClick={openSignup} />
+        
+        <main>
+          <HeroSection onLoginClick={openLogin} onSignupClick={openSignup} />
+          <IntroNarrativa />
+          <FeaturesSection />
+          <HowItWorksSection />
+          <SafetySection />
+          <TestimonialsSection />
+          <FAQSection />
+          <CTAFinalSection onSignupClick={openSignup} />
+        </main>
+
+        <Footer />
       </div>
+
+      {/* Auth Modals */}
+      <AuthModals
+        showLogin={showLogin}
+        showSignup={showSignup}
+        onClose={closeModals}
+      />
     </div>
   );
 };
