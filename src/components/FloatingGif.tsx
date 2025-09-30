@@ -9,7 +9,7 @@ export default function FloatingGif({ isVisible }: FloatingGifProps) {
 
   return (
     <div className="fixed left-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block">
-      <div className="w-24 h-24 pulse-gentle">
+      <div className="w-32 h-32 pulse-gentle">
         <img
           src={heroPreloaderGif}
           alt=""
