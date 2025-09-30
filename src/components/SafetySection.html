@@ -1,0 +1,48 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire para la Sección de Seguridad.
+  Es completamente estático y no necesita un controlador de Stimulus.
+-->
+<section id="safety" class="py-20 lg:py-32 bg-white/80">
+  <div class="container mx-auto px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-16 items-center">
+      <div class="animate-fade-in">
+        <h2 class="font-display font-bold text-display-lg text-foreground mb-6">
+          Tu seguridad es
+          <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            nuestra prioridad
+          </span>
+        </h2>
+        <p class="text-xl text-muted-foreground mb-8 leading-relaxed">
+          Creamos un ambiente seguro y respetuoso donde puedas conectar con confianza. Cada característica está diseñada pensando en tu bienestar.
+        </p>
+        <div class="space-y-6 mb-8">
+          <!-- Safety Feature 1 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-2xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-success" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-foreground mb-2">Verificación por email institucional</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">Solo estudiantes con correos universitarios activos pueden acceder a la plataforma.</p>
+            </div>
+          </div>
+          <!-- Safety Feature 2 -->
+          <div class="flex items-start space-x-4">
+            <div class="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-2xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-success" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="23" y1="7" y2="7"/><line x1="20" x2="20" y1="4" y2="10"/></svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-foreground mb-2">Reportes y bloqueo de usuarios</h3>
+              <p class="text-muted-foreground text-sm leading-relaxed">Sistema robusto para reportar comportamiento inapropiado y bloquear usuarios problemáticos.</p>
+            </div>
+          </div>
+          <!-- Other features here -->
+        </div>
+        <button type="button" class="btn-outline">Conoce nuestras prácticas</button>
+      </div>
+      <div class="relative animate-scale-in" style="animation-delay: 0.3s">
+        <!-- Visual content here -->
+      </div>
+    </div>
+  </div>
+</section>
