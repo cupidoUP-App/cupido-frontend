@@ -112,6 +112,11 @@ export default {
         'display-lg': ['clamp(2.5rem, 4vw, 3rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
         'display-md': ['clamp(2rem, 3vw, 2.5rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
       },
+      boxShadow: {
+        'soft': 'var(--shadow-soft)',
+        'glow': 'var(--shadow-glow)',
+        'card': 'var(--shadow-card)',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
