@@ -1,0 +1,56 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire para la Sección de Testimonios.
+  Se necesita un controlador `carousel_controller.js`.
+  - Lógica: Este controlador es complejo. Debería:
+    1. En su método `connect()`, inicializar una librería de carrusel (como Embla, que ya está en las dependencias, o Swiper.js).
+    2. Conectar las acciones de los botones de `next` y `prev` a los métodos de la librería.
+    3. Actualizar el estado de los indicadores de puntos.
+    4. Manejar el auto-play si se desea.
+    5. Los datos de los testimonios podrían cargarse desde un `data-` attribute en el elemento principal como un JSON.
+-->
+<section class="py-20 lg:py-32 bg-gradient-to-br from-secondary/30 to-background" data-controller="carousel">
+  <div class="container mx-auto px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="font-display font-bold text-display-lg text-foreground mb-6">
+        Lo que dicen nuestros
+        <span class="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+          estudiantes
+        </span>
+      </h2>
+      <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+        Historias reales de conexiones auténticas en el campus
+      </p>
+    </div>
+
+    <div class="max-w-4xl mx-auto">
+      <div class="relative">
+        <div class="card-floating p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center">
+          <svg class="w-12 h-12 text-primary/30 mx-auto mb-6" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 2v6c0 7 4 8 7 8Z"/><path d="M14 21c3 0 7-1 7-8V5c0-1.25-.75-2.017-2-2h-4c-1.25 0-2 .75-2 2v6c0 7 4 8 7 8Z"/></svg>
+          <!-- Testimonial content will be dynamically inserted here by the Stimulus controller -->
+          <blockquote class="text-xl lg:text-2xl text-foreground leading-relaxed mb-8 font-medium" data-carousel-target="quote">
+            "Conocí personas afines a mi carrera y con intereses similares. La verificación universitaria me dio mucha confianza."
+          </blockquote>
+          <div class="space-y-2">
+            <div class="font-display font-bold text-lg text-foreground" data-carousel-target="author">
+              María González
+            </div>
+            <div class="text-muted-foreground" data-carousel-target="program">
+              Estudiante de Ingeniería
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation arrows -->
+        <button type="button" class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 hover:bg-white/90" aria-label="Testimonio anterior" data-action="click->carousel#prev">
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <button type="button" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/80 backdrop-blur-sm border border-white/20 hover:bg-white/90" aria-label="Siguiente testimonio" data-action="click->carousel#next">
+          <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+      </div>
+
+      <!-- Indicators -->
+      <div class="flex justify-center space-x-2 mt-8" data-carousel-target="dots"></div>
+    </div>
+  </div>
+</section>
