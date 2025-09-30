@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import Header from '@/components/Header';
 import Preloader from '@/components/Preloader';
-import FloatingGif from '@/components/FloatingGif';
 import HeroSection from '@/components/HeroSection';
 import IntroNarrativa from '@/components/IntroNarrativa';
 import FeaturesSection from '@/components/FeaturesSection';
@@ -15,13 +14,11 @@ import AuthModals from '@/components/AuthModals';
 
 const Index = () => {
   const [showPreloader, setShowPreloader] = useState(true);
-  const [showFloatingGif, setShowFloatingGif] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
-    setShowFloatingGif(true);
   };
 
   const openLogin = () => {
@@ -46,11 +43,8 @@ const Index = () => {
         <Preloader onComplete={handlePreloaderComplete} />
       )}
 
-      {/* Floating GIF ornament */}
-      <FloatingGif isVisible={showFloatingGif} />
-
       {/* Main content */}
-      <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-600'}>
+      <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
         <Header onLoginClick={openLogin} onSignupClick={openSignup} />
         
         <main>

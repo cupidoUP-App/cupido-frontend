@@ -20,13 +20,13 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-white/20 h-18">
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18">
+    <header className="sticky top-0 z-40 bg-white border-b-2 h-[50px]">
+      <div className="container mx-auto px-6 lg:px-8 h-full">
+        <div className="flex items-center justify-between h-full">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <img src={logoCupido} alt="cUPido" className="h-10 w-auto" />
-            <span className="font-display font-bold text-xl text-foreground hidden sm:block">
+           
+            <span className="font-display font-bold  text-xl text-foreground hidden sm:block">
               cUPido
             </span>
           </div>
@@ -49,6 +49,7 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
           <div className="hidden lg:flex items-center space-x-4">
             <Button
               variant="ghost"
+              size="sm"
               onClick={onLoginClick}
               className="text-foreground hover:text-primary"
               data-action="click->auth#openLogin"
@@ -57,7 +58,8 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
             </Button>
             <Button
               onClick={onSignupClick}
-              className="btn-hero"
+              size="sm"
+              className="btn-hero px-6"
               data-action="click->auth#openSignup"
             >
               Crear cuenta

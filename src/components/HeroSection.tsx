@@ -1,6 +1,6 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logoCupido from '@/assets/logo-cupido.png';
+import heroPreloaderGif from '@/assets/hero-preloader.gif';
 
 interface HeroSectionProps {
   onLoginClick: () => void;
@@ -11,10 +11,7 @@ export default function HeroSection({ onLoginClick, onSignupClick }: HeroSection
   return (
     <section 
       id="home" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
-      style={{
-        background: 'var(--gradient-hero)'
-      }}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background"
     >
       {/* Animated background particles */}
       <div className="particles-bg">
@@ -81,11 +78,11 @@ export default function HeroSection({ onLoginClick, onSignupClick }: HeroSection
             <div className="relative mx-auto max-w-md lg:max-w-lg">
               {/* Main logo with glow effect */}
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 blur-3xl rounded-full" />
+                {/* Glow effect removed */}
                 <img
-                  src={logoCupido}
-                  alt="cUPido - Conecta en tu campus"
-                  className="relative w-full h-auto animate-float"
+                  src={heroPreloaderGif}
+                  alt="cUPido animated visual"
+                  className="relative w-full h-auto"
                 />
               </div>
               
