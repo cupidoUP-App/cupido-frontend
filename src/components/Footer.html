@@ -1,0 +1,63 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire para el Footer.
+  Es completamente estático y no necesita un controlador de Stimulus.
+-->
+<footer class="bg-foreground text-background">
+  <div class="container mx-auto px-6 lg:px-8 py-16">
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+      <!-- Brand section -->
+      <div class="md:col-span-2 lg:col-span-1">
+        <div class="flex items-center space-x-3 mb-6">
+          <img src="/assets/logo-cupido.png" alt="cUPido" class="h-10 w-auto filter brightness-0 invert" />
+          <span class="font-display font-bold text-xl">cUPido</span>
+        </div>
+        <p class="text-background/80 mb-6 leading-relaxed">
+          Conecta con estudiantes verificados en tu campus. Matches auténticos para relaciones reales.
+        </p>
+        <div class="flex items-center space-x-2 text-sm text-background/60">
+          <span>Hecho con</span>
+          <svg class="w-4 h-4 text-accent fill-current" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <span>para estudiantes</span>
+        </div>
+      </div>
+
+      <!-- Links sections -->
+      <div>
+        <h4 class="font-display font-semibold text-lg mb-6">cUPido</h4>
+        <ul class="space-y-3">
+          <li><a href="#about" class="text-background/80 hover:text-background transition-colors duration-200">Acerca de</a></li>
+          <li><a href="#team" class="text-background/80 hover:text-background transition-colors duration-200">Equipo</a></li>
+          <li><a href="#blog" class="text-background/80 hover:text-background transition-colors duration-200 opacity-50 cursor-not-allowed" aria-disabled="true">Blog (futuro)</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-lg mb-6">Legal</h4>
+        <ul class="space-y-3">
+          <li><a href="#terms" class="text-background/80 hover:text-background transition-colors duration-200">Términos</a></li>
+          <li><a href="#privacy" class="text-background/80 hover:text-background transition-colors duration-200">Privacidad</a></li>
+          <li><a href="#cookies" class="text-background/80 hover:text-background transition-colors duration-200">Cookies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-display font-semibold text-lg mb-6">Soporte</h4>
+        <ul class="space-y-3">
+          <li><a href="#help" class="text-background/80 hover:text-background transition-colors duration-200">Ayuda</a></li>
+          <li><a href="#contact" class="text-background/80 hover:text-background transition-colors duration-200">Contacto</a></li>
+          <li><a href="#report" class="text-background/80 hover:text-background transition-colors duration-200">Reportar</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom section -->
+    <div class="border-t border-background/20 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div class="text-background/60 text-sm">© 2025 cUPido — Proyecto académico. Todos los derechos reservados.</div>
+        <div class="flex items-center space-x-6 text-sm text-background/60">
+          <span>Ingeniería de Software II</span>
+          <span>•</span>
+          <span>Universidad Tecnológica</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
