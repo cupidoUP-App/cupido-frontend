@@ -1,0 +1,23 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire para el GIF flotante.
+
+  Lógica:
+  - Este elemento estaría oculto por defecto con la clase `hidden`.
+  - Un controlador de Stimulus principal (ej. en el `<body>`)
+    escucharía el evento `preloader:complete`.
+  - Al recibir el evento, este controlador buscaría este elemento por su ID o una clase única
+    y le quitaría la clase `hidden` para mostrarlo.
+-->
+<div 
+  id="floating-gif-container"
+  class="fixed left-8 top-1/2 -translate-y-1/2 z-30 hidden lg:block hidden"
+>
+  <div class="w-32 h-32 pulse-gentle">
+    <img
+      src="/assets/hero-preloader.gif"
+      alt=""
+      class="w-full h-full object-contain animate-float"
+      role="presentation"
+    />
+  </div>
+</div>
