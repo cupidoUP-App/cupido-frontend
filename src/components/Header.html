@@ -1,0 +1,92 @@
+<!--
+  Este es un parcial de HTML listo para Rails/Hotwire, convertido desde el componente Header.tsx.
+
+  Para que funcione, se necesitaría un controlador de Stimulus llamado `header_controller.js` que:
+  - Tenga un target: `mobileMenu`.
+  - Tenga una acción: `toggleMenu()` que añade/quita la clase `hidden` al target `mobileMenu`.
+  - Tenga acciones `openLogin()` y `openSignup()` que disparen eventos globales para que otro controlador (que maneje los modales) los escuche.
+-->
+<header
+  class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-white/20 h-18"
+  data-controller="header"
+>
+  <div class="container mx-auto px-6 lg:px-8">
+    <div class="flex items-center justify-between h-18">
+      <!-- Logo -->
+      <div class="flex items-center space-x-2">
+        <img src="/assets/logo-cupido.png" alt="cUPido" class="h-10 w-auto" />
+        <span class="font-display font-bold text-xl text-foreground hidden sm:block">
+          cUPido
+        </span>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden lg:flex items-center space-x-8">
+        <a href="#home" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium">Inicio</a>
+        <a href="#how" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium">Cómo funciona</a>
+        <a href="#safety" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium">Seguridad</a>
+        <a href="#faq" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium">Preguntas</a>
+        <a href="#contact" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium">Contacto</a>
+      </nav>
+
+      <!-- CTA Buttons - Desktop -->
+      <div class="hidden lg:flex items-center space-x-4">
+        <button
+          type="button"
+          class="text-foreground hover:text-primary"
+          data-action="click->header#openLogin"
+        >
+          Ingresar
+        </button>
+        <button
+          type="button"
+          class="btn-hero"
+          data-action="click->header#openSignup"
+        >
+          Crear cuenta
+        </button>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button
+        type="button"
+        class="lg:hidden p-2"
+        aria-label="Abrir menú"
+        data-action="click->header#toggleMenu"
+      >
+        <!-- Icono de Menú (Hamburguesa) -->
+        <svg data-header-target="menuIcon" class="h-6 w-6 text-foreground" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        <!-- Icono de Cerrar (X) -->
+        <svg data-header-target="closeIcon" class="h-6 w-6 text-foreground hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="lg:hidden border-t border-white/20 py-4 hidden" data-header-target="mobileMenu">
+      <nav class="flex flex-col space-y-4">
+        <a href="#home" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2" data-action="click->header#toggleMenu">Inicio</a>
+        <a href="#how" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2" data-action="click->header#toggleMenu">Cómo funciona</a>
+        <a href="#safety" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2" data-action="click->header#toggleMenu">Seguridad</a>
+        <a href="#faq" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2" data-action="click->header#toggleMenu">Preguntas</a>
+        <a href="#contact" class="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2" data-action="click->header#toggleMenu">Contacto</a>
+        
+        <div class="flex flex-col space-y-3 pt-4 border-t border-white/20">
+          <button
+            type="button"
+            class="justify-start text-foreground hover:text-primary text-left"
+            data-action="click->header#openLogin"
+          >
+            Ingresar
+          </button>
+          <button
+            type="button"
+            class="btn-hero justify-start text-left"
+            data-action="click->header#openSignup"
+          >
+            Crear cuenta
+          </button>
+        </div>
+      </nav>
+    </div>
+  </div>
+</header>
