@@ -30,11 +30,8 @@ export default function Preloader({ onComplete }: PreloaderProps) {
         <img
           src={heroPreloaderGif}
           alt="Cargando..."
-          className="w-32 h-32 object-contain animate-scale-in"
+          className="w-70 h-70 object-contain animate-scale-in"
         />
-        <div className="text-muted-foreground font-medium">
-          Preparando conexiones...
-        </div>
       </div>
     </div>
   );
