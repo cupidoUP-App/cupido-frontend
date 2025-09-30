@@ -7,7 +7,7 @@
 @layer base {
   :root {
     /* Base palette - NEW PALETTE */
-    --background: 14 52% 88%;         /* #F2D7D0 */
+    --background: 15, 59%, 88%;         /* #F2D6CD */
     --foreground: 0 10% 23%;          /* #403535 */
 
     /* Card and surface colors */
@@ -177,6 +177,15 @@
       opacity: 0;
       visibility: hidden;
     }
+  }
+  
+  @keyframes fadeOutShrink {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+  
+  .animate-fade-out-shrink {
+    animation: fadeOutShrink 0.5s ease-out forwards;
   }
   
   /* Pulse animation for floating GIF */
