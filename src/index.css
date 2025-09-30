@@ -6,34 +6,34 @@
 
 @layer base {
   :root {
-    /* Base palette - warm neutral with soft pink undertones */
-    --background: 14 44% 94%;         /* #F6E6E4 */
-    --foreground: 340 11% 14%;        /* #231F20 */
+    /* Base palette - NEW PALETTE */
+    --background: 14 52% 88%;         /* #F2D7D0 */
+    --foreground: 0 10% 23%;          /* #403535 */
 
     /* Card and surface colors */
-    --card: 14 44% 94%;
-    --card-foreground: 340 11% 14%;
+    --card: 14 52% 88%;
+    --card-foreground: 0 10% 23%;
 
-    --popover: 14 44% 94%;
-    --popover-foreground: 340 11% 14%;
+    --popover: 14 52% 88%;
+    --popover-foreground: 0 10% 23%;
 
-    /* Primary brand colors - sophisticated gradient system */
-    --primary: 233 100% 65%;          /* #4D5BFF */
+    /* Primary brand colors */
+    --primary: 5 55% 50%;            /* #BF4A3F */
     --primary-foreground: 0 0% 100%;
 
     /* Secondary with muted elegance */
-    --secondary: 14 33% 87%;          /* #EBD3D0 */
-    --secondary-foreground: 340 11% 14%;
+    --secondary: 14 7% 52%;           /* #8C7D7B */
+    --secondary-foreground: 0 0% 100%;
 
     /* Neutral grays */
-    --muted: 14 33% 87%;              /* #EBD3D0 */
-    --muted-foreground: 0 0% 23%;     /* #3A3A3A */
+    --muted: 14 7% 52%;              /* #8C7D7B */
+    --muted-foreground: 0 10% 23%;
 
     /* Accent for highlights and CTAs */
-    --accent: 351 66% 54%;            /* #D4465A */
+    --accent: 5 56% 67%;            /* #D9857E */
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors */
+    /* Status colors (kept from old palette) */
     --destructive: 0 72% 49%;         /* #D92D20 */
     --destructive-foreground: 0 0% 100%;
 
@@ -41,9 +41,9 @@
     --warning: 32 95% 51%;            /* #F79009 */
 
     /* Interactive elements */
-    --border: 14 33% 87%;
-    --input: 14 33% 87%;
-    --ring: 233 100% 65%;
+    --border: 14 7% 52%;
+    --input: 14 7% 52%;
+    --ring: 5 55% 50%; /* Ring color matches new primary */
 
     --radius: 0.75rem;
 
@@ -148,7 +148,7 @@
   
   /* Feature card with hover effects */
   .feature-card {
-    @apply card-floating p-8 text-center group cursor-pointer;
+    @apply card-floating p-8 text-center cursor-pointer;
   }
   
   .feature-card:hover .feature-icon {
