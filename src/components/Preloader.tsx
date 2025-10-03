@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import heroPreloaderGif from '@/assets/hero-preloader.gif';
+import cupidGif from '@/assets/cupid.gif';
 
 interface PreloaderProps {
   onComplete: () => void;
@@ -23,14 +23,15 @@ export default function Preloader({ onComplete }: PreloaderProps) {
   return (
     <div 
       className="preloader"
+      style={{ backgroundColor: 'hsl(359, 100%, 92%)' }}
       role="status"
       aria-label="Cargando cUPido"
     >
       <div className="flex flex-col items-center justify-center space-y-4">
         <img
-          src={heroPreloaderGif}
+          src={cupidGif}
           alt="Cargando..."
-          className="w-70 h-70 object-contain animate-scale-in"
+          className="w-64 h-64 object-contain animate-scale-in"
         />
       </div>
     </div>
