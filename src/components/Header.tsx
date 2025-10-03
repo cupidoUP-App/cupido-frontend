@@ -82,7 +82,7 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="lg:hidden border-t border-white/20 py-4 animate-slide-up">
+          <div className="absolute top-[50px] left-0 right-0 z-30 bg-white shadow-lg lg:hidden border-t border-gray-200 p-4 animate-slide-up">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
                 <a
