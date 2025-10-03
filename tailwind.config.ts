@@ -92,6 +92,14 @@ export default {
           "0%, 100%": { transform: "translateX(0px) translateY(0px)" },
           "33%": { transform: "translateX(20px) translateY(-20px)" },
           "66%": { transform: "translateX(-20px) translateY(20px)" }
+        },
+        "slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-30px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" }
+        },
+        "slide-in-right": {
+          "0%": { opacity: "0", transform: "translateX(30px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" }
         }
       },
       animation: {
@@ -101,7 +109,9 @@ export default {
         "scale-in": "scale-in 0.4s ease-out",
         "slide-up": "slide-up 0.8s ease-out",
         "float": "float 3s ease-in-out infinite",
-        "particle-float": "particle-float 6s ease-in-out infinite"
+        "particle-float": "particle-float 6s ease-in-out infinite",
+        "slide-in-left": "slide-in-left 0.6s ease-out",
+        "slide-in-right": "slide-in-right 0.6s ease-out"
       },
       fontFamily: {
         sans: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],

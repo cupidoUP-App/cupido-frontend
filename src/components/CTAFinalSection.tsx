@@ -1,5 +1,6 @@
 import { Heart, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 interface CTAFinalSectionProps {
   onSignupClick: () => void;
@@ -10,8 +11,10 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
     document.getElementById('how')?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const animationRef = useAnimateOnScroll({ triggerOnce: true });
+
   return (
-    <section className="py-20 lg:py-32 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/20 relative overflow-hidden">
+    <section className="py-20 lg:py-32 bg-gradient-to-br from-primary/10 via-accent/5 to-secondary/20 relative overflow-hidden" ref={animationRef}>
       {/* Background decorations */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-20 left-20 w-64 h-64 bg-gradient-to-br from-primary/20 to-transparent rounded-full blur-3xl" />
@@ -20,7 +23,7 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
 
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="animate-fade-in">
+          <div className="opacity-0" data-animate="animate-fade-in">
             <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
               ¿Listo para conocer a alguien compatible{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">

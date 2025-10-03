@@ -1,5 +1,6 @@
 import { Shield, UserX, BookOpen, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 export default function SafetySection() {
   const safetyFeatures = [
@@ -25,13 +26,15 @@ export default function SafetySection() {
     }
   ];
 
+  const animationRef = useAnimateOnScroll({ triggerOnce: true });
+
   return (
-    <section id="safety" className="py-20 lg:py-32 bg-white/80">
+    <section id="safety" className="py-20 lg:py-32 bg-white/80" ref={animationRef}>
       <div className="container mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Content */}
-          <div className="animate-fade-in">
+          <div className="opacity-0" data-animate="animate-slide-in-left">
             <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
               Tu seguridad es{' '}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -72,7 +75,7 @@ export default function SafetySection() {
           </div>
 
           {/* Visual */}
-          <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
+          <div className="relative opacity-0" data-animate="animate-slide-in-right" data-animate-delay="200ms">
             <div className="relative">
               {/* Main shield illustration */}
               <div className="w-full max-w-sm mx-auto">

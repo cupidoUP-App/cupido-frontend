@@ -1,4 +1,5 @@
 import { Heart, Zap, Shield, MapPin } from 'lucide-react';
+import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 export default function FeaturesSection() {
   const features = [
@@ -28,10 +29,12 @@ export default function FeaturesSection() {
     }
   ];
 
+  const animationRef = useAnimateOnScroll({ triggerOnce: true });
+
   return (
-    <section className="py-20 lg:py-32 bg-white/50">
+    <section className="py-20 lg:py-32 bg-white/50" ref={animationRef}>
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 opacity-0" data-animate="animate-fade-in">
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             Diseñado para{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -46,12 +49,14 @@ export default function FeaturesSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon;
+            const animation = index < 2 ? 'animate-slide-in-left' : 'animate-slide-in-right';
             
             return (
               <div
                 key={index}
-                className="feature-card group animate-fade-in"
-                style={{ animationDelay: `${index * 0.1}s` }}
+                className="feature-card group opacity-0"
+                data-animate={animation}
+                data-animate-delay={`${index * 150}ms`}
               >
                 <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 mx-auto feature-icon transition-all duration-300`}>
                   <Icon className="w-8 h-8 text-foreground transition-colors duration-300" />
@@ -77,7 +82,7 @@ export default function FeaturesSection() {
             { value: '1,200+', label: 'Matches realizados' },
             { value: '98%', label: 'Seguridad verificada' }
           ].map((stat, index) => (
-            <div key={index} className="text-center">
+            <div key={index} className="text-center opacity-0" data-animate="animate-fade-in" data-animate-delay={`${200 + index * 100}ms`}>
               <div className="font-display font-bold text-3xl lg:text-4xl text-primary mb-2">
                 {stat.value}
               </div>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -35,10 +36,12 @@ export default function FAQSection() {
     setOpenIndex(openIndex === index ? null : index);
   };
 
+  const animationRef = useAnimateOnScroll({ triggerOnce: true });
+
   return (
-    <section id="faq" className="py-20 lg:py-32 bg-white/50">
+    <section id="faq" className="py-20 lg:py-32 bg-white/50" ref={animationRef}>
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 opacity-0" data-animate="animate-fade-in">
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             Preguntas{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
@@ -53,7 +56,7 @@ export default function FAQSection() {
         <div className="max-w-3xl mx-auto">
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="card-floating overflow-hidden">
+              <div key={index} className="card-floating overflow-hidden opacity-0" data-animate="animate-slide-up" data-animate-delay={`${index * 100}ms`}>
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full text-left p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200"
@@ -85,7 +88,7 @@ export default function FAQSection() {
           </div>
 
           {/* Contact support */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-12 opacity-0" data-animate="animate-fade-in" data-animate-delay="600ms">
             <p className="text-muted-foreground mb-4">
               ¿No encuentras la respuesta que buscas?
             </p>
