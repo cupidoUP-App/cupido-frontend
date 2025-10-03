@@ -104,8 +104,8 @@ export default {
         "particle-float": "particle-float 6s ease-in-out infinite"
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
-        display: ['Inter', 'system-ui', 'sans-serif'],
+        sans: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
+        display: ['Prata', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         'display-xl': ['clamp(3rem, 5vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
