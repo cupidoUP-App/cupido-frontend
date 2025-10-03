@@ -48,10 +48,10 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
           {/* CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
             <Button
-              variant="ghost"
+              variant="outline"
               size="sm"
               onClick={onLoginClick}
-              className="text-foreground hover:text-primary"
+              className="text-foreground"
               data-action="click->auth#openLogin"
             >
               Ingresar
@@ -96,12 +96,12 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
               ))}
               <div className="flex flex-col space-y-3 pt-4 border-t border-white/20">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   onClick={() => {
                     onLoginClick();
                     setIsMenuOpen(false);
                   }}
-                  className="justify-start text-foreground hover:text-primary"
+                  className="justify-start text-foreground"
                 >
                   Ingresar
                 </Button>

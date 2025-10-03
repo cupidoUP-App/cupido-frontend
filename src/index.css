@@ -135,7 +135,7 @@
   .btn-outline {
     @apply border-2 border-primary/20 text-primary bg-white/50 backdrop-blur-sm;
     @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
-    @apply hover:border-primary hover:bg-primary hover:text-white hover:scale-105;
+    @apply hover:border-primary hover:bg-primary hover:scale-105 hover:text-white;
     @apply focus:border-primary focus:bg-primary focus:text-white focus:scale-105;
   }
 
