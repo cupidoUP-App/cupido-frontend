@@ -75,7 +75,7 @@ export default function HeroSection({ onLoginClick, onSignupClick }: HeroSection
 
           {/* Visual Column */}
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
-            <div className="relative mx-auto max-w-md lg:max-w-lg">
+            <div className="relative mx-auto max-w-md lg:max-w-xl">
               {/* Main logo with glow effect */}
               <div className="relative bg-background">
                 {/* Glow effect removed */}
