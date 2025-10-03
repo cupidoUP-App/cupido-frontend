@@ -199,7 +199,7 @@ export default function AuthModals({ showLogin, showSignup, onClose }: AuthModal
                   Crear cuenta
                 </h2>
                 <p className="text-muted-foreground">
-                  Únete a la comunidad universitaria
+                  Únete a la comunidad de cUPido
                 </p>
               </div>
 
@@ -341,7 +341,7 @@ export default function AuthModals({ showLogin, showSignup, onClose }: AuthModal
 
                 <div className="text-center">
                   <Button variant="outline" type="button" className="w-full h-12">
-                    Continuar con Google (proximamente)
+                    Continuar con Microsoft (proximamente)
                   </Button>
                 </div>
               </form>
