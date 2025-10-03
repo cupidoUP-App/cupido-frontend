@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Header from '@/components/Header';
 import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/HeroSection';
-import IntroNarrativa from '@/components/IntroNarrativa';
+
 import FeaturesSection from '@/components/FeaturesSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import SafetySection from '@/components/SafetySection';
@@ -49,7 +49,6 @@ const Index = () => {
         
         <main>
           <HeroSection onLoginClick={openLogin} onSignupClick={openSignup} />
-          <IntroNarrativa />
           <FeaturesSection />
           <HowItWorksSection />
           <SafetySection />
