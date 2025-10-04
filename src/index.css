@@ -2,12 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-/* cUPido Design System - Dual theme: Feminine & Masculine */
-
 @layer base {
   /* Feminine Theme (default) */
-  :root, [data-theme="feminine"] {
-    /* Base palette - Feminine */
+  :root,
+  [data-theme="femenino"] {
     --background: 15 59% 88%;         /* #F2D6CD - soft pink */
     --foreground: 0 10% 23%;          /* #403535 - dark text */
 
@@ -41,9 +39,6 @@
     --destructive: 0 72% 49%;         /* #D92D20 */
     --destructive-foreground: 0 0% 100%;
 
-    --success: 145 63% 42%;           /* #17B26A */
-    --warning: 32 95% 51%;            /* #F79009 */
-
     /* Interactive elements */
     --border: 14 7% 52%;
     --input: 14 7% 52%;
@@ -67,8 +62,7 @@
   }
 
   /* Masculine Theme */
-  [data-theme="masculine"] {
-    /* Base palette - Masculine */
+  [data-theme="masculino"] {
     --background: 26 45% 89%;         /* #EBE0D0 - light cream */
     --foreground: 30 43% 16%;         /* #3A2B1B - very dark brown */
 
@@ -139,12 +133,10 @@
   * {
     @apply border-border;
   }
-
   body {
     @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: "cv03", "cv04", "cv11";
   }
-
   html {
     scroll-behavior: smooth;
   }
@@ -153,7 +145,7 @@
 @layer components {
   /* Hero button with gradient shine effect */
   .btn-hero {
-    @apply relative overflow-hidden text-white font-semibold;
+    @apply relative overflow-hidden text-primary-foreground font-semibold;
     @apply px-8 py-4 rounded-2xl shadow-lg transition-all duration-300;
     @apply hover:scale-105 hover:shadow-glow focus:scale-105 focus:shadow-glow;
     background: var(--gradient-primary);
@@ -171,10 +163,10 @@
 
   /* Secondary outline button */
   .btn-outline {
-    @apply border-2 border-primary/20 text-primary bg-white/50 backdrop-blur-sm;
+    @apply border-2 border-primary/20 text-primary bg-transparent;
     @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
-    @apply hover:border-primary hover:bg-primary hover:scale-105 hover:text-white;
-    @apply focus:border-primary focus:bg-primary focus:text-white focus:scale-105;
+    @apply hover:border-primary hover:bg-primary hover:text-primary-foreground hover:scale-105;
+    @apply focus:border-primary focus:bg-primary focus:text-primary-foreground focus:scale-105;
   }
 
   /* Floating card with gradient background */
@@ -233,7 +225,7 @@
   
   @keyframes pulseGentle {
     0%, 100% { opacity: 0.8; transform: scale(1); }
-    50% { opacity: 1; transform: scale(1.05); }
+    50% { opacity: 1; transform: scale(1.05); } 
   }
   
   /* Typing animation */
