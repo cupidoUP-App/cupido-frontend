@@ -52,8 +52,10 @@ export default function HowItWorksSection() {
                   data-animate="animate-slide-up"
                   data-animate-delay={`${index * 200}ms`}
                 >
-                  {/* Step number */}
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
+                  <div 
+                    className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg"
+                    style={{ background: 'var(--gradient-primary)' }}
+                  >
                     {step.step}
                   </div>
 

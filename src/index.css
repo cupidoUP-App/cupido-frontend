@@ -153,9 +153,10 @@
 @layer components {
   /* Hero button with gradient shine effect */
   .btn-hero {
-    @apply relative overflow-hidden bg-gradient-to-r from-primary to-accent text-white font-semibold;
+    @apply relative overflow-hidden text-white font-semibold;
     @apply px-8 py-4 rounded-2xl shadow-lg transition-all duration-300;
     @apply hover:scale-105 hover:shadow-glow focus:scale-105 focus:shadow-glow;
+    background: var(--gradient-primary);
   }
   
   .btn-hero::before {
