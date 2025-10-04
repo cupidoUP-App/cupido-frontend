@@ -2,13 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* cUPido Design System - Modern neutral dating app with sophisticated gradients */
+/* cUPido Design System - Dual theme: Feminine & Masculine */
 
 @layer base {
-  :root {
-    /* Base palette - NEW PALETTE */
-    --background: 15, 59%, 88%;         /* #F2D6CD */
-    --foreground: 0 10% 23%;          /* #403535 */
+  /* Feminine Theme (default) */
+  :root, [data-theme="feminine"] {
+    /* Base palette - Feminine */
+    --background: 15 59% 88%;         /* #F2D6CD - soft pink */
+    --foreground: 0 10% 23%;          /* #403535 - dark text */
 
     /* Card and surface colors */
     --card: 14 52% 88%;
@@ -18,11 +19,11 @@
     --popover-foreground: 0 10% 23%;
 
     /* Primary brand colors */
-    --primary: 5 55% 50%;            /* #BF4A3F */
+    --primary: 5 55% 50%;            /* #BF4A3F - warm red */
     --primary-foreground: 0 0% 100%;
 
     /* Secondary with muted elegance */
-    --secondary: 14 7% 52%;           /* #8C7D7B */
+    --secondary: 14 7% 52%;           /* #8C7D7B - muted brown */
     --secondary-foreground: 0 0% 100%;
 
     /* Neutral grays */
@@ -30,10 +31,13 @@
     --muted-foreground: 0 10% 23%;
 
     /* Accent for highlights and CTAs */
-    --accent: 5 56% 67%;            /* #D9857E */
+    --accent: 5 56% 67%;            /* #D9857E - light coral */
     --accent-foreground: 0 0% 100%;
 
-    /* Status colors (kept from old palette) */
+    /* Hero section background */
+    --hero-bg: 15 59% 88%;          /* Matches background */
+
+    /* Status colors */
     --destructive: 0 72% 49%;         /* #D92D20 */
     --destructive-foreground: 0 0% 100%;
 
@@ -43,58 +47,91 @@
     /* Interactive elements */
     --border: 14 7% 52%;
     --input: 14 7% 52%;
-    --ring: 5 55% 50%; /* Ring color matches new primary */
+    --ring: 5 55% 50%;
 
     --radius: 0.75rem;
 
-    /* Gradient definitions for modern effects */
-    --gradient-primary: linear-gradient(135deg, hsl(233 100% 65%), hsl(330 100% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(233 100% 65% / 0.15), hsl(330 100% 65% / 0.15));
-    --gradient-card: linear-gradient(145deg, hsl(14 44% 96%), hsl(14 33% 89%));
+    /* Gradient definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(5 55% 50%), hsl(5 56% 67%));
+    --gradient-hero: linear-gradient(135deg, hsl(5 55% 50% / 0.1), hsl(5 56% 67% / 0.1));
+    --gradient-card: linear-gradient(145deg, hsl(14 52% 92%), hsl(14 52% 85%));
     
-    /* Shadows for depth */
-    --shadow-soft: 0 4px 20px hsl(233 100% 65% / 0.1);
-    --shadow-glow: 0 0 40px hsl(233 100% 65% / 0.3);
-    --shadow-card: 0 8px 32px hsl(340 11% 14% / 0.08);
+    /* Shadows */
+    --shadow-soft: 0 4px 20px hsl(5 55% 50% / 0.1);
+    --shadow-glow: 0 0 40px hsl(5 55% 50% / 0.25);
+    --shadow-card: 0 8px 32px hsl(0 10% 23% / 0.08);
     
     /* Animation timings */
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   }
 
-  .dark {
-    /* Dark mode with sophisticated contrast */
-    --background: 340 11% 14%;
-    --foreground: 14 44% 94%;
+  /* Masculine Theme */
+  [data-theme="masculine"] {
+    /* Base palette - Masculine */
+    --background: 26 45% 89%;         /* #EBE0D0 - light cream */
+    --foreground: 30 43% 16%;         /* #3A2B1B - very dark brown */
 
-    --card: 340 11% 16%;
-    --card-foreground: 14 44% 94%;
+    /* Card and surface colors */
+    --card: 26 45% 92%;               /* Lighter cream for cards */
+    --card-foreground: 30 43% 16%;
 
-    --popover: 340 11% 16%;
-    --popover-foreground: 14 44% 94%;
+    --popover: 26 45% 92%;
+    --popover-foreground: 30 43% 16%;
 
-    --primary: 233 100% 70%;
-    --primary-foreground: 340 11% 14%;
+    /* Primary brand colors */
+    --primary: 193 34% 30%;           /* #325048 - dark teal */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 340 11% 20%;
-    --secondary-foreground: 14 44% 94%;
+    /* Secondary */
+    --secondary: 35 30% 11%;          /* #1F1A14 - dark brown */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 340 11% 20%;
-    --muted-foreground: 0 0% 65%;
+    /* Neutral/muted */
+    --muted: 23 57% 66%;              /* #D4B899 - beige/tan */
+    --muted-foreground: 30 43% 16%;
 
-    --accent: 351 66% 58%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent */
+    --accent: 23 57% 66%;             /* #D4B899 - beige/tan for accents */
+    --accent-foreground: 30 43% 16%;
 
-    --destructive: 0 72% 55%;
+    /* Hero section background - REQUIRED GREEN */
+    --hero-bg: 120 14% 50%;           /* #6D916D - sage green */
+
+    /* Status colors */
+    --destructive: 0 72% 49%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 340 11% 20%;
-    --input: 340 11% 20%;
-    --ring: 233 100% 70%;
+    --success: 145 63% 42%;
+    --warning: 32 95% 51%;
+
+    /* Interactive elements */
+    --border: 35 30% 25%;             /* Darker border */
+    --input: 35 30% 25%;
+    --ring: 193 34% 30%;              /* Matches primary */
+
+    --radius: 0.75rem;
+
+    /* Gradient definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(193 34% 30%), hsl(193 34% 40%));
+    --gradient-hero: linear-gradient(135deg, hsl(120 14% 50% / 0.3), hsl(120 14% 45% / 0.2));
+    --gradient-card: linear-gradient(145deg, hsl(26 45% 94%), hsl(26 45% 88%));
     
-    /* Dark mode gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(233 100% 70% / 0.2), hsl(330 100% 70% / 0.2));
-    --shadow-glow: 0 0 40px hsl(233 100% 70% / 0.4);
+    /* Shadows */
+    --shadow-soft: 0 4px 20px hsl(193 34% 30% / 0.15);
+    --shadow-glow: 0 0 40px hsl(193 34% 30% / 0.3);
+    --shadow-card: 0 8px 32px hsl(30 43% 16% / 0.1);
+    
+    /* Animation timings */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Dark mode support (optional future enhancement) */
+  .dark {
+    --background: 30 43% 12%;
+    --foreground: 26 45% 92%;
+    --hero-bg: 120 14% 35%;
   }
 }
 

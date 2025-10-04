@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Heart, Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import logoCupido from '@/assets/logo-cupido.png';
+import ThemeToggle from '@/components/ThemeToggle';
 
 interface HeaderProps {
   onLoginClick: () => void;
@@ -45,8 +46,9 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
             ))}
           </nav>
 
-          {/* CTA Buttons - Desktop */}
+          {/* Theme Toggle & CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
+            <ThemeToggle />
             <Button
               variant="outline"
               size="sm"
@@ -94,7 +96,10 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
                   {item.label}
                 </a>
               ))}
-              <div className="flex flex-col space-y-3 pt-4 border-t border-white/20">
+              <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
+                <div className="flex justify-center pb-2">
+                  <ThemeToggle />
+                </div>
                 <Button
                   variant="outline"
                   onClick={() => {

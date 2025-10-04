@@ -11,7 +11,8 @@ export default function HeroSection({ onLoginClick, onSignupClick }: HeroSection
   return (
     <section 
       id="home" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-background"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
       {/* Animated background particles */}
       <div className="particles-bg">
