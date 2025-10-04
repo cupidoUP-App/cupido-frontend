@@ -113,7 +113,7 @@
     --radius: 0.75rem;
 
     /* Gradient definitions */
-    --gradient-primary: linear-gradient(135deg, hsl(193 34% 30%), hsl(120 14% 50%));
+    --gradient-primary: linear-gradient(135deg, hsl(30 43% 16%), hsl(23 57% 66%));
     --gradient-hero: linear-gradient(135deg, hsl(120 14% 50% / 0.3), hsl(120 14% 45% / 0.2));
     --gradient-card: linear-gradient(145deg, hsl(26 45% 94%), hsl(26 45% 88%));
     
