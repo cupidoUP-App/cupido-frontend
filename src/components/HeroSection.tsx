@@ -18,6 +18,14 @@ export default function HeroSection({ onLoginClick, onSignupClick, theme }: Hero
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
+      {/* Animated background particles */}
+      <div className="particles-bg">
+        <div className="absolute top-20 left-20 w-2 h-2 bg-primary/30 rounded-full animate-particle-float" />
+        <div className="absolute top-40 right-32 w-3 h-3 bg-accent/20 rounded-full animate-particle-float" style={{ animationDelay: '1s' }} />
+        <div className="absolute bottom-32 left-40 w-1.5 h-1.5 bg-primary/40 rounded-full animate-particle-float" style={{ animationDelay: '2s' }} />
+        <div className="absolute bottom-20 right-20 w-2.5 h-2.5 bg-accent/30 rounded-full animate-particle-float" style={{ animationDelay: '0.5s' }} />
+      </div>
+
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           
@@ -25,7 +33,7 @@ export default function HeroSection({ onLoginClick, onSignupClick, theme }: Hero
             <div className="space-y-6">
               <h1 className="font-display font-bold text-display-xl text-foreground leading-tight">
                 Conecta con quien comparte tu{' '}
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <span className="text-gradient-primary">
                   campus
                 </span>
               </h1>

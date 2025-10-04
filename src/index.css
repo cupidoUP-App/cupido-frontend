@@ -107,7 +107,7 @@
     --radius: 0.75rem;
 
     /* Gradient definitions */
-    --gradient-primary: linear-gradient(135deg, hsl(193 34% 30%), hsl(26 45% 89%));
+    --gradient-primary: linear-gradient(135deg, hsl(193 50% 40%), hsl(193 34% 30%));
     --gradient-hero: linear-gradient(135deg, hsl(120 14% 50% / 0.3), hsl(120 14% 45% / 0.2));
     --gradient-card: linear-gradient(145deg, hsl(26 45% 94%), hsl(26 45% 88%));
     
@@ -163,10 +163,14 @@
 
   /* Secondary outline button */
   .btn-outline {
-    @apply border-2 border-primary/20 text-primary bg-transparent;
-    @apply px-6 py-3 rounded-xl font-medium transition-all duration-300;
-    @apply hover:border-primary hover:bg-primary hover:text-primary-foreground hover:scale-105;
-    @apply focus:border-primary focus:bg-primary focus:text-primary-foreground focus:scale-105;
+    @apply border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .text-gradient-primary {
+    background-image: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
   }
 
   /* Floating card with gradient background */
@@ -187,7 +191,10 @@
 
   /* Animated background particles */
   .particles-bg {
-    @apply absolute inset-0 overflow-hidden pointer-events-none;
+    @apply absolute inset-0 overflow-hidden pointer-events-none z-0;
+  }
+  .animate-particle-float {
+    animation: particle-float 6s ease-in-out infinite;
   }
   
   /* Modal backdrop */
@@ -241,5 +248,16 @@
   
   @keyframes blink {
     50% { border-color: transparent; }
+  }
+
+  /* Theme Transition Overlay Animations */
+  .animate-fade-in-out {
+    animation: fadeInOut 0.6s ease-in-out forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
   }
 }

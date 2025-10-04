@@ -28,7 +28,7 @@ export default function HowItWorksSection() {
         <div className="text-center mb-16">
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             ¿Cómo funciona{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-gradient-primary">
               cUPido?
             </span>
           </h2>

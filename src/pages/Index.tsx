@@ -10,17 +10,29 @@ import FAQSection from '@/components/FAQSection';
 import CTAFinalSection from '@/components/CTAFinalSection';
 import Footer from '@/components/Footer';
 import AuthModals from '@/components/AuthModals';
+import ThemeTransitionOverlay from '@/components/ui/ThemeTransitionOverlay';
 
 const Index = () => {
   const [showPreloader, setShowPreloader] = useState(true);
   const [showLogin, setShowLogin] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'femenino');
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
   }, [theme]);
+
+  const handleThemeChange = (newTheme: string) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setTheme(newTheme);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300); // Duration of fade-out
+    }, 300); // Duration of fade-in
+  };
 
   const handlePreloaderComplete = () => {
     setShowPreloader(false);
@@ -44,12 +56,13 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {showPreloader && <Preloader onComplete={handlePreloaderComplete} />}
-      <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
+      {isTransitioning && <ThemeTransitionOverlay theme={theme} />} 
+      <div className={showPreloader || isTransitioning ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
         <Header
           onLoginClick={openLogin}
           onSignupClick={openSignup}
           theme={theme}
-          onThemeChange={setTheme}
+          onThemeChange={handleThemeChange}
         />
         <main>
           <HeroSection
