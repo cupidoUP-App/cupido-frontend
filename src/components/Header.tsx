@@ -7,9 +7,11 @@ import ThemeToggle from '@/components/ThemeToggle';
 interface HeaderProps {
   onLoginClick: () => void;
   onSignupClick: () => void;
+  theme: string;
+  onThemeChange: (theme: string) => void;
 }
 
-export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
+export default function Header({ onLoginClick, onSignupClick, theme, onThemeChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
@@ -24,37 +26,29 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
     <header className="sticky top-0 z-40 bg-white border-b-2 h-[50px]">
       <div className="container mx-auto px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">
-          {/* Logo */}
           <div className="flex items-center space-x-2">
-           
-            <span className="font-display font-bold  text-xl text-foreground hidden sm:block">
+            <span className="font-display font-bold text-xl text-foreground hidden sm:block">
               cUPido
             </span>
           </div>
-
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
               <a
                 key={item.label}
                 href={item.href}
                 className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium"
-                data-action="scroll->navigation#scrollTo"
               >
                 {item.label}
               </a>
             ))}
           </nav>
-
-          {/* Theme Toggle & CTA Buttons - Desktop */}
           <div className="hidden lg:flex items-center space-x-4">
-            <ThemeToggle />
+            <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
             <Button
               variant="outline"
               size="sm"
               onClick={onLoginClick}
               className="text-foreground"
-              data-action="click->auth#openLogin"
             >
               Ingresar
             </Button>
@@ -62,27 +56,18 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
               onClick={onSignupClick}
               size="sm"
               className="btn-hero px-6"
-              data-action="click->auth#openSignup"
             >
               Crear cuenta
             </Button>
           </div>
-
-          {/* Mobile menu button */}
           <button
             className="lg:hidden p-2"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
           >
-            {isMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
-            ) : (
-              <Menu className="h-6 w-6 text-foreground" />
-            )}
+            {isMenuOpen ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
           </button>
         </div>
-
-        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="absolute top-[50px] left-0 right-0 z-30 bg-white shadow-lg lg:hidden border-t border-gray-200 p-4 animate-slide-up">
             <nav className="flex flex-col space-y-4">
@@ -98,23 +83,17 @@ export default function Header({ onLoginClick, onSignupClick }: HeaderProps) {
               ))}
               <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
                 <div className="flex justify-center pb-2">
-                  <ThemeToggle />
+                  <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    onLoginClick();
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={() => { onLoginClick(); setIsMenuOpen(false); }}
                   className="justify-start text-foreground"
                 >
                   Ingresar
                 </Button>
                 <Button
-                  onClick={() => {
-                    onSignupClick();
-                    setIsMenuOpen(false);
-                  }}
+                  onClick={() => { onSignupClick(); setIsMenuOpen(false); }}
                   className="btn-hero justify-start"
                 >
                   Crear cuenta
