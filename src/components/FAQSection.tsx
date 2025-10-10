@@ -78,7 +78,7 @@ export default function FAQSection() {
                     id={`faq-answer-${index}`}
                     className="px-6 pb-6 animate-fade-in"
                   >
-                    <p className="text-muted-foreground leading-relaxed">
+                    <p className="text-muted-foreground leading-relaxed max-w-prose">
                       {faq.answer}
                     </p>
                   </div>
