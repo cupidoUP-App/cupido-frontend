@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/HeroSection';
@@ -11,65 +11,43 @@ import CTAFinalSection from '@/components/CTAFinalSection';
 import Footer from '@/components/Footer';
 import AuthModals from '@/components/AuthModals';
 import ThemeTransitionOverlay from '@/components/ui/ThemeTransitionOverlay';
+import { useAppStore } from '@/store/appStore';
 
 const Index = () => {
-  const [showPreloader, setShowPreloader] = useState(true);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'femenino');
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const {
+    showPreloader,
+    hidePreloader,
+    theme,
+    setTheme,
+    isTransitioning,
+    setIsTransitioning,
+    openSignup,
+  } = useAppStore();
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
   }, [theme]);
 
   const handleThemeChange = (newTheme: string) => {
-    setIsTransitioning(true);
-    setTimeout(() => {
-      setTheme(newTheme);
+    if (newTheme !== theme) {
+      setIsTransitioning(true);
       setTimeout(() => {
-        setIsTransitioning(false);
-      }, 300); // Duration of fade-out
-    }, 300); // Duration of fade-in
-  };
-
-  const handlePreloaderComplete = () => {
-    setShowPreloader(false);
-  };
-
-  const openLogin = () => {
-    setShowLogin(true);
-    setShowSignup(false);
-  };
-
-  const openSignup = () => {
-    setShowSignup(true);
-    setShowLogin(false);
-  };
-
-  const closeModals = () => {
-    setShowLogin(false);
-    setShowSignup(false);
+        setTheme(newTheme as 'femenino' | 'masculino');
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 300); // Duration of fade-out
+      }, 300); // Duration of fade-in
+    }
   };
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
-      {showPreloader && <Preloader onComplete={handlePreloaderComplete} />}
-      {isTransitioning && <ThemeTransitionOverlay theme={theme} />} 
+      {showPreloader && <Preloader onComplete={hidePreloader} />}
+      {isTransitioning && <ThemeTransitionOverlay theme={theme} />}
       <div className={showPreloader || isTransitioning ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
-        <Header
-          onLoginClick={openLogin}
-          onSignupClick={openSignup}
-          theme={theme}
-          onThemeChange={handleThemeChange}
-        />
+        <Header onThemeChange={handleThemeChange} />
         <main>
-          <HeroSection
-            onLoginClick={openLogin}
-            onSignupClick={openSignup}
-            theme={theme}
-          />
+          <HeroSection />
           <FeaturesSection />
           <HowItWorksSection />
           <SafetySection />
@@ -79,11 +57,7 @@ const Index = () => {
         </main>
         <Footer />
       </div>
-      <AuthModals
-        showLogin={showLogin}
-        showSignup={showSignup}
-        onClose={closeModals}
-      />
+      <AuthModals />
     </div>
   );
 };
