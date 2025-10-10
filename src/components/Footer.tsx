@@ -30,8 +30,14 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-foreground text-background">
-      <div className="container mx-auto px-6 lg:px-8 py-16">
+    <footer className="bg-foreground text-background relative">
+      {/* Wave divider */}
+      <div className="wave-divider">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path d="M985.66,92.83C906.67,72,823.78,31,743.84,14.19c-82.26-17.34-168.06-16.33-250.45.39-57.84,11.73-114,31.07-172,41.86A600.21,600.21,0,0,1,0,27.35V120H1200V95.8C1132.19,118.92,1055.71,111.31,985.66,92.83Z" fill="hsl(var(--background))" />
+        </svg>
+      </div>
+      <div className="container mx-auto px-6 lg:px-8 py-16 pt-24">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand section */}
           <div className="md:col-span-2 lg:col-span-1">
@@ -61,7 +67,7 @@ export default function Footer() {
                   <li key={linkIndex}>
                     <a
                       href={link.href}
-                      className={`text-background/80 hover:text-background transition-colors duration-200 ${
+                      className={`text-background/80 hover:text-background transition-all duration-300 link-underline ${
                         link.disabled ? 'opacity-50 cursor-not-allowed' : ''
                       }`}
                       {...(link.disabled && { 'aria-disabled': 'true' })}

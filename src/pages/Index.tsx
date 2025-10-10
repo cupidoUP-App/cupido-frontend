@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
+import BentoSection from '@/components/BentoSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import SafetySection from '@/components/SafetySection';
 import TestimonialsSection from '@/components/TestimonialsSection';
@@ -11,6 +12,7 @@ import CTAFinalSection from '@/components/CTAFinalSection';
 import Footer from '@/components/Footer';
 import AuthModals from '@/components/AuthModals';
 import ThemeTransitionOverlay from '@/components/ui/ThemeTransitionOverlay';
+import ScrollToTop from '@/components/ScrollToTop';
 import { useAppStore } from '@/store/appStore';
 
 const Index = () => {
@@ -49,6 +51,7 @@ const Index = () => {
         <main>
           <HeroSection />
           <FeaturesSection />
+          <BentoSection />
           <HowItWorksSection />
           <SafetySection />
           <TestimonialsSection />
@@ -56,6 +59,7 @@ const Index = () => {
           <CTAFinalSection onSignupClick={openSignup} />
         </main>
         <Footer />
+        <ScrollToTop />
       </div>
       <AuthModals />
     </div>

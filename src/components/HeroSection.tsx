@@ -11,9 +11,17 @@ export default function HeroSection() {
   return (
     <section 
       id="hero-section" 
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden gradient-mesh"
       style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
+      {/* Light orbs */}
+      <div className="light-orb w-96 h-96 top-20 left-10" style={{ animationDelay: '0s' }} />
+      <div className="light-orb w-80 h-80 bottom-20 right-10" style={{ animationDelay: '2s' }} />
+      
+      {/* Animated blob shapes */}
+      <div className="absolute top-40 left-1/4 w-64 h-64 bg-primary/10 rounded-full blur-3xl animate-blob" />
+      <div className="absolute bottom-40 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-blob-slow" style={{ animationDelay: '2s' }} />
+      
       {/* Animated background particles */}
       <div className="particles-bg">
         <div className="absolute top-20 left-20 w-2 h-2 bg-primary/30 rounded-full animate-particle-float" />
@@ -27,9 +35,9 @@ export default function HeroSection() {
           
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
             <div className="space-y-6">
-              <h1 className="font-display font-bold text-display-xl text-foreground leading-tight">
+              <h1 className="font-display font-bold text-display-xl text-foreground leading-tight drop-shadow-sm">
                 Conecta con quien comparte tu{' '}
-                <span className="text-gradient-primary">
+                <span className="text-gradient-primary animate-pulse-glow">
                   campus
                 </span>
               </h1>
@@ -42,15 +50,15 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
                 onClick={openSignup}
-                className="btn-hero text-lg px-8 py-4"
+                className="btn-hero text-lg px-8 py-4 ripple magnetic-btn glow-on-hover group"
               >
-                <Heart className="w-5 h-5 mr-2" />
+                <Heart className="w-5 h-5 mr-2 group-hover:scale-110 transition-transform" />
                 Crear cuenta
               </Button>
               <Button
                 onClick={openLogin}
                 variant="outline"
-                className="btn-outline text-lg px-8 py-4"
+                className="btn-outline text-lg px-8 py-4 ripple magnetic-btn group"
               >
                 Ingresar
               </Button>
@@ -70,11 +78,12 @@ export default function HeroSection() {
 
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
             <div className="relative mx-auto max-w-md lg:max-w-lg">
-              <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 blur-3xl rounded-full animate-pulse-glow" />
+              <div className="relative animate-float-up-down">
                 <img
                   src={currentGif}
                   alt="cUPido animated visual"
-                  className="relative w-full h-auto"
+                  className="relative w-full h-auto drop-shadow-2xl"
                 />
               </div>
             </div>

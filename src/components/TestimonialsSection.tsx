@@ -69,22 +69,35 @@ export default function TestimonialsSection() {
         <div className="max-w-4xl mx-auto">
           <div className="relative opacity-0" data-animate="animate-fade-in" data-animate-delay="200ms">
             {/* Main testimonial */}
-            <div className="card-floating p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center transition-shadow duration-300 hover:shadow-2xl">
-              <Quote className="w-12 h-12 text-primary/30 mx-auto mb-6" />
+            <div className="glass-card p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center transition-all duration-500 hover:shadow-2xl group">
+              <Quote className="w-12 h-12 text-primary/30 mx-auto mb-6 group-hover:scale-110 transition-transform duration-300" />
               
               <blockquote className="text-xl lg:text-2xl text-foreground leading-relaxed mb-8 font-medium">
                 "{testimonials[currentIndex].quote}"
               </blockquote>
               
               <div className="space-y-2">
+                {/* Avatar with gradient border */}
+                <div className="avatar-gradient w-20 h-20 mx-auto mb-4">
+                  <div className="w-full h-full bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                    {testimonials[currentIndex].author.charAt(0)}
+                  </div>
+                </div>
+                
                 <div className="font-display font-bold text-lg text-foreground">
                   {testimonials[currentIndex].author}
                 </div>
                 <div className="text-muted-foreground">
                   {testimonials[currentIndex].program}
                 </div>
-                <div className="text-sm text-muted-foreground">
+                <div className="text-sm text-muted-foreground flex items-center justify-center gap-2">
+                  <span className="inline-block w-2 h-2 bg-primary rounded-full animate-pulse" />
                   {testimonials[currentIndex].university}
+                </div>
+                {/* .edu verified badge */}
+                <div className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-semibold mt-2">
+                  <span className="w-1.5 h-1.5 bg-primary rounded-full" />
+                  Verificado .edu
                 </div>
               </div>
             </div>

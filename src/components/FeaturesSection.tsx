@@ -54,12 +54,12 @@ export default function FeaturesSection() {
             return (
               <div
                 key={index}
-                className="feature-card group opacity-0 p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="glass-card group opacity-0 p-6 rounded-2xl transition-all duration-500 hover:scale-105 card-3d"
                 data-animate={animation}
                 data-animate-delay={`${index * 150}ms`}
               >
-                <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 mx-auto feature-icon transition-all duration-300`}>
-                  <Icon className="w-8 h-8 text-foreground transition-colors duration-300" />
+                <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 mx-auto feature-icon transition-all duration-300 icon-bounce`}>
+                  <Icon className="w-8 h-8 text-foreground transition-all duration-300 group-hover:scale-125 group-hover:rotate-12" />
                 </div>
                 
                 <h3 className="font-display font-bold text-xl text-foreground mb-4 group-hover:text-primary transition-colors duration-300">
