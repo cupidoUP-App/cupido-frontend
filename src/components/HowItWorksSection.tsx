@@ -1,4 +1,5 @@
 import { CheckCircle, UserCheck, MessageSquare } from 'lucide-react';
+import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 export default function HowItWorksSection() {
   const steps = [
@@ -22,10 +23,12 @@ export default function HowItWorksSection() {
     }
   ];
 
+  const animationRef = useAnimateOnScroll({ triggerOnce: true });
+
   return (
-    <section id="how" className="py-20 lg:py-32 bg-background"> {/* Changed background to bg-background */}
+    <section id="how" className="py-20 lg:py-32 bg-background" ref={animationRef}>
       <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 opacity-0" data-animate="animate-fade-in">
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             ¿Cómo funciona{' '}
             <span className="text-gradient-primary">
@@ -45,8 +48,9 @@ export default function HowItWorksSection() {
               return (
                 <div
                   key={index}
-                  className="relative text-center animate-fade-in"
-                  style={{ animationDelay: `${index * 0.2}s` }}
+                  className="relative text-center opacity-0"
+                  data-animate="animate-fade-in"
+                  data-animate-delay={`${index * 200}ms`}
                 >
                   {/* Step number */}
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-r from-primary to-accent rounded-2xl flex items-center justify-center text-white font-bold text-lg shadow-lg">
@@ -78,7 +82,7 @@ export default function HowItWorksSection() {
           </div>
 
           {/* Timeline visualization */}
-          <div className="relative mt-16 hidden lg:block">
+          <div className="relative mt-16 hidden lg:block opacity-0" data-animate="animate-fade-in" data-animate-delay="500ms">
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gradient-to-r from-primary/20 via-accent/20 to-primary/20"></div>
             </div>
