@@ -1,5 +1,5 @@
 import { Heart } from 'lucide-react';
-import logoCupido from '@/assets/logo-cupido.png';
+import logoCupido from '@/assets/logo-cupido.webp';
 
 export default function Footer() {
   const footerSections = [
