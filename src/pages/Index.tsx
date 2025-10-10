@@ -11,6 +11,7 @@ import CTAFinalSection from '@/components/CTAFinalSection';
 import Footer from '@/components/Footer';
 import AuthModals from '@/components/AuthModals';
 import ThemeTransitionOverlay from '@/components/ui/ThemeTransitionOverlay';
+import ScrollToTopButton from '@/components/ScrollToTopButton';
 import { useAppStore } from '@/store/appStore';
 
 const Index = () => {
@@ -58,6 +59,7 @@ const Index = () => {
         <Footer />
       </div>
       <AuthModals />
+      <ScrollToTopButton />
     </div>
   );
 };

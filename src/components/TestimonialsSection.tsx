@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Quote } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Star, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
 
 export default function TestimonialsSection() {
@@ -10,26 +12,34 @@ export default function TestimonialsSection() {
     {
       quote: "Conocí personas afines a mi carrera y con intereses similares. La verificación universitaria me dio mucha confianza.",
       author: "María González",
+      initials: "MG",
       program: "Estudiante de Ingeniería",
-      university: "Universidad Nacional"
+      university: "Universidad Nacional",
+      rating: 5,
     },
     {
       quote: "Me encantó la interfaz y lo directo del proceso de match. Sin perder tiempo con perfiles falsos.",
       author: "Carlos Mendoza",
+      initials: "CM",
       program: "Estudiante de Diseño",
-      university: "Universidad del Arte"
+      university: "Universidad del Arte",
+      rating: 5,
     },
     {
       quote: "La verificación .edu me dio confianza para conectar. Saber que todos son estudiantes reales marca la diferencia.",
       author: "Ana Rodríguez",
+      initials: "AR",
       program: "Estudiante de Medicina",
-      university: "Universidad de Medicina"
+      university: "Universidad de Medicina",
+      rating: 5,
     },
     {
       quote: "Encontré conexiones genuinas en mi propia universidad. La app entiende el ambiente estudiantil.",
       author: "Diego Vargas",
+      initials: "DV",
       program: "Estudiante de Psicología",
-      university: "Universidad Central"
+      university: "Universidad Central",
+      rating: 4,
     }
   ];
 
@@ -69,16 +79,32 @@ export default function TestimonialsSection() {
         <div className="max-w-4xl mx-auto">
           <div className="relative opacity-0" data-animate="animate-fade-in" data-animate-delay="200ms">
             {/* Main testimonial */}
-            <div className="card-floating p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center transition-shadow duration-300 hover:shadow-2xl">
-              <Quote className="w-12 h-12 text-primary/30 mx-auto mb-6" />
+            <div className="card-floating p-8 lg:p-12 text-center min-h-[320px] flex flex-col justify-center transition-shadow duration-300 hover:shadow-2xl">
+              <div className="flex justify-center items-center gap-4 mb-6">
+                <Avatar>
+                  <AvatarFallback>{testimonials[currentIndex].initials}</AvatarFallback>
+                </Avatar>
+                <div className="flex items-center">
+                  {Array.from({ length: testimonials[currentIndex].rating }).map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                  ))}
+                  {Array.from({ length: 5 - testimonials[currentIndex].rating }).map((_, i) => (
+                    <Star key={i} className="w-5 h-5 text-muted-foreground/30" />
+                  ))}
+                </div>
+              </div>
               
               <blockquote className="text-xl lg:text-2xl text-foreground leading-relaxed mb-8 font-medium">
                 "{testimonials[currentIndex].quote}"
               </blockquote>
               
               <div className="space-y-2">
-                <div className="font-display font-bold text-lg text-foreground">
+                <div className="font-display font-bold text-lg text-foreground flex items-center justify-center gap-2">
                   {testimonials[currentIndex].author}
+                  <Badge variant="secondary" className="border-transparent">
+                    <Check className="w-3 h-3 mr-1.5" />
+                    .edu Verificado
+                  </Badge>
                 </div>
                 <div className="text-muted-foreground">
                   {testimonials[currentIndex].program}
