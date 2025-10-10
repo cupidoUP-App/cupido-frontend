@@ -69,7 +69,7 @@ export default function TestimonialsSection() {
         <div className="max-w-4xl mx-auto">
           <div className="relative opacity-0" data-animate="animate-fade-in" data-animate-delay="200ms">
             {/* Main testimonial */}
-            <div className="card-floating p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center">
+            <div className="card-floating p-8 lg:p-12 text-center min-h-[300px] flex flex-col justify-center transition-shadow duration-300 hover:shadow-2xl">
               <Quote className="w-12 h-12 text-primary/30 mx-auto mb-6" />
               
               <blockquote className="text-xl lg:text-2xl text-foreground leading-relaxed mb-8 font-medium">
