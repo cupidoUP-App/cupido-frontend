@@ -1,15 +1,11 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import heroPreloaderGif from '@/assets/hero-preloader.gif';
-import manGif from '@/assets/man.gif';
+import heroPreloaderGif from '@/assets/hero-preloader.webp';
+import manGif from '@/assets/man.webp';
+import { useAppStore } from '@/store/appStore';
 
-interface HeroSectionProps {
-  onLoginClick: () => void;
-  onSignupClick: () => void;
-  theme: string;
-}
-
-export default function HeroSection({ onLoginClick, onSignupClick, theme }: HeroSectionProps) {
+export default function HeroSection() {
+  const { openLogin, openSignup, theme } = useAppStore();
   const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
 
   return (
@@ -45,14 +41,14 @@ export default function HeroSection({ onLoginClick, onSignupClick, theme }: Hero
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
-                onClick={onSignupClick}
+                onClick={openSignup}
                 className="btn-hero text-lg px-8 py-4"
               >
                 <Heart className="w-5 h-5 mr-2" />
                 Crear cuenta
               </Button>
               <Button
-                onClick={onLoginClick}
+                onClick={openLogin}
                 variant="outline"
                 className="btn-outline text-lg px-8 py-4"
               >
