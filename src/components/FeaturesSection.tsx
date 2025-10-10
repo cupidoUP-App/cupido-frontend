@@ -1,5 +1,6 @@
 import { Heart, Zap, Shield, MapPin } from 'lucide-react';
 import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import AnimatedStat from './AnimatedStat';
 
 export default function FeaturesSection() {
   const features = [
@@ -81,15 +82,13 @@ export default function FeaturesSection() {
             { value: '50+', label: 'Universidades' },
             { value: '1,200+', label: 'Matches realizados' },
             { value: '98%', label: 'Seguridad verificada' }
-          ].map((stat, index) => (
-            <div key={index} className="text-center opacity-0" data-animate="animate-fade-in" data-animate-delay={`${200 + index * 100}ms`}>
-              <div className="font-display font-bold text-3xl lg:text-4xl text-primary mb-2">
-                {stat.value}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {stat.label}
-              </div>
-            </div>
+          ].map((stat) => (
+            <AnimatedStat 
+              key={stat.label}
+              value={stat.value} 
+              label={stat.label} 
+              className="text-primary"
+            />
           ))}
         </div>
       </div>

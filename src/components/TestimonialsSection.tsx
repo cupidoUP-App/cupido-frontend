@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import AnimatedStat from './AnimatedStat';
 
 export default function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -155,17 +156,10 @@ export default function TestimonialsSection() {
 
           {/* Stats */}
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-8 mt-16 text-center">
-            <div className="opacity-0" data-animate="animate-slide-up" data-animate-delay="500ms">
-              <div className="font-display font-bold text-3xl text-primary mb-2">4.8⭐</div>
-              <div className="text-sm text-muted-foreground">Calificación promedio</div>
-            </div>
-            <div className="opacity-0" data-animate="animate-slide-up" data-animate-delay="600ms">
-              <div className="font-display font-bold text-3xl text-accent mb-2">89%</div>
-              <div className="text-sm text-muted-foreground">Matches exitosos</div>
-            </div>
-            <div className="col-span-2 lg:col-span-1 opacity-0" data-animate="animate-slide-up" data-animate-delay="700ms">
-              <div className="font-display font-bold text-3xl text-success mb-2">95%</div>
-              <div className="text-sm text-muted-foreground">Recomendarían cUPido</div>
+            <AnimatedStat value="4.8⭐" label="Calificación promedio" className="text-primary" />
+            <AnimatedStat value="89%" label="Matches exitosos" className="text-accent" />
+            <div className="col-span-2 lg:col-span-1">
+              <AnimatedStat value="95%" label="Recomendarían cUPido" className="text-success" />
             </div>
           </div>
         </div>

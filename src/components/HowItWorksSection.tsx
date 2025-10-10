@@ -58,8 +58,8 @@ export default function HowItWorksSection() {
                   </div>
 
                   {/* Card */}
-                  <div className="card-floating pt-12 pb-8 px-6 mt-8">
-                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                  <div className="card-floating pt-12 pb-8 px-6 mt-8 group">
+                    <div className="w-16 h-16 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl flex items-center justify-center mx-auto mb-6 transition-transform duration-300 group-hover:scale-110">
                       <Icon className="w-8 h-8 text-primary" />
                     </div>
                     

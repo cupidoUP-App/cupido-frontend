@@ -52,8 +52,8 @@ export default function SafetySection() {
                 const Icon = feature.icon;
                 
                 return (
-                  <div key={index} className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-2xl flex items-center justify-center">
+                  <div key={index} className="flex items-start space-x-4 group">
+                    <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
                       <Icon className="w-6 h-6 text-success" />
                     </div>
                     <div>

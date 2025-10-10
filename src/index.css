@@ -136,11 +136,14 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased cursor-default;
     font-feature-settings: "cv03", "cv04", "cv11";
   }
   html {
     scroll-behavior: smooth;
+  }
+  button, a {
+    @apply cursor-pointer;
   }
 }
 
@@ -161,6 +164,24 @@
   
   .btn-hero:hover::before {
     @apply translate-x-[100%];
+  }
+
+  .btn-hero svg {
+    @apply transition-transform duration-300;
+  }
+
+  .btn-hero:hover svg {
+    @apply scale-110;
+  }
+
+  .btn-hero::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    @apply bg-white/30 opacity-0 scale-0 transition-all duration-300 ease-out;
+  }
+
+  .btn-hero:active::after {
+    @apply scale-100 opacity-100;
   }
 
   /* Secondary outline button */
