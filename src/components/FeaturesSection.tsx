@@ -54,7 +54,7 @@ export default function FeaturesSection() {
             return (
               <div
                 key={index}
-                className="feature-card group opacity-0"
+                className="feature-card group opacity-0 p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
                 data-animate={animation}
                 data-animate-delay={`${index * 150}ms`}
               >
