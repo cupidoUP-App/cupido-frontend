@@ -3,14 +3,13 @@ import { X, Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useAppStore } from '@/store/appStore';
 
-interface AuthModalsProps {
-  showLogin: boolean;
-  showSignup: boolean;
-  onClose: () => void;
-}
+export default function AuthModals() {
+  const { authModal, closeModals } = useAppStore();
+  const showLogin = authModal === 'login';
+  const showSignup = authModal === 'signup';
 
-export default function AuthModals({ showLogin, showSignup, onClose }: AuthModalsProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loginData, setLoginData] = useState({ email: '', password: '' });
@@ -46,7 +45,7 @@ export default function AuthModals({ showLogin, showSignup, onClose }: AuthModal
     if (Object.keys(newErrors).length === 0) {
       // Simulate login success
       console.log('Login attempt:', loginData);
-      onClose();
+      closeModals();
     }
   };
 
@@ -79,14 +78,14 @@ export default function AuthModals({ showLogin, showSignup, onClose }: AuthModal
     if (Object.keys(newErrors).length === 0) {
       // Simulate signup success
       console.log('Signup attempt:', signupData);
-      onClose();
+      closeModals();
     }
   };
 
-  if (!showLogin && !showSignup) return null;
+  if (authModal === 'closed') return null;
 
   return (
-    <div className="modal-backdrop" onClick={onClose}>
+    <div className="modal-backdrop" onClick={closeModals}>
       <div 
         className="card-floating w-full max-w-md mx-auto animate-scale-in"
         onClick={(e) => e.stopPropagation()}
@@ -96,7 +95,7 @@ export default function AuthModals({ showLogin, showSignup, onClose }: AuthModal
       >
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={closeModals}
           className="absolute top-4 right-4 p-2 hover:bg-secondary/50 rounded-full transition-colors"
           aria-label="Cerrar modal"
         >
