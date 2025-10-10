@@ -42,7 +42,7 @@ export default function SafetySection() {
               </span>
             </h2>
             
-            <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-prose">
               Creamos un ambiente seguro y respetuoso donde puedas conectar con confianza. 
               Cada característica está diseñada pensando en tu bienestar.
             </p>
