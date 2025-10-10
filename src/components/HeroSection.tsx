@@ -37,7 +37,7 @@ export default function HeroSection() {
             <div className="space-y-6">
               <h1 className="font-display font-bold text-display-xl text-foreground leading-tight drop-shadow-sm">
                 Conecta con quien comparte tu{' '}
-                <span className="text-gradient-primary animate-pulse-glow">
+                <span className="text-gradient-primary">
                   campus
                 </span>
               </h1>
@@ -78,12 +78,11 @@ export default function HeroSection() {
 
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
             <div className="relative mx-auto max-w-md lg:max-w-lg">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 blur-3xl rounded-full animate-pulse-glow" />
-              <div className="relative animate-float-up-down">
+              <div className="relative">
                 <img
                   src={currentGif}
                   alt="cUPido animated visual"
-                  className="relative w-full h-auto drop-shadow-2xl"
+                  className="relative w-full h-auto"
                 />
               </div>
             </div>

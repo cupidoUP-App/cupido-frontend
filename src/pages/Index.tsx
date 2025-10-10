@@ -3,7 +3,6 @@ import Header from '@/components/Header';
 import Preloader from '@/components/Preloader';
 import HeroSection from '@/components/HeroSection';
 import FeaturesSection from '@/components/FeaturesSection';
-import BentoSection from '@/components/BentoSection';
 import HowItWorksSection from '@/components/HowItWorksSection';
 import SafetySection from '@/components/SafetySection';
 import TestimonialsSection from '@/components/TestimonialsSection';
@@ -51,7 +50,6 @@ const Index = () => {
         <main>
           <HeroSection />
           <FeaturesSection />
-          <BentoSection />
           <HowItWorksSection />
           <SafetySection />
           <TestimonialsSection />
