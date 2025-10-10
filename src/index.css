@@ -177,9 +177,15 @@
 
   /* Floating card with gradient background */
   .card-floating {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-[var(--card-border-radius)];
+    @apply relative bg-white/80 backdrop-blur-md border-transparent rounded-[var(--card-border-radius)];
     @apply shadow-card transition-all duration-300;
     @apply hover:shadow-glow hover:-translate-y-1;
+  }
+
+  .card-floating::before {
+    content: '';
+    @apply absolute -inset-px rounded-[var(--card-border-radius)] -z-10;
+    @apply bg-gradient-to-br from-white/50 to-white/20;
   }
   
   /* Feature card with hover effects */

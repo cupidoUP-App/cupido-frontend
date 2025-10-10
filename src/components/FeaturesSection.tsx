@@ -46,7 +46,7 @@ export default function FeaturesSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 [perspective:1000px]">
           {features.map((feature, index) => {
             const Icon = feature.icon;
             const animation = index < 2 ? 'animate-slide-in-left' : 'animate-slide-in-right';
@@ -54,9 +54,9 @@ export default function FeaturesSection() {
             return (
               <div
                 key={index}
-                className="feature-card group opacity-0 p-6 rounded-2xl transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                className="feature-card group opacity-0 p-6 rounded-2xl transition-all duration-500 [transform-style:preserve-3d] hover:shadow-xl hover:[transform:rotateY(15deg)]"
                 data-animate={animation}
-                data-animate-delay={`${index * 150}ms`}
+                data-animate-delay={`${index * 200}ms`}
               >
                 <div className={`w-16 h-16 bg-gradient-to-br ${feature.gradient} rounded-2xl flex items-center justify-center mb-6 mx-auto feature-icon transition-all duration-300`}>
                   <Icon className="w-8 h-8 text-foreground transition-colors duration-300" />

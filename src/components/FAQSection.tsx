@@ -56,7 +56,7 @@ export default function FAQSection() {
         <div className="max-w-3xl mx-auto">
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div key={index} className="card-floating overflow-hidden opacity-0" data-animate="animate-slide-up" data-animate-delay={`${index * 100}ms`}>
+              <div key={index} className="card-floating overflow-hidden opacity-0" data-animate="animate-slide-up" data-animate-delay={`${index * 150}ms`}>
                 <button
                   onClick={() => toggleFAQ(index)}
                   className="w-full text-left p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200"
