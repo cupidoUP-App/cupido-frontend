@@ -1,60 +1,58 @@
-# cUPido - Landing Page
+# 💘 Uni-Match-Lab (cUPido)
 
-This is the official repository for the cUPido landing page, a modern and accessible dating platform for university students.
+Landing page moderna, completamente animada y de alto rendimiento para una aplicación social universitaria. Este proyecto ha sido mejorado con un stack tecnológico de vanguardia y un enfoque en la experiencia de usuario y la calidad del código.
 
-## ✨ Features
+## ✨ Características y Stack Tecnológico
 
-- **React-based:** Built with the latest React features for a fast and interactive user experience.
-- **Vite-powered:** Near-instant server start and hot module replacement (HMR).
-- **TypeScript:** Ensures type safety and improves code quality.
-- **Tailwind CSS & shadcn/ui:** A utility-first CSS framework paired with beautifully designed and accessible UI components.
+- **Framework Principal**: React 18 + Vite + TypeScript para un desarrollo rápido, moderno y seguro.
 
-## 🚀 Getting Started
+- **Estilos**:
+  - **Tailwind CSS**: Framework Utility-First para un diseño rápido y consistente.
+  - **Theming Avanzado**: Sistema de temas dual (femenino/masculino) implementado con variables CSS para una personalización visual completa, afectando colores y radios de borde.
+  - **Glassmorphism**: Tarjetas con efecto de vidrio esmerilado (`backdrop-blur`) y bordes de gradiente luminoso para un look premium.
 
-Follow these instructions to set up and run the project on your local machine.
+- **UI**:
+  - **shadcn/ui**: Componentes de alta calidad, accesibles y personalizables.
+  - **lucide-react**: Pack de iconos limpio y consistente.
 
-### Prerequisites
+- **Manejo de Estado**:
+  - **Zustand**: Estado global centralizado, reactivo y simple. Se utiliza para gestionar el estado de los modales, el tema y el preloader, eliminando el "prop-drilling".
 
-- [Node.js](https://nodejs.org/) (v18.x or higher recommended)
-- [npm](https://www.npmjs.com/) or [bun](https://bun.sh/)
+- **Formularios**:
+  - **React Hook Form + Zod**: Implementación robusta para la gestión de formularios y validación de esquemas en tiempo real, mejorando drásticamente la UX en los modales de autenticación.
 
-### Installation
+- **Animaciones y Micro-interacciones**:
+  - **Reveal-on-Scroll**: Animaciones de entrada dramáticas y escalonadas (staggered) usando `Intersection Observer` a través de un hook reutilizable (`useAnimateOnScroll`).
+  - **Hover 3D**: Efecto de rotación 3D en las tarjetas de características para una mayor interactividad.
+  - **Conteo Animado**: Las estadísticas clave animan su conteo desde cero hasta el valor final cuando son visibles.
+  - **Iconos Animados**: Los iconos en botones y listas se animan sutilmente al pasar el ratón.
+  - **Efecto Ripple**: Aproximación de efecto "ripple" en CSS para los botones principales al hacer clic.
 
-1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/your-username/uni-match-lab.git
-    cd uni-match-lab
-    ```
+- **Mejoras de UX**:
+  - **Scroll to Top**: Botón de acción flotante (FAB) que aparece al hacer scroll para volver al inicio de la página.
+  - **Testimoniales Mejorados**: Tarjetas de testimonios enriquecidas con avatares, ratings de estrellas y badges de verificación.
+  - **Legibilidad**: Párrafos de texto optimizados con `max-w-prose` para una lectura cómoda en pantallas grandes.
 
-2.  **Install dependencies:**
-    ```sh
-    npm install
-    ```
-    Or, if you are using `bun`:
-    ```sh
-    bun install
-    ```
+- **Optimización**:
+  - **Activos Optimizados**: Todas las imágenes y GIFs han sido convertidos al formato **WebP** para una carga más rápida y menor consumo de datos.
 
-## 🛠️ Available Scripts
+- **Calidad de Código y Pruebas**:
+  - **ESLint**: Configurado para mantener un código limpio y consistente.
+  - **Vitest + React Testing Library**: Entorno de pruebas moderno y rápido integrado con Vite.
+  - **Pruebas Implementadas**: Pruebas unitarias y de componentes que aseguran la funcionalidad y previenen regresiones.
 
-In the project directory, you can run the following commands:
+## 🚀 Scripts Disponibles
 
-### `npm run dev`
+En el directorio del proyecto, puedes ejecutar:
 
-Starts the development server with hot-reloading. Open [http://localhost:5173](http://localhost:5173) (or the port shown in your terminal) to view it in your browser.
+- `npm run dev`: Inicia el servidor de desarrollo.
+- `npm run build`: Compila la aplicación para producción.
+- `npm run lint`: Ejecuta el linter para analizar el código.
+- `npm run preview`: Sirve la build de producción localmente.
+- `npm test`: Ejecuta la suite de pruebas con Vitest.
 
-### `npm run build`
+## 🏛️ Decisiones de Arquitectura
 
-Builds the app for production to the `dist` folder. It correctly bundles React in production mode and optimizes the build for the best performance.
-
-### `npm run lint`
-
-Lints the codebase using ESLint to find and fix problems in your JavaScript/TypeScript code.
-
-### `npm run preview`
-
-Starts a local server to preview the production build from the `dist` folder. This is useful for checking the final output before deploying.
-
----
-
-*This project was bootstrapped with Vite and includes a setup for React, TypeScript, and Tailwind CSS.*
+- **Zustand vs. Context API**: Se eligió Zustand por su simplicidad, bajo boilerplate y rendimiento superior al evitar re-renders innecesarios en componentes no suscritos, lo cual es ideal para un estado global simple pero reactivo.
+- **React Hook Form + Zod**: Esta combinación es el estándar de la industria para formularios complejos. Proporciona una gestión de estado de formulario optimizada y una validación de esquemas declarativa que simplifica enormemente el código y mejora la experiencia del usuario.
+- **Tailwind CSS + Variables CSS**: El uso de variables CSS para el theming, controladas por un atributo `data-theme`, permite cambios de tema instantáneos y globales sin necesidad de recargar la página o lógica compleja en JavaScript.
