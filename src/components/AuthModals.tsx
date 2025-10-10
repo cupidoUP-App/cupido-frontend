@@ -1,351 +1,190 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { X, Eye, EyeOff, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppStore } from '@/store/appStore';
+import { cn } from '@/lib/utils';
+
+// --- Validation Schemas ---
+const eduEmailSchema = z.string().email({ message: 'Correo inválido' }).refine(
+  (email) => /^[^\s@]+@[^\s@]+\.(edu|edu\.[a-z]{2})$/i.test(email),
+  { message: 'Debe ser un correo .edu' }
+);
+
+const loginSchema = z.object({
+  email: eduEmailSchema,
+  password: z.string().min(1, { message: 'La contraseña es requerida' }),
+});
+
+const signupSchema = z.object({
+  name: z.string().min(1, { message: 'El nombre es requerido' }),
+  email: eduEmailSchema,
+  password: z.string().min(8, { message: 'La contraseña debe tener al menos 8 caracteres' }),
+  confirm: z.string(),
+}).refine((data) => data.password === data.confirm, {
+  message: "Las contraseñas no coinciden",
+  path: ["confirm"], // path of error
+});
+
+type LoginFormValues = z.infer<typeof loginSchema>;
+type SignupFormValues = z.infer<typeof signupSchema>;
+
+// --- Sub-components for Login and Signup Forms ---
+
+const LoginForm = () => {
+  const { closeModals } = useAppStore();
+  const [showPassword, setShowPassword] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    mode: 'onChange', // Real-time validation
+  });
+
+  const onSubmit = (data: LoginFormValues) => {
+    console.log('Login attempt:', data);
+    closeModals();
+  };
+
+  return (
+    <>
+      <div className="text-center mb-8">
+        <h2 id="login-title" className="font-display font-bold text-2xl text-foreground mb-2">Ingresar</h2>
+        <p className="text-muted-foreground">Bienvenido de vuelta a cUPido</p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <div>
+          <Label htmlFor="login-email">Correo institucional</Label>
+          <div className="relative mt-2">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="login-email" type="email" placeholder="usuario@unipamplona.edu.co" {...register('email')} className={cn('pl-10 h-12', errors.email && 'border-destructive')} />
+          </div>
+          {errors.email && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.email.message}</span></p>}
+        </div>
+        <div>
+          <Label htmlFor="login-password">Contraseña</Label>
+          <div className="relative mt-2">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="login-password" type={showPassword ? 'text' : 'password'} placeholder="Tu contraseña" {...register('password')} className={cn('pl-10 pr-10 h-12', errors.password && 'border-destructive')} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label={showPassword ? 'Ocultar' : 'Mostrar'}>
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+          </div>
+          {errors.password && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.password.message}</span></p>}
+        </div>
+        <Button type="submit" className="btn-hero w-full h-12">Ingresar</Button>
+        <div className="text-center"><button type="button" className="text-primary hover:text-accent text-sm">¿Olvidaste tu contraseña?</button></div>
+      </form>
+    </>
+  );
+};
+
+const SignupForm = () => {
+  const { closeModals } = useAppStore();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormValues>({
+    resolver: zodResolver(signupSchema),
+    mode: 'onChange',
+  });
+
+  const onSubmit = (data: SignupFormValues) => {
+    console.log('Signup attempt:', data);
+    closeModals();
+  };
+
+  return (
+    <>
+      <div className="text-center mb-8">
+        <h2 id="signup-title" className="font-display font-bold text-2xl text-foreground mb-2">Crear cuenta</h2>
+        <p className="text-muted-foreground">Únete a la comunidad de cUPido</p>
+      </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <div>
+          <Label htmlFor="signup-name">Nombre completo</Label>
+          <div className="relative mt-2">
+            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="signup-name" placeholder="Tu nombre" {...register('name')} className={cn('pl-10 h-12', errors.name && 'border-destructive')} />
+          </div>
+          {errors.name && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.name.message}</span></p>}
+        </div>
+        <div>
+          <Label htmlFor="signup-email">Correo institucional</Label>
+          <div className="relative mt-2">
+            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="signup-email" type="email" placeholder="usuario@unipamplona.edu.co" {...register('email')} className={cn('pl-10 h-12', errors.email && 'border-destructive')} />
+          </div>
+          {errors.email && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.email.message}</span></p>}
+        </div>
+        <div>
+          <Label htmlFor="signup-password">Contraseña</Label>
+          <div className="relative mt-2">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="signup-password" type={showPassword ? 'text' : 'password'} placeholder="Mínimo 8 caracteres" {...register('password')} className={cn('pl-10 pr-10 h-12', errors.password && 'border-destructive')} />
+            <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label={showPassword ? 'Ocultar' : 'Mostrar'}>
+              {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+          </div>
+          {errors.password && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.password.message}</span></p>}
+        </div>
+        <div>
+          <Label htmlFor="signup-confirm">Confirmar contraseña</Label>
+          <div className="relative mt-2">
+            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+            <Input id="signup-confirm" type={showConfirmPassword ? 'text' : 'password'} placeholder="Repite tu contraseña" {...register('confirm')} className={cn('pl-10 pr-10 h-12', errors.confirm && 'border-destructive')} />
+            <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 p-1" aria-label={showConfirmPassword ? 'Ocultar' : 'Mostrar'}>
+              {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}</button>
+          </div>
+          {errors.confirm && <p className="flex items-center space-x-2 mt-2 text-destructive text-sm"><AlertCircle className="w-4 h-4" /><span>{errors.confirm.message}</span></p>}
+        </div>
+        <Button type="submit" className="btn-hero w-full h-12">Crear cuenta</Button>
+      </form>
+    </>
+  );
+};
+
+
+// --- Main Component ---
 
 export default function AuthModals() {
-  const { authModal, closeModals } = useAppStore();
+  const { authModal, closeModals, openLogin, openSignup } = useAppStore();
   const showLogin = authModal === 'login';
   const showSignup = authModal === 'signup';
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [loginData, setLoginData] = useState({ email: '', password: '' });
-  const [signupData, setSignupData] = useState({ 
-    name: '', 
-    email: '', 
-    password: '', 
-    confirm: '' 
-  });
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const validateEmail = (email: string) => {
-    const eduPattern = /^[^\s@]+@[^\s@]+\.(edu|edu\.[a-z]{2})$/i;
-    return eduPattern.test(email);
-  };
-
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-
-    if (!loginData.email) {
-      newErrors.email = 'El correo es requerido';
-    } else if (!validateEmail(loginData.email)) {
-      newErrors.email = 'Debe ser un correo institucional (.edu)';
+  // Reset form state when modal is opened
+  // This is a simple way to ensure forms are clear on reopen
+  const [formKey, setFormKey] = useState(0);
+  useEffect(() => {
+    if (authModal !== 'closed') {
+      setFormKey(prev => prev + 1);
     }
-
-    if (!loginData.password) {
-      newErrors.password = 'La contraseña es requerida';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      // Simulate login success
-      console.log('Login attempt:', loginData);
-      closeModals();
-    }
-  };
-
-  const handleSignupSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const newErrors: Record<string, string> = {};
-
-    if (!signupData.name.trim()) {
-      newErrors.name = 'El nombre es requerido';
-    }
-
-    if (!signupData.email) {
-      newErrors.email = 'El correo es requerido';
-    } else if (!validateEmail(signupData.email)) {
-      newErrors.email = 'Debe ser un correo institucional (.edu)';
-    }
-
-    if (!signupData.password) {
-      newErrors.password = 'La contraseña es requerida';
-    } else if (signupData.password.length < 8) {
-      newErrors.password = 'La contraseña debe tener al menos 8 caracteres';
-    }
-
-    if (signupData.password !== signupData.confirm) {
-      newErrors.confirm = 'Las contraseñas no coinciden';
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      // Simulate signup success
-      console.log('Signup attempt:', signupData);
-      closeModals();
-    }
-  };
+  }, [authModal]);
 
   if (authModal === 'closed') return null;
 
   return (
     <div className="modal-backdrop" onClick={closeModals}>
-      <div 
-        className="card-floating w-full max-w-md mx-auto animate-scale-in"
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={showLogin ? "login-title" : "signup-title"}
-      >
-        {/* Close button */}
-        <button
-          onClick={closeModals}
-          className="absolute top-4 right-4 p-2 hover:bg-secondary/50 rounded-full transition-colors"
-          aria-label="Cerrar modal"
-        >
+      <div className="card-floating w-full max-w-md mx-auto animate-scale-in" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+        <button onClick={closeModals} className="absolute top-4 right-4 p-2 rounded-full" aria-label="Cerrar">
           <X className="w-5 h-5 text-muted-foreground" />
         </button>
-
         <div className="p-8">
-          {showLogin && (
-            <>
-              <div className="text-center mb-8">
-                <h2 id="login-title" className="font-display font-bold text-2xl text-foreground mb-2">
-                  Ingresar
-                </h2>
-                <p className="text-muted-foreground">
-                  Bienvenido de vuelta a cUPido
-                </p>
-              </div>
-
-              <form onSubmit={handleLoginSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="login-email" className="text-foreground font-medium mb-2 block">
-                    Correo institucional
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="login-email"
-                      type="email"
-                      placeholder="usuario@universidad.edu"
-                      value={loginData.email}
-                      onChange={(e) => setLoginData({ ...loginData, email: e.target.value })}
-                      className={`pl-10 h-12 ${errors.email ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.email ? "login-email-error" : undefined}
-                    />
-                  </div>
-                  {errors.email && (
-                    <div id="login-email-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.email}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="login-password" className="text-foreground font-medium mb-2 block">
-                    Contraseña
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="login-password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Tu contraseña"
-                      value={loginData.password}
-                      onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                      className={`pl-10 pr-10 h-12 ${errors.password ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.password ? "login-password-error" : undefined}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-secondary/50 rounded"
-                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password && (
-                    <div id="login-password-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.password}</span>
-                    </div>
-                  )}
-                </div>
-
-                <Button type="submit" className="btn-hero w-full h-12">
-                  Ingresar
-                </Button>
-
-                <div className="text-center">
-                  <button
-                    type="button"
-                    className="text-primary hover:text-accent transition-colors text-sm"
-                  >
-                    ¿Olvidaste tu contraseña?
-                  </button>
-                </div>
-              </form>
-            </>
-          )}
-
-          {showSignup && (
-            <>
-              <div className="text-center mb-8">
-                <h2 id="signup-title" className="font-display font-bold text-2xl text-foreground mb-2">
-                  Crear cuenta
-                </h2>
-                <p className="text-muted-foreground">
-                  Únete a la comunidad de cUPido
-                </p>
-              </div>
-
-              <form onSubmit={handleSignupSubmit} className="space-y-6">
-                <div>
-                  <Label htmlFor="signup-name" className="text-foreground font-medium mb-2 block">
-                    Nombre completo
-                  </Label>
-                  <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      placeholder="Tu nombre"
-                      value={signupData.name}
-                      onChange={(e) => setSignupData({ ...signupData, name: e.target.value })}
-                      className={`pl-10 h-12 ${errors.name ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.name ? "signup-name-error" : undefined}
-                    />
-                  </div>
-                  {errors.name && (
-                    <div id="signup-name-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.name}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="signup-email" className="text-foreground font-medium mb-2 block">
-                    Correo institucional
-                  </Label>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="usuario@universidad.edu"
-                      value={signupData.email}
-                      onChange={(e) => setSignupData({ ...signupData, email: e.target.value })}
-                      className={`pl-10 h-12 ${errors.email ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.email ? "signup-email-error" : undefined}
-                    />
-                  </div>
-                  {errors.email && (
-                    <div id="signup-email-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.email}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="signup-password" className="text-foreground font-medium mb-2 block">
-                    Contraseña
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="signup-password"
-                      type={showPassword ? 'text' : 'password'}
-                      placeholder="Mínimo 8 caracteres"
-                      value={signupData.password}
-                      onChange={(e) => setSignupData({ ...signupData, password: e.target.value })}
-                      className={`pl-10 pr-10 h-12 ${errors.password ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.password ? "signup-password-error" : undefined}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-secondary/50 rounded"
-                      aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                    >
-                      {showPassword ? (
-                        <EyeOff className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.password && (
-                    <div id="signup-password-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.password}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <Label htmlFor="signup-confirm" className="text-foreground font-medium mb-2 block">
-                    Confirmar contraseña
-                  </Label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                    <Input
-                      id="signup-confirm"
-                      type={showConfirmPassword ? 'text' : 'password'}
-                      placeholder="Repite tu contraseña"
-                      value={signupData.confirm}
-                      onChange={(e) => setSignupData({ ...signupData, confirm: e.target.value })}
-                      className={`pl-10 pr-10 h-12 ${errors.confirm ? 'border-destructive' : ''}`}
-                      aria-describedby={errors.confirm ? "signup-confirm-error" : undefined}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-secondary/50 rounded"
-                      aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
-                    >
-                      {showConfirmPassword ? (
-                        <EyeOff className="w-4 h-4 text-muted-foreground" />
-                      ) : (
-                        <Eye className="w-4 h-4 text-muted-foreground" />
-                      )}
-                    </button>
-                  </div>
-                  {errors.confirm && (
-                    <div id="signup-confirm-error" className="flex items-center space-x-2 mt-2 text-destructive text-sm" role="alert">
-                      <AlertCircle className="w-4 h-4" />
-                      <span>{errors.confirm}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="text-xs text-muted-foreground">
-                  Al continuar aceptas nuestros{' '}
-                  <button className="text-primary hover:text-accent transition-colors">
-                    Términos de Servicio
-                  </button>{' '}
-                  y{' '}
-                  <button className="text-primary hover:text-accent transition-colors">
-                    Política de Privacidad
-                  </button>
-                </div>
-
-                <Button type="submit" className="btn-hero w-full h-12">
-                  Crear cuenta
-                </Button>
-
-                <div className="text-center">
-                  <Button variant="outline" type="button" className="w-full h-12">
-                    Continuar con Microsoft (proximamente)
-                  </Button>
-                </div>
-              </form>
-            </>
-          )}
+          {showLogin && <LoginForm key={`login-${formKey}`} />}
+          {showSignup && <SignupForm key={`signup-${formKey}`} />}
+          
+          <div className="text-center text-sm mt-6">
+            {showLogin ? (
+              <>
+                ¿No tienes cuenta?{' '}
+                <button onClick={openSignup} className="text-primary hover:text-accent font-semibold">Regístrate</button>
+              </>
+            ) : (
+              <>
+                ¿Ya tienes cuenta?{' '}
+                <button onClick={openLogin} className="text-primary hover:text-accent font-semibold">Ingresa</button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

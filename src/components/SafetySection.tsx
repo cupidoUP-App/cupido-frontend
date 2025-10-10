@@ -81,7 +81,7 @@ export default function SafetySection() {
               <div className="w-full max-w-sm mx-auto">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-success/20 to-primary/20 blur-3xl rounded-full" />
-                  <div className="relative bg-white/90 backdrop-blur-sm border border-white/20 rounded-3xl p-12 text-center">
+                  <div className="relative bg-white/90 backdrop-blur-sm border border-white/20 rounded-[var(--card-border-radius)] p-12 text-center">
                     <Shield className="w-20 h-20 text-success mx-auto mb-6" />
                     <h3 className="font-display font-bold text-2xl text-foreground mb-4">
                       Ambiente Seguro

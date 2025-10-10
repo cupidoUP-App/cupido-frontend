@@ -45,6 +45,7 @@
     --ring: 5 55% 50%;
 
     --radius: 0.75rem;
+    --card-border-radius: 1.5rem; /* More rounded */
 
     /* Gradient definitions */
     --gradient-primary: linear-gradient(135deg, hsl(5 55% 50%), hsl(5 56% 67%));
@@ -105,6 +106,7 @@
     --ring: 193 34% 30%;              /* Matches primary */
 
     --radius: 0.75rem;
+    --card-border-radius: 0.75rem; /* Less rounded */
 
     /* Gradient definitions */
     --gradient-primary: linear-gradient(135deg, hsl(193 50% 40%), hsl(193 34% 30%));
@@ -175,7 +177,7 @@
 
   /* Floating card with gradient background */
   .card-floating {
-    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-3xl;
+    @apply bg-white/80 backdrop-blur-md border border-white/20 rounded-[var(--card-border-radius)];
     @apply shadow-card transition-all duration-300;
     @apply hover:shadow-glow hover:-translate-y-1;
   }
