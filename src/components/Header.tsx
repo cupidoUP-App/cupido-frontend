@@ -1,18 +1,16 @@
 import { useState } from 'react';
-import { Heart, Menu, X } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import logoCupido from '@/assets/logo-cupido.png';
 import ThemeToggle from '@/components/ThemeToggle';
+import { useAppStore } from '@/store/appStore';
 
 interface HeaderProps {
-  onLoginClick: () => void;
-  onSignupClick: () => void;
-  theme: string;
   onThemeChange: (theme: string) => void;
 }
 
-export default function Header({ onLoginClick, onSignupClick, theme, onThemeChange }: HeaderProps) {
+export default function Header({ onThemeChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { openLogin, openSignup, theme } = useAppStore();
 
   const navItems = [
     { label: 'Inicio', href: '#home' },
@@ -47,13 +45,13 @@ export default function Header({ onLoginClick, onSignupClick, theme, onThemeChan
             <Button
               variant="outline"
               size="sm"
-              onClick={onLoginClick}
+              onClick={openLogin}
               className="text-foreground"
             >
               Ingresar
             </Button>
             <Button
-              onClick={onSignupClick}
+              onClick={openSignup}
               size="sm"
               className="btn-hero px-6"
             >
@@ -87,13 +85,13 @@ export default function Header({ onLoginClick, onSignupClick, theme, onThemeChan
                 </div>
                 <Button
                   variant="outline"
-                  onClick={() => { onLoginClick(); setIsMenuOpen(false); }}
+                  onClick={() => { openLogin(); setIsMenuOpen(false); }}
                   className="justify-start text-foreground"
                 >
                   Ingresar
                 </Button>
                 <Button
-                  onClick={() => { onSignupClick(); setIsMenuOpen(false); }}
+                  onClick={() => { openSignup(); setIsMenuOpen(false); }}
                   className="btn-hero justify-start"
                 >
                   Crear cuenta
