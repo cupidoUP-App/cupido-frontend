@@ -11,7 +11,6 @@ import CTAFinalSection from '@/components/CTAFinalSection';
 import Footer from '@/components/Footer';
 import AuthModals from '@/components/AuthModals';
 import ThemeTransitionOverlay from '@/components/ui/ThemeTransitionOverlay';
-import ScrollToTop from '@/components/ScrollToTop';
 import { useAppStore } from '@/store/appStore';
 
 const Index = () => {
@@ -57,7 +56,6 @@ const Index = () => {
           <CTAFinalSection onSignupClick={openSignup} />
         </main>
         <Footer />
-        <ScrollToTop />
       </div>
       <AuthModals />
     </div>
