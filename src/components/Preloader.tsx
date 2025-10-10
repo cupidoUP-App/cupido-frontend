@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import cupidGif from '@/assets/cupid.gif';
+import cupidGif from '@/assets/cupid.webp';
 
 interface PreloaderProps {
   onComplete: () => void;
