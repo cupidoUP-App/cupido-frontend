@@ -69,7 +69,7 @@ export default function HeroSection() {
           </div>
 
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
-            <div className="relative mx-auto max-w-md lg:max-w-lg">
+          <div className="relative mx-auto max-w-lg lg:max-w-xl">  
               <div className="relative">
                 <img
                   src={currentGif}
