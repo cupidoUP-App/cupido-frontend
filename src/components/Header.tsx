@@ -3,6 +3,8 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import { useAppStore } from '@/store/appStore';
+import logofemdark from '@/assets/logofemdark.webp';
+import logomascdark from '@/assets/logomascdark.webp';
 
 interface HeaderProps {
   onThemeChange: (theme: string) => void;
@@ -20,11 +22,14 @@ export default function Header({ onThemeChange }: HeaderProps) {
     { label: 'Contacto', href: '#contact' },
   ];
 
+  const logo = theme === 'femenino' ? logofemdark : logomascdark;
+
   return (
     <header className="sticky top-0 z-40 bg-white border-b-2 h-[50px]">
       <div className="container mx-auto px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center space-x-2">
+            <img src={logo} alt="cUPido logo" className="h-6 w-auto" />
             <span className="font-display font-bold text-xl text-foreground hidden sm:block">
               cUPido
             </span>

@@ -1,7 +1,10 @@
 import { Heart } from 'lucide-react';
-import logoCupido from '@/assets/logo-cupido.webp';
+import { useAppStore } from '@/store/appStore';
+import logofemlight from '@/assets/logofemlight.webp';
+import logomasclight from '@/assets/logomasclight.webp';
 
 export default function Footer() {
+  const { theme } = useAppStore();
   const footerSections = [
     {
       title: 'cUPido',
@@ -29,6 +32,8 @@ export default function Footer() {
     }
   ];
 
+  const logo = theme === 'femenino' ? logofemlight : logomasclight;
+
   return (
     <footer className="bg-foreground text-background">
       <div className="container mx-auto px-6 lg:px-8 py-16">
@@ -36,11 +41,11 @@ export default function Footer() {
           {/* Brand section */}
           <div className="md:col-span-2 lg:col-span-1">
             <div className="flex items-center space-x-3 mb-6">
-              <img src={logoCupido} alt="cUPido" className="h-10 w-auto filter brightness-0 invert" />
+              <img src={logo} alt="cUPido" className="h-8 w-auto" />
               <span className="font-display font-bold text-xl">cUPido</span>
             </div>
             <p className="text-background/80 mb-6 leading-relaxed">
-              Conecta con jóvenes verificados en tu campus. 
+              Conecta con estudiantes verificados en tu campus. 
               Matches auténticos para relaciones reales.
             </p>
             <div className="flex items-center space-x-2 text-sm text-background/60">
