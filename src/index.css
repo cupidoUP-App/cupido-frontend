@@ -218,13 +218,7 @@
     @apply scale-110 text-primary;
   }
 
-  /* Animated background particles */
-  .particles-bg {
-    @apply absolute inset-0 overflow-hidden pointer-events-none z-0;
-  }
-  .animate-particle-float {
-    animation: particle-float 6s ease-in-out infinite;
-  }
+
   
   /* Modal backdrop */
   .modal-backdrop {
