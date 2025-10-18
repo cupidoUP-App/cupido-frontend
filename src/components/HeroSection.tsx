@@ -3,10 +3,20 @@ import { Button } from '@/components/ui/button';
 import heroPreloaderGif from '@/assets/hero-preloader.webp';
 import manGif from '@/assets/man.webp';
 import { useAppStore } from '@/store/appStore';
+import { useEffect } from 'react';
 
 export default function HeroSection() {
   const { openLogin, openSignup, theme } = useAppStore();
   const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
+
+  // Preload GIFs to prevent lag on theme change
+  useEffect(() => {
+    const preloadGifs = [manGif, heroPreloaderGif];
+    preloadGifs.forEach((gif) => {
+      const img = new Image();
+      img.src = gif;
+    });
+  }, []);
 
   return (
     <section 
