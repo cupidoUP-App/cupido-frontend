@@ -74,7 +74,7 @@ export const ParticlesComponent = (props: { id?: string }) => {
           value: { min: 0.3, max: 0.7 },
         },
         size: {
-          value: { min: 2, max: 5 },
+          value: { min: 2.6, max: 5.6 },
         },
         move: {
           direction: "none",
