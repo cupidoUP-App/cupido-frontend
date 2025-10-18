@@ -13,7 +13,7 @@ describe('ScrollToTopButton', () => {
     render(<ScrollToTopButton />);
     const button = screen.getByRole('button');
     
-    // Simulate scrolling down
+    
     fireEvent.scroll(window, { target: { pageYOffset: 400 } });
     
     expect(button).not.toHaveClass('opacity-0');
