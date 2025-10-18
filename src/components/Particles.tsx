@@ -71,7 +71,7 @@ export const ParticlesComponent = (props: { id?: string }) => {
           value: 130,
         },
         opacity: {
-          value: { min: 0.27, max: 0.67 },
+          value: { min: 0.25, max: 0.65 },
         },
         size: {
           value: { min: 2.8, max: 5.8 },
