@@ -6,7 +6,7 @@ export default function HowItWorksSection() {
     {
       icon: UserCheck,
       title: 'Verificación .edu',
-      description: 'Garantizamos que todos los usuarios sean estudiantes reales mediante verificación de correo.',
+      description: 'Garantizamos que todos los usuarios sean jóvenes reales mediante verificación de correo.',
       step: '01'
     },
     {

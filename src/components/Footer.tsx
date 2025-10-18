@@ -40,13 +40,13 @@ export default function Footer() {
               <span className="font-display font-bold text-xl">cUPido</span>
             </div>
             <p className="text-background/80 mb-6 leading-relaxed">
-              Conecta con estudiantes verificados en tu campus. 
+              Conecta con jóvenes verificados en tu campus. 
               Matches auténticos para relaciones reales.
             </p>
             <div className="flex items-center space-x-2 text-sm text-background/60">
               <span>Hecho con</span>
               <Heart className="w-4 h-4 text-accent fill-current" />
-              <span>para estudiantes</span>
+              <span>para jóvenes</span>
             </div>
           </div>
 

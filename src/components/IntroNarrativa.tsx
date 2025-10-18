@@ -31,7 +31,7 @@ export default function IntroNarrativa() {
     {
       icon: MessageCircle,
       title: 'Desliza. Conecta. Conversa.',
-      copy: 'Descubre estudiantes afines y conversa en tiempo real cuando haya match. Cada conexión es una oportunidad.',
+      copy: 'Descubre jóvenes afines y conversa en tiempo real cuando haya match. Cada conexión es una oportunidad.',
     },
     {
       icon: Shield,

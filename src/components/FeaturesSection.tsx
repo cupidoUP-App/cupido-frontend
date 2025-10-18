@@ -39,7 +39,7 @@ export default function FeaturesSection() {
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             Diseñado para{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              estudiantes
+              jóvenes
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
@@ -78,7 +78,7 @@ export default function FeaturesSection() {
         {/* Stats section */}
         <div className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-8">
           {[
-            { value: '500+', label: 'Estudiantes activos' },
+            { value: '500+', label: 'jóvenes activos' },
             { value: '50+', label: 'Universidades' },
             { value: '1,200+', label: 'Matches realizados' },
             { value: '98%', label: 'Seguridad verificada' }

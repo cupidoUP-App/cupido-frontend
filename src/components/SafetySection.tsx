@@ -7,7 +7,7 @@ export default function SafetySection() {
     {
       icon: Shield,
       title: 'Verificación por email institucional',
-      description: 'Solo estudiantes con correos universitarios activos pueden acceder a la plataforma.'
+      description: 'Solo jóvenes con correos universitarios activos pueden acceder a la plataforma.'
     },
     {
       icon: UserX,

@@ -8,7 +8,7 @@ export default function FAQSection() {
   const faqs = [
     {
       question: "¿Quién puede usar cUPido?",
-      answer: "cUPido está exclusivamente para estudiantes y personal académico con correo institucional verificado (.edu). Esto garantiza que todos los usuarios pertenezcan a la comunidad universitaria y crea un ambiente más seguro y confiable."
+      answer: "cUPido está exclusivamente para jóvenes y personal académico con correo institucional verificado (.edu). Esto garantiza que todos los usuarios pertenezcan a la comunidad universitaria y crea un ambiente más seguro y confiable."
     },
     {
       question: "¿Cómo funciona el sistema de matches?",

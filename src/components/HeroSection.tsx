@@ -40,7 +40,7 @@ export default function HeroSection() {
                 </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                Matches auténticos entre estudiantes verificados por correo universitario.
+                Matches auténticos entre jóvenes verificados por correo universitario.
                 Descubre personas afines en tu universidad.
               </p>
             </div>
@@ -65,7 +65,7 @@ export default function HeroSection() {
             <div className="flex items-center justify-center lg:justify-start space-x-6 text-sm text-muted-foreground">
               <div className="flex items-center space-x-2">
                 <Users className="w-4 h-4 text-primary" />
-                <span>Solo estudiantes</span>
+                <span>Solo jóvenes</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Sparkles className="w-4 h-4 text-accent" />

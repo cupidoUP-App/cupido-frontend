@@ -27,7 +27,7 @@ export default function TestimonialsSection() {
       rating: 5,
     },
     {
-      quote: "La verificación .edu me dio confianza para conectar. Saber que todos son estudiantes reales marca la diferencia.",
+      quote: "La verificación .edu me dio confianza para conectar. Saber que todos son jóvenes reales marca la diferencia.",
       author: "Ana Rodríguez",
       initials: "AR",
       program: "Estudiante de Medicina",
@@ -69,7 +69,7 @@ export default function TestimonialsSection() {
           <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
             Lo que dicen nuestros{' '}
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              estudiantes
+              jóvenes
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">

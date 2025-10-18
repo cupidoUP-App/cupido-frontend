@@ -32,7 +32,7 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
             </h2>
             
             <p className="text-xl text-muted-foreground mb-12 leading-relaxed max-w-2xl mx-auto">
-              Únete a cientos de estudiantes que ya están conectando de manera auténtica. 
+              Únete a cientos de jóvenes que ya están conectando de manera auténtica. 
               Tu próxima gran historia puede comenzar hoy.
             </p>
 
@@ -61,7 +61,7 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
               <div className="text-center">
                 <div className="text-3xl mb-2">🎓</div>
-                <div className="text-sm text-muted-foreground">Solo estudiantes verificados</div>
+                <div className="text-sm text-muted-foreground">Solo jóvenes verificados</div>
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">🔒</div>
@@ -69,7 +69,7 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
               </div>
               <div className="text-center">
                 <div className="text-3xl mb-2">💝</div>
-                <div className="text-sm text-muted-foreground">Gratis para estudiantes</div>
+                <div className="text-sm text-muted-foreground">Gratis para jóvenes</div>
               </div>
             </div>
           </div>
