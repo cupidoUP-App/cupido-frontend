@@ -62,7 +62,7 @@ export const ParticlesComponent = (props: { id?: string }) => {
           value: theme === 'femenino' ? '#D9857E' : '#325048',
         },
         shape: {
-          type: theme === 'femenino' ? 'heart' : 'triangle',
+          type: theme === 'femenino' ? 'heart' : 'square',
         },
         number: {
           density: {
@@ -71,10 +71,10 @@ export const ParticlesComponent = (props: { id?: string }) => {
           value: 130,
         },
         opacity: {
-          value: { min: 0.25, max: 0.65 },
+          value: { min: 0.22, max: 0.6 },
         },
         size: {
-          value: { min: 2.8, max: 5.8 },
+          value: { min: 2.8, max: 6 },
         },
         move: {
           direction: "none",

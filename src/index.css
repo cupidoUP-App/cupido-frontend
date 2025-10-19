@@ -135,6 +135,11 @@
   * {
     @apply border-border;
   }
+  html,
+  body {
+    height: 100%;
+    overflow-y: auto;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased cursor-default;
     font-feature-settings: "cv03", "cv04", "cv11";

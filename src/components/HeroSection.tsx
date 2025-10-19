@@ -11,7 +11,6 @@ export default function HeroSection() {
   const { openLogin, openSignup, theme } = useAppStore();
   const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
 
-  // Preload GIFs to prevent lag on theme change
   useEffect(() => {
     const preloadGifs = [manGif, heroPreloaderGif];
     preloadGifs.forEach((gif) => {

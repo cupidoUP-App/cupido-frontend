@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
@@ -6,13 +6,33 @@ import { useAppStore } from '@/store/appStore';
 import logofemdark from '@/assets/logofemdark.webp';
 import logomascdark from '@/assets/logomascdark.webp';
 
+const useScroll = (threshold = 10) => {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > threshold) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [threshold]);
+
+  return scrolled;
+};
+
 interface HeaderProps {
   onThemeChange: (theme: string) => void;
 }
 
-export default function Header({ onThemeChange }: HeaderProps) {
+export function Header({ onThemeChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { openLogin, openSignup, theme } = useAppStore();
+  const scrolled = useScroll();
 
   const navItems = [
     { label: 'Inicio', href: '#home' },
@@ -25,11 +45,13 @@ export default function Header({ onThemeChange }: HeaderProps) {
   const logo = theme === 'femenino' ? logofemdark : logomascdark;
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b-2 h-[50px]">
+    <header className={`fixed top-0 left-0 right-0 z-40 border-b-2 h-[50px] transition-all duration-300 ease-in-out ${
+      scrolled ? 'bg-white/80 backdrop-blur-lg shadow-md' : 'bg-white'
+    }`}>
       <div className="container mx-auto px-6 lg:px-8 h-full">
         <div className="flex items-center justify-between h-full">
           <div className="flex items-center space-x-2">
-            <img src={logo} alt="cUPido logo" className="h-6 w-auto" />
+            <img src={logo} alt="cUPido logo" className="h-8 w-auto" />
             <span className="font-display font-bold text-xl text-foreground hidden sm:block">
               cUPido
             </span>
