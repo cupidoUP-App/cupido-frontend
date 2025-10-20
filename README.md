@@ -1,58 +1,99 @@
-# 💘 Uni-Match-Lab (cUPido)
+<!-- @format -->
 
-Landing page moderna, completamente animada y de alto rendimiento para una aplicación social universitaria. Este proyecto ha sido mejorado con un stack tecnológico de vanguardia y un enfoque en la experiencia de usuario y la calidad del código.
+# 💘 cUPido - Uni-Match-Lab
 
-## ✨ Características y Stack Tecnológico
+<p align="center">
+  <img src="src/assets/logomasclight.webp" alt="cUPido Logo" width="200"/>
+</p>
+
+<h3 align="center">Landing page moderna, completamente animada y de alto rendimiento para una aplicación social universitaria.</h3>
+
+<p align="center">
+  <img alt="React" src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react"/>
+  <img alt="Vite" src="https://img.shields.io/badge/Vite-5-purple?style=for-the-badge&logo=vite"/>
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge&logo=typescript"/>
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-3-cyan?style=for-the-badge&logo=tailwind-css"/>
+</p>
+
+---
+
+## 🚀 Live Demo
+
+[Link to live demo](https://cupido-sandy.vercel.app)
+
+---
+
+## ✨ Features
 
 - **Framework Principal**: React 18 + Vite + TypeScript para un desarrollo rápido, moderno y seguro.
-
 - **Estilos**:
   - **Tailwind CSS**: Framework Utility-First para un diseño rápido y consistente.
-  - **Theming Avanzado**: Sistema de temas dual (femenino/masculino) implementado con variables CSS para una personalización visual completa, afectando colores y radios de borde.
+  - **Theming Avanzado**: Sistema de temas dual (femenino/masculino) implementado con variables CSS para una personalización visual completa.
   - **Glassmorphism**: Tarjetas con efecto de vidrio esmerilado (`backdrop-blur`) y bordes de gradiente luminoso para un look premium.
-
 - **UI**:
   - **shadcn/ui**: Componentes de alta calidad, accesibles y personalizables.
   - **lucide-react**: Pack de iconos limpio y consistente.
-
 - **Manejo de Estado**:
-  - **Zustand**: Estado global centralizado, reactivo y simple. Se utiliza para gestionar el estado de los modales, el tema y el preloader, eliminando el "prop-drilling".
-
+  - **Zustand**: Estado global centralizado, reactivo y simple.
 - **Formularios**:
-  - **React Hook Form + Zod**: Implementación robusta para la gestión de formularios y validación de esquemas en tiempo real, mejorando drásticamente la UX en los modales de autenticación.
-
+  - **React Hook Form + Zod**: Implementación robusta para la gestión de formularios y validación de esquemas en tiempo real.
 - **Animaciones y Micro-interacciones**:
-  - **Reveal-on-Scroll**: Animaciones de entrada dramáticas y escalonadas (staggered) usando `Intersection Observer` a través de un hook reutilizable (`useAnimateOnScroll`).
-  - **Hover 3D**: Efecto de rotación 3D en las tarjetas de características para una mayor interactividad.
-  - **Conteo Animado**: Las estadísticas clave animan su conteo desde cero hasta el valor final cuando son visibles.
-  - **Iconos Animados**: Los iconos en botones y listas se animan sutilmente al pasar el ratón.
-  - **Efecto Ripple**: Aproximación de efecto "ripple" en CSS para los botones principales al hacer clic.
-
+  - **Reveal-on-Scroll**: Animaciones de entrada dramáticas y escalonadas.
+  - **Hover 3D**: Efecto de rotación 3D en las tarjetas de características.
+  - **Conteo Animado**: Las estadísticas clave animan su conteo.
 - **Mejoras de UX**:
-  - **Scroll to Top**: Botón de acción flotante (FAB) que aparece al hacer scroll para volver al inicio de la página.
-  - **Testimoniales Mejorados**: Tarjetas de testimonios enriquecidas con avatares, ratings de estrellas y badges de verificación.
-  - **Legibilidad**: Párrafos de texto optimizados con `max-w-prose` para una lectura cómoda en pantallas grandes.
-
+  - **Scroll to Top**: Botón de acción flotante (FAB) para volver al inicio.
+  - **Testimoniales Mejorados**: Tarjetas de testimonios enriquecidas.
 - **Optimización**:
-  - **Activos Optimizados**: Todas las imágenes y GIFs han sido convertidos al formato **WebP** para una carga más rápida y menor consumo de datos.
-
+  - **Activos Optimizados**: Todas las imágenes y GIFs en formato **WebP**.
 - **Calidad de Código y Pruebas**:
-  - **ESLint**: Configurado para mantener un código limpio y consistente.
-  - **Vitest + React Testing Library**: Entorno de pruebas moderno y rápido integrado con Vite.
-  - **Pruebas Implementadas**: Pruebas unitarias y de componentes que aseguran la funcionalidad y previenen regresiones.
+  - **ESLint**: Para mantener un código limpio y consistente.
+  - **Vitest + React Testing Library**: Entorno de pruebas moderno y rápido.
 
-## 🚀 Scripts Disponibles
+---
 
-En el directorio del proyecto, puedes ejecutar:
+## 🛠️ Getting Started
 
-- `npm run dev`: Inicia el servidor de desarrollo.
-- `npm run build`: Compila la aplicación para producción.
-- `npm run lint`: Ejecuta el linter para analizar el código.
-- `npm run preview`: Sirve la build de producción localmente.
-- `npm test`: Ejecuta la suite de pruebas con Vitest.
+### Prerequisites
 
-## 🏛️ Decisiones de Arquitectura
+- [Node.js](https://nodejs.org/en/) (v18 or higher)
+- [npm](https://www.npmjs.com/)
 
-- **Zustand vs. Context API**: Se eligió Zustand por su simplicidad, bajo boilerplate y rendimiento superior al evitar re-renders innecesarios en componentes no suscritos, lo cual es ideal para un estado global simple pero reactivo.
-- **React Hook Form + Zod**: Esta combinación es el estándar de la industria para formularios complejos. Proporciona una gestión de estado de formulario optimizada y una validación de esquemas declarativa que simplifica enormemente el código y mejora la experiencia del usuario.
-- **Tailwind CSS + Variables CSS**: El uso de variables CSS para el theming, controladas por un atributo `data-theme`, permite cambios de tema instantáneos y globales sin necesidad de recargar la página o lógica compleja en JavaScript.
+### Installation
+
+1.  Clone the repository:
+    ```sh
+    git clone https://github.com/cupidoUP-App/cupido-frontend.git
+    ```
+2.  Navigate to the project directory:
+    ```sh
+    cd cupido-frontend
+    ```
+3.  Install the dependencies:
+    ```sh
+    npm install
+    ```
+
+---
+
+## 📜 Available Scripts
+
+In the project directory, you can run:
+
+-   `npm run dev`: Inicia el servidor de desarrollo.
+-   `npm run build`: Compila la aplicación para producción.
+-   `npm run lint`: Ejecuta el linter para analizar el código.
+-   `npm run preview`: Sirve la build de producción localmente.
+-   `npm test`: Ejecuta la suite de pruebas con Vitest.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
