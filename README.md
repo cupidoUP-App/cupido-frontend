@@ -1,12 +1,12 @@
 <!-- @format -->
 
-# 💘 cUPido - Uni-Match-Lab
+# 💘 cUPido 
 
 <p align="center">
-  <img src="src/assets/logomasclight.webp" alt="cUPido Logo" width="200"/>
+  <img src="src/assets/logomasclight.webp" alt="cUPido Logo" width="170"/>
 </p>
 
-<h3 align="center">Landing page moderna, completamente animada y de alto rendimiento para una aplicación social universitaria.</h3>
+<h3 align="center">Landing page moderna, completamente animada y de alto rendimiento para una aplicación social juvenil de citas.</h3>
 
 <p align="center">
   <img alt="React" src="https://img.shields.io/badge/React-18-blue?style=for-the-badge&logo=react"/>
