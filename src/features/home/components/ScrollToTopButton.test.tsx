@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import ScrollToTopButton from '@/components/ScrollToTopButton';
+import ScrollToTopButton from './ScrollToTopButton';
 
 describe('ScrollToTopButton', () => {
   it('should be hidden initially', () => {

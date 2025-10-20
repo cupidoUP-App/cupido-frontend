@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import ThemeToggle from '@/components/ThemeToggle';
+import ThemeToggle from './ThemeToggle';
 import { useAppStore } from '@/store/appStore';
 import logofemdark from '@/assets/logofemdark.webp';
 import logomascdark from '@/assets/logomascdark.webp';

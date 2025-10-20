@@ -4,7 +4,7 @@ import heroPreloaderGif from '@/assets/hero-preloader.webp';
 import manGif from '@/assets/man.webp';
 import { useAppStore } from '@/store/appStore';
 import { useEffect } from 'react';
-import { ParticlesComponent } from '@/components/Particles';
+import { ParticlesComponent } from './Particles';
 
 
 export default function HeroSection() {
