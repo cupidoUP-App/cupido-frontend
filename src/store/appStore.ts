@@ -1,14 +1,23 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-type AuthModalState = 'closed' | 'login' | 'signup';
+type AuthModalState = 'closed' | 'login' | 'signup' | 'recovery' | 'two-step' | 'recaptcha';
 type Theme = 'femenino' | 'masculino';
 
 interface AppState {
   authModal: AuthModalState;
   openLogin: () => void;
+  openRecovery: () => void;
+  openTwoStep: () => void;
   openSignup: () => void;
+  openRecaptcha: () => void;
   closeModals: () => void;
+
+  // Form data for ReCAPTCHA verification
+  pendingFormData: any;
+  setPendingFormData: (data: any) => void;
+  pendingLoginData: any;
+  setPendingLoginData: (data: any) => void;
 
   theme: Theme;
   setTheme: (newTheme: Theme) => void;
@@ -26,7 +35,16 @@ export const useAppStore = create<AppState>()(
       authModal: 'closed',
       openLogin: () => set({ authModal: 'login' }),
       openSignup: () => set({ authModal: 'signup' }),
+      openRecovery: () => set({ authModal: 'recovery' }),
+      openTwoStep: () => set({ authModal: 'two-step' }),
+      openRecaptcha: () => set({ authModal: 'recaptcha' }),
       closeModals: () => set({ authModal: 'closed' }),
+
+      // Form data for ReCAPTCHA verification
+      pendingFormData: null,
+      setPendingFormData: (data) => set({ pendingFormData: data }),
+      pendingLoginData: null,
+      setPendingLoginData: (data) => set({ pendingLoginData: data }),
 
       // Theme State
       theme: 'femenino', // Default theme

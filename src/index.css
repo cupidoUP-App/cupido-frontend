@@ -218,10 +218,34 @@
   .feature-card {
     @apply card-floating p-8 text-center cursor-pointer;
   }
+
+  @layer components {
+    .perspective {
+      perspective: 1200px;
+    }
+
+    .transform-style-preserve-3d {
+      transform-style: preserve-3d;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    .flip-transition {
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.3, 1.4);
+      transform-origin: center;
+    }
+  }
   
   .feature-card:hover .feature-icon {
     @apply scale-110 text-primary;
   }
+
 
 
   
