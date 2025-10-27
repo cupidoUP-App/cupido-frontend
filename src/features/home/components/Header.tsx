@@ -27,12 +27,17 @@ const useScroll = (threshold = 10) => {
 
 interface HeaderProps {
   onThemeChange: (theme: string) => void;
+  onOpenSignup?: () => void;
+  openLogin?: () => void;
 }
 
 export function Header({ onThemeChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { openLogin, openSignup, theme } = useAppStore();
+  const { theme,openSigUp, openLogin } = useAppStore();
   const scrolled = useScroll();
+
+    // Agrega console.log para debug
+
 
   const navItems = [
     { label: 'Inicio', href: '#home' },
@@ -78,7 +83,7 @@ export function Header({ onThemeChange }: HeaderProps) {
               Ingresar
             </Button>
             <Button
-              onClick={openSignup}
+              onClick={openSigUp}
               size="sm"
               className="btn-hero px-6"
             >
@@ -118,7 +123,7 @@ export function Header({ onThemeChange }: HeaderProps) {
                   Ingresar
                 </Button>
                 <Button
-                  onClick={() => { openSignup(); setIsMenuOpen(false); }}
+                  onClick={() => { openSigUp(); setIsMenuOpen(false); }}
                   className="btn-hero justify-start"
                 >
                   Crear cuenta
