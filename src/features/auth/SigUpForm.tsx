@@ -8,7 +8,6 @@ import TermsAndConditions from './components/TermsAndConditions';
 import ReCaptchaModal from './components/ReCaptchaModal';
 import EmailVerificationModal from './components/EmailVerificationModal';
 import { FormData, FormErrors, validateForm } from './components/Validations';
-import CompleteRegister, { RegistrationData } from './components/CompleteRegister';
 import { useAppStore } from '@/store/appStore';
 
 interface RegistroProps {
@@ -18,7 +17,7 @@ interface RegistroProps {
 
 
 // Estados para controlar el flujo
-type FormStep = 'initial' | 'captcha' | 'email-verification' | 'complete-register' | 'completed';
+type FormStep = 'initial' | 'captcha' | 'email-verification' | 'completed';
 
 const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     const { openLogin } = useAppStore();
@@ -34,7 +33,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
-  const [showCompleteRegister, setShowCompleteRegister] = useState(false);
 
   const { toast } = useToast();
 
@@ -162,25 +160,28 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Manejar verificación del código
     const handleVerifyEmailCode = async (code: string) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para verificar el código
-      console.log('Verificando código:', code, 'para email:', formData.email);
-      
-      // Simulación de verificación
+      // Aquí iría la llamada a tu API para verificar el código y completar el registro
+      console.log('Verificando código y completando registro:', code, 'para email:', formData.email);
+
+      // Simulación de verificación y registro completo
       await new Promise(resolve => setTimeout(resolve, 1500));
-      
+
       // Simular verificación exitosa
-      if (code.length === 6) { 
+      if (code.length === 6) {
         toast({
-          title: "¡Correo verificado!",
-          description: "Ahora completa tu información personal.",
+          title: "¡Registro completado!",
+          description: "Tu cuenta ha sido creada exitosamente.",
         });
-        
-        // EN LUGAR de setCurrentStep('completed');
-        setCurrentStep('complete-register');
-        setShowCompleteRegister(true);
-        
+
+        setCurrentStep('completed');
+
+        // Cerrar todo después de un éxito
+        setTimeout(() => {
+          onClose();
+        }, 2000);
+
       } else {
         throw new Error('Código inválido');
       }
@@ -195,42 +196,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
-  const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
-    setIsSubmitting(true);
-    
-    try {
-      // Aquí irías el registro completo con todos los datos
-      console.log('Datos completos del usuario:', {
-        ...formData, // email, password del formulario inicial
-        ...userData  // datos personales del CompleteRegister
-      });
-      
-      // Simulación de registro completo
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "¡Registro completado!",
-        description: "Tu cuenta ha sido creada exitosamente.",
-      });
-      
-      setCurrentStep('completed');
-      setShowCompleteRegister(false);
-      
-      // Cerrar todo después de un éxito
-      setTimeout(() => {
-        onClose();
-      }, 2000);
-      
-    } catch (error) {
-      toast({
-        title: "Error en el registro",
-        description: "No pudimos completar tu registro. Intenta de nuevo.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // Validar campos básicos
   const validateBasicFields = (): boolean => {
@@ -431,16 +396,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         isSubmitting={isSubmitting}
       />
 
-      {/* AGREGAR el nuevo modal CompleteRegister */}
-      <CompleteRegister
-        isOpen={showCompleteRegister}
-        onSubmit={handleCompleteRegisterSubmit}
-        onClose={() => {
-          setShowCompleteRegister(false);
-          setCurrentStep('initial');
-        }}
-        isSubmitting={isSubmitting}
-      />
     </>
   );
 };
