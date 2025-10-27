@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-type AuthModalState = 'closed' | 'login' | 'signup';
+type AuthModalState = 'closed' | 'openSigUp' | 'openLogin';
 type Theme = 'femenino' | 'masculino';
 
 interface AppState {
   authModal: AuthModalState;
+  openSigUp: () => void;
   openLogin: () => void;
-  openSignup: () => void;
   closeModals: () => void;
 
   theme: Theme;
@@ -24,9 +24,9 @@ export const useAppStore = create<AppState>()(
     (set) => ({
       // Auth State
       authModal: 'closed',
-      openLogin: () => set({ authModal: 'login' }),
-      openSignup: () => set({ authModal: 'signup' }),
+      openSigUp: () => set({ authModal: 'openSigUp' }),
       closeModals: () => set({ authModal: 'closed' }),
+      openLogin: () => set({ authModal: 'openLogin' }),
 
       // Theme State
       theme: 'femenino', // Default theme
@@ -39,9 +39,9 @@ export const useAppStore = create<AppState>()(
       hidePreloader: () => set({ showPreloader: false }),
     }),
     {
-      name: 'app-theme-storage', // name of the item in the storage (must be unique)
+      name: 'app-theme-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({ theme: state.theme }), // Only persist the 'theme' part of the state
+      partialize: (state) => ({ theme: state.theme }),
     }
   )
 );

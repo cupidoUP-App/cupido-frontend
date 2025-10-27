@@ -7,11 +7,17 @@ import { useEffect } from 'react';
 import { ParticlesComponent } from './Particles';
 
 
+
+interface HeroSectionProps {
+  onOpenSignup?: () => void;
+  openLogin?: () => void;
+}
+
 export default function HeroSection() {
-  const { openLogin, openSignup, theme } = useAppStore();
+  const { theme, openSigUp, openLogin } = useAppStore();
   const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
 
-  useEffect(() => {
+  useEffect(() => { 
     const preloadGifs = [manGif, heroPreloaderGif];
     preloadGifs.forEach((gif) => {
       const img = new Image();
@@ -46,7 +52,7 @@ export default function HeroSection() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button
-                onClick={openSignup}
+                onClick={openSigUp}
                 className="btn-hero text-lg px-8 py-4"
               >
                 <Heart className="w-5 h-5 mr-2" />
