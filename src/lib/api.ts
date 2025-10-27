@@ -58,7 +58,10 @@ export const authAPI = {
 
   // Verify email with code
   verifyEmail: async (data: { email: string; code: string }) => {
-    const response = await api.post('/auth/verify-email/', data);
+    const response = await api.post('/auth/verify-email/', {
+      email: data.email,
+      codigo: data.code  // Backend expects 'codigo', not 'code'
+    });
     return response.data;
   },
 
@@ -69,7 +72,7 @@ export const authAPI = {
   },
 
   // Login
-  login: async (data: { email: string; password: string }) => {
+  login: async (data: { email: string; contrasena: string; recaptcha_token: string }) => {
     const response = await api.post('/auth/login/', data);
     return response.data;
   },

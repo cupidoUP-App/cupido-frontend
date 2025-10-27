@@ -5,6 +5,7 @@ import EmailField from './components/EmailField';
 import ReCaptchaModal from './components/ReCaptchaModal';
 import ForgotPasswordModal from './components/ForgotPasswordModal';
 import CompleteRegister, { RegistrationData } from './components/CompleteRegister';
+import { authAPI } from '@/lib/api';
 
 interface LoginFormProps {
   onClose: () => void;
@@ -19,6 +20,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCompleteRegister, setShowCompleteRegister] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
 
   const { toast } = useToast();
   const { openDashboard } = useAppStore();
@@ -46,30 +48,65 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
     setIsSubmitting(true);
     
     try {
-      // Simulación de login - reemplaza con tu API real
-      console.log('Iniciando sesión con:', { email, password });
+      // Validar que tenemos un token de reCAPTCHA válido
+      if (!recaptchaToken || recaptchaToken.trim() === '') {
+        throw new Error('Debes completar la verificación de seguridad');
+      }
 
-      // Aquí iría tu llamada real de login
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Llamar al endpoint de login del backend
+      const response = await authAPI.login({
+        email: email,
+        contrasena: password,
+        recaptcha_token: recaptchaToken,
+      });
 
-      // Simular verificación de perfil completo
-      const isProfileComplete = false; // Cambiar a true si el perfil está completo
+      console.log('Login exitoso:', response);
 
-      if (isProfileComplete) {
+      // Verificar el estado de cuenta del usuario
+      const estadocuenta = response.estadocuenta;
+
+      if (estadocuenta === 'activa') {
         toast({
           title: "¡Bienvenido!",
           description: "Has iniciado sesión correctamente.",
         });
 
         onClose();
-      } else {
+      } else if (estadocuenta === 'incompleta') {
         // Mostrar CompleteRegister si el perfil no está completo
         setShowCompleteRegister(true);
+      } else {
+        // Manejar otros estados de cuenta
+        toast({
+          title: "Cuenta no disponible",
+          description: "Tu cuenta no está disponible para iniciar sesión.",
+          variant: "destructive"
+        });
       }
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error en login:', error);
+
+      let errorMessage = "Verifica tus credenciales e intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.email) {
+        errorMessage = Array.isArray(error.response.data.email)
+          ? error.response.data.email[0]
+          : error.response.data.email;
+      } else if (error.response?.data?.contrasena) {
+        errorMessage = Array.isArray(error.response.data.contrasena)
+          ? error.response.data.contrasena[0]
+          : error.response.data.contrasena;
+      } else if (error.response?.data?.recaptcha_token) {
+        errorMessage = Array.isArray(error.response.data.recaptcha_token)
+          ? error.response.data.recaptcha_token[0]
+          : error.response.data.recaptcha_token;
+      }
+
       toast({
         title: "Error al iniciar sesión",
-        description: "Verifica tus credenciales e intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -80,8 +117,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
   const handleCaptchaVerify = (token: string) => {
     console.log('CAPTCHA verificado:', token);
     setIsCaptchaVerified(true);
+    setRecaptchaToken(token); // Guardar el token real
     setShowCaptcha(false);
-    
+
     // Una vez verificado el CAPTCHA, proceder con el login
     handleSubmit(new Event('submit') as any);
   };
@@ -255,9 +293,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
         isOpen={showCaptcha}
         onClose={() => setShowCaptcha(false)}
         onVerify={handleCaptchaVerify}
-        onExpired={() => setIsCaptchaVerified(false)}
+        onExpired={() => {
+          setIsCaptchaVerified(false);
+          setRecaptchaToken(''); // Limpiar token expirado
+        }}
         onError={() => {
           setIsCaptchaVerified(false);
+          setRecaptchaToken(''); // Limpiar token en caso de error
           toast({
             title: "Error de verificación",
             description: "Hubo un error con la verificación. Intenta de nuevo.",
