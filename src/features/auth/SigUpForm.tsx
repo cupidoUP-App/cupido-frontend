@@ -8,8 +8,8 @@ import TermsAndConditions from './components/TermsAndConditions';
 import ReCaptchaModal from './components/ReCaptchaModal';
 import EmailVerificationModal from './components/EmailVerificationModal';
 import { FormData, FormErrors, validateForm } from './components/Validations';
-import CompleteRegister, { RegistrationData } from './components/CompleteRegister';
 import { useAppStore } from '@/store/appStore';
+import { authAPI } from '@/lib/api';
 
 interface RegistroProps {
   onClose: () => void;
@@ -18,7 +18,7 @@ interface RegistroProps {
 
 
 // Estados para controlar el flujo
-type FormStep = 'initial' | 'captcha' | 'email-verification' | 'complete-register' | 'completed';
+type FormStep = 'initial' | 'captcha' | 'email-verification' | 'completed';
 
 const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     const { openLogin } = useAppStore();
@@ -32,9 +32,9 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   const [currentStep, setCurrentStep] = useState<FormStep>('initial');
   const [showTerms, setShowTerms] = useState(false); // Estado separado para términos
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
-  const [showCompleteRegister, setShowCompleteRegister] = useState(false);
 
   const { toast } = useToast();
 
@@ -78,8 +78,9 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   const handleCaptchaVerify = (token: string) => {
     console.log('CAPTCHA verificado con token:', token);
     setIsCaptchaVerified(true);
+    setRecaptchaToken(token); // Guardar el token real
     setCurrentStep('initial'); // Volver al formulario principal
-    
+
     toast({
       title: "Verificación exitosa",
       description: "Has completado la verificación de seguridad.",
@@ -88,6 +89,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
 
   const handleCaptchaExpired = () => {
     setIsCaptchaVerified(false);
+    setRecaptchaToken(''); // Limpiar el token expirado
     toast({
       title: "Verificación expirada",
       description: "Por favor, completa la verificación de nuevo.",
@@ -101,6 +103,8 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   };
 
   const handleCaptchaError = () => {
+    setIsCaptchaVerified(false);
+    setRecaptchaToken(''); // Limpiar el token en caso de error
     toast({
       title: "Error de verificación",
       description: "Hubo un error con la verificación. Intenta de nuevo.",
@@ -113,24 +117,62 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Manejar envío de código de verificación
   const handleSendVerificationCode = async () => {
     setIsVerifyingEmail(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para enviar el código de verificación
-      console.log('Enviando código de verificación a:', formData.email);
-      
-      // Simulación de envío de código
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Validar que tenemos todos los campos requeridos
+      if (!formData.email || !formData.password || !formData.acceptTerms) {
+        throw new Error('Faltan campos requeridos');
+      }
+
+      // Validar que tenemos un token de reCAPTCHA válido
+      if (!recaptchaToken || recaptchaToken.trim() === '') {
+        throw new Error('Debes completar la verificación de seguridad');
+      }
+
+      // Llamar al endpoint de registro del backend con el token real
+      const response = await authAPI.register({
+        email: formData.email,
+        contrasena: formData.password,
+        recaptcha_token: recaptchaToken,
+        tyc: formData.acceptTerms
+      });
+
+      console.log('Registro exitoso:', response);
+
       toast({
         title: "Código enviado",
         description: "Hemos enviado un código de verificación a tu correo electrónico.",
       });
-      
+
       setCurrentStep('email-verification');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error en registro:', error);
+
+      let errorMessage = "No pudimos enviar el código de verificación. Intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.email) {
+        errorMessage = Array.isArray(error.response.data.email)
+          ? error.response.data.email[0]
+          : error.response.data.email;
+      } else if (error.response?.data?.contrasena) {
+        errorMessage = Array.isArray(error.response.data.contrasena)
+          ? error.response.data.contrasena[0]
+          : error.response.data.contrasena;
+      } else if (error.response?.data?.recaptcha_token) {
+        errorMessage = Array.isArray(error.response.data.recaptcha_token)
+          ? error.response.data.recaptcha_token[0]
+          : error.response.data.recaptcha_token;
+      } else if (error.response?.data?.tyc) {
+        errorMessage = Array.isArray(error.response.data.tyc)
+          ? error.response.data.tyc[0]
+          : error.response.data.tyc;
+      }
+
       toast({
-        title: "Error",
-        description: "No pudimos enviar el código de verificación. Intenta de nuevo.",
+        title: "Error en el registro",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -141,19 +183,29 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Manejar reenvío de código
   const handleResendVerificationCode = async () => {
     try {
-      // Aquí iría la llamada a tu API para reenviar el código
-      console.log('Reenviando código de verificación a:', formData.email);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      // Llamar al endpoint de reenvío de código
+      const response = await authAPI.resendCode({
+        email: formData.email
+      });
+
+      console.log('Código reenviado:', response);
+
       toast({
         title: "Código reenviado",
         description: "Hemos enviado un nuevo código de verificación a tu correo.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error al reenviar código:', error);
+
+      let errorMessage = "No pudimos reenviar el código. Intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      }
+
       toast({
         title: "Error",
-        description: "No pudimos reenviar el código. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     }
@@ -162,32 +214,40 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Manejar verificación del código
     const handleVerifyEmailCode = async (code: string) => {
     setIsSubmitting(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para verificar el código
-      console.log('Verificando código:', code, 'para email:', formData.email);
-      
-      // Simulación de verificación
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Simular verificación exitosa
-      if (code.length === 6) { 
-        toast({
-          title: "¡Correo verificado!",
-          description: "Ahora completa tu información personal.",
-        });
-        
-        // EN LUGAR de setCurrentStep('completed');
-        setCurrentStep('complete-register');
-        setShowCompleteRegister(true);
-        
-      } else {
-        throw new Error('Código inválido');
+      // Llamar al endpoint de verificación de email
+      const response = await authAPI.verifyEmail({
+        email: formData.email,
+        code: code
+      });
+
+      console.log('Verificación exitosa:', response);
+
+      toast({
+        title: "¡Registro completado!",
+        description: "Tu cuenta ha sido creada exitosamente.",
+      });
+
+      setCurrentStep('completed');
+
+      // Cerrar todo después de un éxito
+      setTimeout(() => {
+        onClose();
+      }, 2000);
+
+    } catch (error: any) {
+      console.error('Error en verificación:', error);
+
+      let errorMessage = "El código de verificación es incorrecto. Intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
       }
-    } catch (error) {
+
       toast({
         title: "Código inválido",
-        description: "El código de verificación es incorrecto. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -195,42 +255,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
-  const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
-    setIsSubmitting(true);
-    
-    try {
-      // Aquí irías el registro completo con todos los datos
-      console.log('Datos completos del usuario:', {
-        ...formData, // email, password del formulario inicial
-        ...userData  // datos personales del CompleteRegister
-      });
-      
-      // Simulación de registro completo
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast({
-        title: "¡Registro completado!",
-        description: "Tu cuenta ha sido creada exitosamente.",
-      });
-      
-      setCurrentStep('completed');
-      setShowCompleteRegister(false);
-      
-      // Cerrar todo después de un éxito
-      setTimeout(() => {
-        onClose();
-      }, 2000);
-      
-    } catch (error) {
-      toast({
-        title: "Error en el registro",
-        description: "No pudimos completar tu registro. Intenta de nuevo.",
-        variant: "destructive"
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   // Validar campos básicos
   const validateBasicFields = (): boolean => {
@@ -257,7 +281,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Manejar el clic en el botón Continuar
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (isSubmitting || isVerifyingEmail) return;
 
     // Validar campos básicos
@@ -270,6 +294,25 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
 
     // SEGUNDO CLIC: CAPTCHA ya verificado, enviar código de verificación
+    // Validar que tenemos todos los campos requeridos Y un token de reCAPTCHA válido
+    if (!formData.email || !formData.password || !formData.acceptTerms) {
+      toast({
+        title: "Campos incompletos",
+        description: "Por favor completa todos los campos requeridos.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!recaptchaToken || recaptchaToken.trim() === '') {
+      toast({
+        title: "Verificación requerida",
+        description: "Debes completar la verificación de seguridad antes de continuar.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       await handleSendVerificationCode();
@@ -431,16 +474,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         isSubmitting={isSubmitting}
       />
 
-      {/* AGREGAR el nuevo modal CompleteRegister */}
-      <CompleteRegister
-        isOpen={showCompleteRegister}
-        onSubmit={handleCompleteRegisterSubmit}
-        onClose={() => {
-          setShowCompleteRegister(false);
-          setCurrentStep('initial');
-        }}
-        isSubmitting={isSubmitting}
-      />
     </>
   );
 };

@@ -1,7 +1,6 @@
 // CompleteRegister.tsx - RESPONSIVE
 import React, { useState, useEffect } from 'react';
 import RightSideWithParticles from './RightSideWithParticles';
-import PhoneVerification from './PhoneVerification';
 
 interface CompleteRegisterProps {
   isOpen: boolean;
@@ -41,8 +40,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   });
 
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
-  const [showPhoneVerification, setShowPhoneVerification] = useState(false);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
 
   // Resetear form cuando se abre
   useEffect(() => {
@@ -59,8 +56,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         description: ''
       });
       setErrors({});
-      setShowPhoneVerification(false);
-      setIsPhoneVerified(false);
     }
   }, [isOpen]);
 
@@ -108,37 +103,16 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validateForm()) {
-      // Solo abrir la verificación de teléfono, no cerrar el registro
-      setShowPhoneVerification(true);
+      // Enviar los datos del registro directamente
+      onSubmit(formData);
+      onClose();
     }
-  };
-
-  const handlePhoneVerificationSubmit = (code: string) => {
-    console.log('Código verificado:', code);
-    console.log('Datos del registro:', formData);
-    
-    // Marcar el teléfono como verificado
-    setIsPhoneVerified(true);
-    
-    // Enviar los datos del registro solo después de verificar el teléfono
-    onSubmit(formData);
-    
-    // Cerrar ambos modals después de la verificación exitosa
-    setShowPhoneVerification(false);
-    onClose();
-  };
-
-  const handleBackToRegister = () => {
-    setShowPhoneVerification(false);
   };
 
   const handleCloseCompleteRegister = () => {
-    // Solo permitir cerrar si el teléfono no está verificado
-    if (!isPhoneVerified) {
-      onClose();
-    }
+    onClose();
   };
 
   // Opciones para los selects
@@ -189,18 +163,16 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
             </RightSideWithParticles>
           </div>
 
-          {/* Botón para cerrar - Solo visible si el teléfono no está verificado */}
-          {!isPhoneVerified && (
-            <button
-              onClick={handleCloseCompleteRegister}
-              className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-2 rounded-full hover:bg-rose-300 transition-colors z-30"
-              aria-label="Cerrar"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          )}
+          {/* Botón para cerrar */}
+          <button
+            onClick={handleCloseCompleteRegister}
+            className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-2 rounded-full hover:bg-rose-300 transition-colors z-30"
+            aria-label="Cerrar"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
 
           {/* Contenedor del formulario RESPONSIVE */}
           <div className="w-full max-w-md mx-4 lg:mx-0 lg:ml-10 xl:ml-20 2xl:ml-28 z-20 bg-white/80 lg:bg-transparent rounded-xl lg:rounded-none p-6 lg:p-0">
@@ -243,7 +215,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tu nombre"
-                    disabled={isSubmitting || showPhoneVerification}
+                    disabled={isSubmitting}
                   />
                   {errors.name && (
                     <p className="text-red-500 text-xs mt-1 font-['Poppins']">{errors.name}</p>
@@ -262,7 +234,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       errors.lastName ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tus apellidos"
-                    disabled={isSubmitting || showPhoneVerification}
+                    disabled={isSubmitting}
                   />
                   {errors.lastName && (
                     <p className="text-red-500 text-xs mt-1 font-['Poppins']">{errors.lastName}</p>
@@ -281,7 +253,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                   className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                     errors.gender ? 'border-red-500' : 'border-gray-300'
                   }`}
-                  disabled={isSubmitting || showPhoneVerification}
+                  disabled={isSubmitting}
                 >
                   <option value="">Selecciona</option>
                   {genderOptions.map(option => (
@@ -309,7 +281,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                         errors.birthDate ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      disabled={isSubmitting || showPhoneVerification}
+                      disabled={isSubmitting}
                     >
                       <option value="">DD</option>
                       {days.map(day => (
@@ -326,7 +298,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                         errors.birthDate ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      disabled={isSubmitting || showPhoneVerification}
+                      disabled={isSubmitting}
                     >
                       <option value="">MM</option>
                       {months.map(month => (
@@ -345,7 +317,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                         errors.birthDate ? 'border-red-500' : 'border-gray-300'
                       }`}
-                      disabled={isSubmitting || showPhoneVerification}
+                      disabled={isSubmitting}
                     >
                       <option value="">AAAA</option>
                       {years.map(year => (
@@ -372,7 +344,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                   }`}
                   placeholder="Cuéntanos sobre ti..."
                   rows={3}
-                  disabled={isSubmitting || showPhoneVerification}
+                  disabled={isSubmitting}
                 />
                 {errors.description && (
                   <p className="text-red-500 text-xs mt-1 font-['Poppins']">{errors.description}</p>
@@ -386,37 +358,17 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
               <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting || showPhoneVerification}
+                  disabled={isSubmitting}
                   className="w-full bg-[#E93923] hover:bg-[#d1321f] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2 px-4 rounded-md transition duration-200 text-xs shadow hover:shadow-md font-['Poppins']"
                 >
                   {isSubmitting ? 'Completando...' : 'Continuar'}
                 </button>
               </div>
 
-              {/* Mensaje cuando la verificación está en proceso */}
-              {showPhoneVerification && (
-                <div className="text-center">
-                  <p className="text-green-600 text-xs font-['Poppins']">
-                    ✓ Verificación de teléfono en proceso...
-                  </p>
-                </div>
-              )}
             </form>
           </div>
         </div>
       </div>
-
-      {/* Phone Verification Modal */}
-      <PhoneVerification
-        isOpen={showPhoneVerification}
-        onSubmit={handlePhoneVerificationSubmit}
-        onClose={() => {
-          // No permitir cerrar la verificación sin completarla
-          // Solo permitir volver al registro
-          handleBackToRegister();
-        }}
-        onBack={handleBackToRegister}
-      />
     </>
   );
 };

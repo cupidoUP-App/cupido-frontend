@@ -21,8 +21,8 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
 
   if (!isOpen) return null;
 
-  // Clave de sitio de reCAPTCHA
-  const RECAPTCHA_SITE_KEY = '6LfmDPUrAAAAABB19Xhdup2dEe3IDNBCsC57AE0u';
+  // Clave de sitio de reCAPTCHA desde variables de entorno
+  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LfmDPUrAAAAABB19Xhdup2dEe3IDNBCsC57AE0u';
 
   const handleVerify = (token: string) => {
     console.log('reCAPTCHA token:', token);

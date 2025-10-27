@@ -15,6 +15,7 @@ import ScrollToTopButton from '@/features/home/components/ScrollToTopButton';
 import { useAppStore } from '@/store/appStore';
 import SigUpForm from '@/features/auth/SigUpForm';
 import LoginForm from '@/features/auth/LoginForm';
+import Dashboard from '@/features/dashboard/Dashboard';
 
 const Index = () => {
   const {
@@ -60,6 +61,12 @@ const Index = () => {
     openLogin();
   };
 
+  const handleOpenDashboard = () => {
+    closeModals();
+    // Aquí iría la lógica para abrir el dashboard
+    // Por ahora, solo cerramos los modales
+  };
+
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {showPreloader && <Preloader onComplete={hidePreloader} />}
@@ -90,6 +97,11 @@ const Index = () => {
       {/* ✅ Mostrar SigUp cuando authModal es 'openSigUp' */}
       {authModal === 'openSigUp' && (
         <SigUpForm onClose={handleCloseAuthModal} />
+      )}
+
+      {/* ✅ Mostrar Dashboard cuando authModal es 'dashboard' */}
+      {authModal === 'dashboard' && (
+        <Dashboard />
       )}
 
       <ScrollToTopButton />
