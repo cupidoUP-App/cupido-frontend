@@ -32,13 +32,36 @@ api.interceptors.response.use(
   (response: AxiosResponse) => {
     return response;
   },
-  (error) => {
-    if (error.response?.status === 401) {
-      // Token expired or invalid - clear local storage and redirect to login
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      // You might want to redirect to login page here
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      try {
+        // Intentar refrescar el token
+        const refreshResponse = await authAPI.refreshToken();
+
+        // Guardar nuevo access token
+        localStorage.setItem('access_token', refreshResponse.access);
+
+        // Reintentar la request original con el nuevo token
+        originalRequest.headers.Authorization = `Bearer ${refreshResponse.access}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        // Refresh falló - limpiar tokens y estado
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
+
+        // Importar aquí para evitar dependencias circulares
+        const { useAppStore } = await import('@/store/appStore');
+        useAppStore.getState().logout();
+
+        // Redirigir a login podría hacerse aquí
+        return Promise.reject(refreshError);
+      }
     }
+
     return Promise.reject(error);
   }
 );
@@ -74,6 +97,19 @@ export const authAPI = {
   // Login
   login: async (data: { email: string; contrasena: string; recaptcha_token: string }) => {
     const response = await api.post('/auth/login/', data);
+    return response.data;
+  },
+
+  // Refresh token
+  refreshToken: async () => {
+    const refreshToken = localStorage.getItem('refresh_token');
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
+
+    const response = await api.post('/auth/token/refresh/', {
+      refresh: refreshToken
+    });
     return response.data;
   },
 

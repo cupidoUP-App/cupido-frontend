@@ -22,7 +22,7 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
   if (!isOpen) return null;
 
   // Clave de sitio de reCAPTCHA desde variables de entorno
-  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY || '6LfmDPUrAAAAABB19Xhdup2dEe3IDNBCsC57AE0u';
+  const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
   const handleVerify = (token: string) => {
     console.log('reCAPTCHA token:', token);
@@ -33,6 +33,7 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
 
   const handleExpired = () => {
     console.log('reCAPTCHA expired');
+    setCaptchaError(false); // Limpiar error anterior
     onExpired();
   };
 
@@ -42,13 +43,19 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
     onError();
   };
 
+  const handleClose = () => {
+    // Limpiar estado de error al cerrar
+    setCaptchaError(false);
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 z-[70] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="w-[439px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
         
         {/* Botón para cerrar */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-6 right-6 text-gray-700 hover:text-gray-900 p-2 rounded-full hover:bg-rose-300 transition-colors z-10"
           aria-label="Cerrar verificación"
         >

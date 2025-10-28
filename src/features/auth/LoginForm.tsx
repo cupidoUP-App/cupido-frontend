@@ -7,6 +7,14 @@ import ForgotPasswordModal from './components/modals/ForgotPasswordModal';
 import CompleteRegister, { RegistrationData } from './components/modals/CompleteRegister';
 import { authAPI } from '@/lib/api';
 
+interface User {
+  usuario_id: number;
+  email: string;
+  nombres?: string;
+  apellidos?: string;
+  estadocuenta: string;
+}
+
 interface LoginFormProps {
   onClose: () => void;
   onSwitchToRegister: () => void;
@@ -23,7 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
 
   const { toast } = useToast();
-  const { openDashboard } = useAppStore();
+  const { openDashboard, login, setLoading } = useAppStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,6 +74,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
       const estadocuenta = response.estadocuenta;
 
       if (estadocuenta === 'activa') {
+        // Guardar tokens en localStorage
+        localStorage.setItem('access_token', response.access);
+        localStorage.setItem('refresh_token', response.refresh);
+
+        // Actualizar estado global de autenticación
+        login(response.user);
+
         toast({
           title: "¡Bienvenido!",
           description: "Has iniciado sesión correctamente.",
@@ -134,6 +149,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
 
   const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
     setIsSubmitting(true);
+    setLoading(true);
 
     try {
       // Formatear fecha de nacimiento
@@ -165,6 +181,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
       });
 
       setShowCompleteRegister(false);
+
+      // Guardar tokens después de completar el perfil
+      localStorage.setItem('access_token', response.access);
+      localStorage.setItem('refresh_token', response.refresh);
+
+      // Actualizar estado global de autenticación
+      login(response.user);
 
       // En lugar de cerrar, abrir el dashboard
       setTimeout(() => {
