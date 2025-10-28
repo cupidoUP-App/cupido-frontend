@@ -136,11 +136,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
     setIsSubmitting(true);
 
     try {
-      // Aquí irías el registro completo con todos los datos
-      console.log('Completando registro después de login:', userData);
+      // Formatear fecha de nacimiento
+      const birthDate = `${userData.birthDate.year}-${userData.birthDate.month.padStart(2, '0')}-${userData.birthDate.day.padStart(2, '0')}`;
 
-      // Simulación de registro completo
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Mapear género a ID (asumiendo que el backend espera IDs numéricos)
+      const genderMapping: { [key: string]: number } = {
+        'male': 1,    // Asumiendo que 1 es masculino
+        'female': 2,  // Asumiendo que 2 es femenino
+        'other': 3    // Asumiendo que 3 es otro
+      };
+
+      const genderId = genderMapping[userData.gender] || 1;
+
+      // Llamar al endpoint real del backend
+      const response = await authAPI.updateProfile({
+        nombres: userData.name,
+        apellidos: userData.lastName,
+        genero_id: genderId,
+        fechanacimiento: birthDate,
+        descripcion: userData.description
+      });
+
+      console.log('Perfil actualizado:', response);
 
       toast({
         title: "¡Perfil completado!",
@@ -153,12 +170,40 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
       setTimeout(() => {
         onClose(); // Cerrar el modal de CompleteRegister
         openDashboard(); // Abrir el dashboard
-      }, 2000);
+      }, 1000);
 
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error al completar perfil:', error);
+
+      let errorMessage = "No pudimos completar tu perfil. Intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.nombres) {
+        errorMessage = Array.isArray(error.response.data.nombres)
+          ? error.response.data.nombres[0]
+          : error.response.data.nombres;
+      } else if (error.response?.data?.apellidos) {
+        errorMessage = Array.isArray(error.response.data.apellidos)
+          ? error.response.data.apellidos[0]
+          : error.response.data.apellidos;
+      } else if (error.response?.data?.genero_id) {
+        errorMessage = Array.isArray(error.response.data.genero_id)
+          ? error.response.data.genero_id[0]
+          : error.response.data.genero_id;
+      } else if (error.response?.data?.fechanacimiento) {
+        errorMessage = Array.isArray(error.response.data.fechanacimiento)
+          ? error.response.data.fechanacimiento[0]
+          : error.response.data.fechanacimiento;
+      } else if (error.response?.data?.descripcion) {
+        errorMessage = Array.isArray(error.response.data.descripcion)
+          ? error.response.data.descripcion[0]
+          : error.response.data.descripcion;
+      }
+
       toast({
         title: "Error al completar perfil",
-        description: "No pudimos completar tu perfil. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

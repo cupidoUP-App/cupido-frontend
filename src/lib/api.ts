@@ -120,6 +120,18 @@ export const authAPI = {
     return response.data;
   },
 
+  // Profile update
+  updateProfile: async (data: {
+    nombres: string;
+    apellidos: string;
+    genero_id: number;
+    fechanacimiento: string;
+    descripcion: string;
+  }) => {
+    const response = await api.patch('/auth/profile-update/', data);
+    return response.data;
+  },
+
   // Deactivate account
   deactivateAccount: async () => {
     const response = await api.post('/auth/deactivate/');

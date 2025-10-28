@@ -42,23 +42,38 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
   const renderRecaptcha = React.useCallback(() => {
     if (recaptchaRef.current && window.grecaptcha) {
       try {
-        // Limpiar cualquier widget existente
-        if (recaptchaRef.current.innerHTML) {
-          recaptchaRef.current.innerHTML = '';
-        }
+        // Limpiar completamente el contenedor antes de renderizar
+        if (recaptchaRef.current) {
+          // Resetear cualquier widget existente
+          if (widgetId.current !== null) {
+            try {
+              window.grecaptcha.reset(widgetId.current);
+            } catch (resetError) {
+              console.warn('Error resetting previous reCAPTCHA widget:', resetError);
+            }
+          }
 
-        widgetId.current = window.grecaptcha.render(recaptchaRef.current, {
-          sitekey: siteKey,
-          callback: onVerify,
-          'expired-callback': onExpired,
-          'error-callback': onError,
-          theme: 'light',
-          size: 'normal'
-        });
-        console.log('reCAPTCHA rendered successfully with widget ID:', widgetId.current);
-        setIsLoaded(true);
-        setHasError(false);
-        setIsLoading(false);
+          // Limpiar el HTML del contenedor
+          recaptchaRef.current.innerHTML = '';
+
+          // Pequeño delay para asegurar que el DOM esté limpio
+          setTimeout(() => {
+            if (recaptchaRef.current && window.grecaptcha) {
+              widgetId.current = window.grecaptcha.render(recaptchaRef.current, {
+                sitekey: siteKey,
+                callback: onVerify,
+                'expired-callback': onExpired,
+                'error-callback': onError,
+                theme: 'light',
+                size: 'normal'
+              });
+              console.log('reCAPTCHA rendered successfully with widget ID:', widgetId.current);
+              setIsLoaded(true);
+              setHasError(false);
+              setIsLoading(false);
+            }
+          }, 100);
+        }
       } catch (error) {
         console.error('Error rendering reCAPTCHA:', error);
         handleLoadError();
@@ -153,11 +168,14 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
     return () => {
       if (widgetId.current !== null && window.grecaptcha) {
         try {
+          // Solo resetear, no destruir completamente para evitar problemas de re-renderizado
           window.grecaptcha.reset(widgetId.current);
         } catch (error) {
-          console.error('Error resetting reCAPTCHA on unmount:', error);
+          console.warn('Error resetting reCAPTCHA on unmount:', error);
         }
       }
+      // Limpiar el widget ID pero mantener el contenedor
+      widgetId.current = null;
     };
   }, [siteKey, loadRecaptchaScript, onError]);
 
@@ -168,7 +186,14 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
         console.log('reCAPTCHA reset successfully');
       } catch (error) {
         console.error('Error resetting reCAPTCHA:', error);
+        // Si hay error al resetear, intentar re-renderizar
+        setTimeout(() => {
+          renderRecaptcha();
+        }, 500);
       }
+    } else {
+      // Si no hay widget, intentar renderizar uno nuevo
+      renderRecaptcha();
     }
   };
 
@@ -203,10 +228,11 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
         </div>
       )}
       
-      <div 
-        ref={recaptchaRef} 
-        key={`recaptcha-${loadAttempt}`}
+      <div
+        ref={recaptchaRef}
+        key={`recaptcha-${loadAttempt}-${siteKey}`}
         className={`${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        style={{ minHeight: '78px' }} // Altura mínima para evitar saltos
       />
       
       {hasError && (

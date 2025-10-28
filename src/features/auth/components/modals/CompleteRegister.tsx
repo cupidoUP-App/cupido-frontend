@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import RightSideWithParticles from '../shared/RightSideWithParticles';
 import { authAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
+import { useAppStore } from '@/store/appStore';
 
 interface CompleteRegisterProps {
   isOpen: boolean;
@@ -43,6 +44,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
 
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
   const { toast } = useToast();
+  const { openDashboard } = useAppStore();
 
   // Resetear form cuando se abre
   useEffect(() => {
@@ -104,13 +106,80 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (validateForm()) {
-      // Enviar los datos del registro directamente
-      onSubmit(formData);
+    if (!validateForm()) return;
+
+    try {
+      // Formatear fecha de nacimiento
+      const birthDate = `${formData.birthDate.year}-${formData.birthDate.month.padStart(2, '0')}-${formData.birthDate.day.padStart(2, '0')}`;
+
+      // Mapear género a ID (asumiendo que el backend espera IDs numéricos)
+      const genderMapping: { [key: string]: number } = {
+        'male': 1,    // Asumiendo que 1 es masculino
+        'female': 2,  // Asumiendo que 2 es femenino
+        'other': 3    // Asumiendo que 3 es otro
+      };
+
+      const genderId = genderMapping[formData.gender] || 1;
+
+      // Llamar al endpoint real del backend
+      const response = await authAPI.updateProfile({
+        nombres: formData.name,
+        apellidos: formData.lastName,
+        genero_id: genderId,
+        fechanacimiento: birthDate,
+        descripcion: formData.description
+      });
+
+      console.log('Perfil actualizado:', response);
+
+      toast({
+        title: "¡Perfil completado!",
+        description: "Tu perfil ha sido completado exitosamente.",
+      });
+
+      // Cerrar modal y abrir dashboard
       onClose();
+      setTimeout(() => {
+        openDashboard();
+      }, 1000);
+
+    } catch (error: any) {
+      console.error('Error al completar perfil:', error);
+
+      let errorMessage = "No pudimos completar tu perfil. Intenta de nuevo.";
+
+      if (error.response?.data?.error) {
+        errorMessage = error.response.data.error;
+      } else if (error.response?.data?.nombres) {
+        errorMessage = Array.isArray(error.response.data.nombres)
+          ? error.response.data.nombres[0]
+          : error.response.data.nombres;
+      } else if (error.response?.data?.apellidos) {
+        errorMessage = Array.isArray(error.response.data.apellidos)
+          ? error.response.data.apellidos[0]
+          : error.response.data.apellidos;
+      } else if (error.response?.data?.genero_id) {
+        errorMessage = Array.isArray(error.response.data.genero_id)
+          ? error.response.data.genero_id[0]
+          : error.response.data.genero_id;
+      } else if (error.response?.data?.fechanacimiento) {
+        errorMessage = Array.isArray(error.response.data.fechanacimiento)
+          ? error.response.data.fechanacimiento[0]
+          : error.response.data.fechanacimiento;
+      } else if (error.response?.data?.descripcion) {
+        errorMessage = Array.isArray(error.response.data.descripcion)
+          ? error.response.data.descripcion[0]
+          : error.response.data.descripcion;
+      }
+
+      toast({
+        title: "Error al completar perfil",
+        description: errorMessage,
+        variant: "destructive"
+      });
     }
   };
 
