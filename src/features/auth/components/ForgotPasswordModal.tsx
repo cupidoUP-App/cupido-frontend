@@ -25,6 +25,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [resetToken, setResetToken] = useState('');
 
   const { toast } = useToast();
 
@@ -35,6 +36,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       setEmail('');
       setNewPassword('');
       setConfirmPassword('');
+      setResetToken('');
     }
   }, [isOpen]);
 
@@ -48,24 +50,56 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       return;
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      toast({
+        title: "Correo inválido",
+        description: "Por favor ingresa un correo electrónico válido",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    // Check if it's an institutional email
+    if (!email.endsWith('@unipamplona.edu.co')) {
+      toast({
+        title: "Correo institucional requerido",
+        description: "Debe usar un correo institucional @unipamplona.edu.co",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para enviar código de recuperación
-      console.log('Enviando código de recuperación a:', email);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { authAPI } = await import('@/lib/api');
+      await authAPI.resetPasswordRequest({ email });
+
       toast({
         title: "Código enviado",
         description: "Hemos enviado un código de verificación a tu correo.",
       });
-      
+
       setCurrentStep('verification');
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error sending reset code:', error);
+
+      let errorMessage = "No pudimos enviar el código. Intenta de nuevo.";
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        if (data.email) {
+          errorMessage = data.email[0] || "Error con el correo electrónico.";
+        } else if (data.detail) {
+          errorMessage = data.detail;
+        }
+      }
+
       toast({
         title: "Error",
-        description: "No pudimos enviar el código. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {
@@ -75,19 +109,30 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   const handleResendVerificationCode = async () => {
     try {
-      // Aquí iría la llamada a tu API para reenviar el código
-      console.log('Reenviando código de recuperación a:', email);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { authAPI } = await import('@/lib/api');
+      await authAPI.resetPasswordRequest({ email });
+
       toast({
         title: "Código reenviado",
         description: "Hemos enviado un nuevo código a tu correo.",
       });
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error resending reset code:', error);
+
+      let errorMessage = "No pudimos reenviar el código. Intenta de nuevo.";
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        if (data.email) {
+          errorMessage = data.email[0] || "Error con el correo electrónico.";
+        } else if (data.detail) {
+          errorMessage = data.detail;
+        }
+      }
+
       toast({
         title: "Error",
-        description: "No pudimos reenviar el código. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     }
@@ -95,24 +140,19 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   const handleVerifyCode = async (code: string) => {
     setIsVerifying(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para verificar el código
-      console.log('Verificando código de recuperación:', code);
-      
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Simular verificación exitosa
-      if (code.length === 6) {
-        toast({
-          title: "Código verificado",
-          description: "Ahora puedes crear tu nueva contraseña.",
-        });
-        
-        setCurrentStep('new-password');
-      } else {
-        throw new Error('Código inválido');
-      }
+      // For password reset, we don't need to verify the code separately
+      // The backend will validate the token when we submit the new password
+      // We just store the token for later use
+      setResetToken(code);
+
+      toast({
+        title: "Código verificado",
+        description: "Ahora puedes crear tu nueva contraseña.",
+      });
+
+      setCurrentStep('new-password');
     } catch (error) {
       toast({
         title: "Código inválido",
@@ -144,25 +184,43 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }
 
     setIsSubmitting(true);
-    
+
     try {
-      // Aquí iría la llamada a tu API para resetear la contraseña
-      console.log('Reseteando contraseña para:', email);
-      console.log('Nueva contraseña:', newPassword);
-      
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
+      const { authAPI } = await import('@/lib/api');
+      await authAPI.resetPasswordConfirm({
+        email,
+        token: resetToken,
+        nueva_contrasena: newPassword
+      });
+
       toast({
         title: "¡Contraseña actualizada!",
         description: "Tu contraseña ha sido cambiada exitosamente.",
       });
-      
+
       onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Error resetting password:', error);
+
+      let errorMessage = "No pudimos actualizar tu contraseña. Intenta de nuevo.";
+
+      if (error.response?.data) {
+        const data = error.response.data;
+        if (data.email) {
+          errorMessage = data.email[0] || "Error con el correo electrónico.";
+        } else if (data.token) {
+          errorMessage = data.token[0] || "Token inválido o expirado.";
+        } else if (data.nueva_contrasena) {
+          errorMessage = data.nueva_contrasena[0] || "La contraseña no cumple con los requisitos.";
+        } else if (data.detail) {
+          errorMessage = data.detail;
+        }
+      }
+
       toast({
         title: "Error",
-        description: "No pudimos actualizar tu contraseña. Intenta de nuevo.",
+        description: errorMessage,
         variant: "destructive"
       });
     } finally {

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import SigUpForm from './SigUpForm';
+import ChangePasswordModal from './components/ChangePasswordModal';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultView?: 'login' | 'register';
+  defaultView?: 'login' | 'register' | 'change-password';
 }
 
-type AuthView = 'login' | 'register';
+type AuthView = 'login' | 'register' | 'change-password';
 
 const AuthModal: React.FC<AuthModalProps> = ({ 
   isOpen, 
@@ -27,19 +28,33 @@ const AuthModal: React.FC<AuthModalProps> = ({
     setCurrentView('login');
   };
 
+  const handleSwitchToChangePassword = () => {
+    setCurrentView('change-password');
+  };
+
   return (
     <>
       {currentView === 'login' && (
-        <LoginForm 
-          onClose={onClose} 
+        <LoginForm
+          onClose={onClose}
           onSwitchToRegister={handleSwitchToRegister}
         />
       )}
-      
+
       {currentView === 'register' && (
-        <SigUpForm 
+        <SigUpForm
           onClose={onClose}
           onSwitchToLogin={handleSwitchToLogin} // ✅ AGREGAR esta prop
+        />
+      )}
+
+      {currentView === 'change-password' && (
+        <ChangePasswordModal
+          isOpen={true}
+          onClose={onClose}
+          onSuccess={() => {
+            // Optional: could switch back to login or show success message
+          }}
         />
       )}
     </>

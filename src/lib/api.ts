@@ -97,8 +97,8 @@ export const authAPI = {
 
   // Password change
   changePassword: async (data: {
-    old_password: string;
-    new_password: string;
+    contrasena_actual: string;
+    nueva_contrasena: string;
   }) => {
     const response = await api.post('/auth/password-change/', data);
     return response.data;
@@ -112,8 +112,9 @@ export const authAPI = {
 
   // Password reset confirm
   resetPasswordConfirm: async (data: {
+    email: string;
     token: string;
-    password: string;
+    nueva_contrasena: string;
   }) => {
     const response = await api.post('/auth/password-reset-confirm/', data);
     return response.data;
