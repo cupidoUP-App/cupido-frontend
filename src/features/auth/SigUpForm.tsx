@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import EmailField from './components/EmailField';
-import PasswordField from './components/PasswordField';
-import ConfirmPasswordField from './components/ConfirmPasswordField';
-import TermsCheckbox from './components/TermsCheckbox';
-import TermsAndConditions from './components/TermsAndConditions';
-import ReCaptchaModal from './components/ReCaptchaModal';
-import EmailVerificationModal from './components/EmailVerificationModal';
-import { FormData, FormErrors, validateForm } from './components/Validations';
+import EmailField from './components/forms/EmailField';
+import PasswordField from './components/forms/PasswordField';
+import ConfirmPasswordField from './components/forms/ConfirmPasswordField';
+import TermsCheckbox from './components/shared/TermsCheckbox';
+import TermsAndConditions from './components/modals/TermsAndConditions';
+import ReCaptchaModal from './components/modals/ReCaptchaModal';
+import EmailVerificationModal from './components/modals/EmailVerificationModal';
+import { FormData, FormErrors, validateForm } from './utils/Validations';
 import { useAppStore } from '@/store/appStore';
 import { authAPI } from '@/lib/api';
 

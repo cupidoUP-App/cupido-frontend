@@ -1,4 +1,5 @@
 import React from 'react';
+import EmailRequirements from './EmailRequirements';
 
 interface EmailFieldProps {
   value: string;
@@ -16,11 +17,10 @@ const EmailField: React.FC<EmailFieldProps> = ({ value, onChange }) => {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder="tu.correo@unipamplona.edu.co"
+        maxLength={50}
         className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
       />
-      <p className="text-xs text-gray-500 mt-0.5">
-        Ingresa tu correo institucional
-      </p>
+      <EmailRequirements email={value} />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAppStore } from '@/store/appStore';
 import { useToast } from '@/hooks/use-toast';
+import { authAPI } from '@/lib/api';
 
 const Dashboard: React.FC = () => {
   const { closeModals } = useAppStore();
@@ -25,7 +26,22 @@ const Dashboard: React.FC = () => {
 
         {/* Botón para cerrar */}
         <button
-          onClick={closeModals}
+          onClick={async () => {
+            try {
+              // Call logout endpoint when closing
+              await authAPI.logout();
+
+              toast({
+                title: "Sesión cerrada",
+                description: "Has cerrado sesión exitosamente.",
+              });
+            } catch (error) {
+              console.error('Error al cerrar sesión:', error);
+              // Continue with closing even if logout fails
+            }
+
+            closeModals();
+          }}
           className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
           aria-label="Cerrar dashboard"
         >

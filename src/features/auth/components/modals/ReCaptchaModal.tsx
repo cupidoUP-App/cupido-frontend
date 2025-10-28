@@ -1,6 +1,6 @@
 // ReCaptchaModal.tsx - ACTUALIZADO para manejar mejor los errores
 import React, { useState } from 'react';
-import ReCaptchaV2 from './ReCaptchaV2';
+import ReCaptchaV2 from '../shared/ReCaptchaV2';
 
 interface ReCaptchaModalProps {
   isOpen: boolean;

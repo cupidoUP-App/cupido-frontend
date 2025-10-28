@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAppStore } from '@/store/appStore';
-import EmailField from './components/EmailField';
-import ReCaptchaModal from './components/ReCaptchaModal';
-import ForgotPasswordModal from './components/ForgotPasswordModal';
-import CompleteRegister, { RegistrationData } from './components/CompleteRegister';
+import EmailField from './components/forms/EmailField';
+import ReCaptchaModal from './components/modals/ReCaptchaModal';
+import ForgotPasswordModal from './components/modals/ForgotPasswordModal';
+import CompleteRegister, { RegistrationData } from './components/modals/CompleteRegister';
 import { authAPI } from '@/lib/api';
 
 interface LoginFormProps {
@@ -222,6 +222,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Ingresa tu contraseña"
+                    maxLength={50}
                     className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
                   />
                   

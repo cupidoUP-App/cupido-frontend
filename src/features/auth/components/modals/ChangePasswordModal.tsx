@@ -112,7 +112,13 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
 
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={() => {
+            // Reset form fields when closing
+            setCurrentPassword('');
+            setNewPassword('');
+            setConfirmPassword('');
+            onClose();
+          }}
           className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
           aria-label="Cerrar"
         >

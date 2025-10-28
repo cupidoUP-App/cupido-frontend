@@ -1,9 +1,9 @@
 // ForgotPasswordModal.tsx
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import EmailField from './EmailField';
-import PasswordField from './PasswordField';
-import ConfirmPasswordField from './ConfirmPasswordField';
+import EmailField from '../forms/EmailField';
+import PasswordField from '../forms/PasswordField';
+import ConfirmPasswordField from '../forms/ConfirmPasswordField';
 import EmailVerificationModal from './EmailVerificationModal';
 
 interface ForgotPasswordModalProps {
@@ -237,14 +237,22 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
           
           {/* Botón para cerrar */}
           <button
-            onClick={onClose}
+            onClick={() => {
+              // Reset form fields when closing
+              setCurrentStep('email');
+              setEmail('');
+              setNewPassword('');
+              setConfirmPassword('');
+              setResetToken('');
+              onClose();
+            }}
             className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
             aria-label="Cerrar"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>  
+          </button>
           
           {/* Contenido del modal */}
           <div className="h-full flex flex-col p-5">

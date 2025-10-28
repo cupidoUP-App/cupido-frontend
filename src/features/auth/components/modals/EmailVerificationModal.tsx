@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import backgroundImage from '../../../assets/background_verification.webp';
+import backgroundImage from '../../../../assets/background_verification.webp';
 
 interface EmailVerificationModalProps {
   isOpen: boolean;

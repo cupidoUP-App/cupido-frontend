@@ -1,6 +1,8 @@
 // CompleteRegister.tsx - RESPONSIVE
 import React, { useState, useEffect } from 'react';
-import RightSideWithParticles from './RightSideWithParticles';
+import RightSideWithParticles from '../shared/RightSideWithParticles';
+import { authAPI } from '@/lib/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface CompleteRegisterProps {
   isOpen: boolean;
@@ -40,6 +42,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   });
 
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
+  const { toast } = useToast();
 
   // Resetear form cuando se abre
   useEffect(() => {
@@ -111,7 +114,33 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   };
 
-  const handleCloseCompleteRegister = () => {
+  const handleCloseCompleteRegister = async () => {
+    try {
+      // Call logout endpoint when closing
+      await authAPI.logout();
+
+      toast({
+        title: "Sesión cerrada",
+        description: "Has cerrado sesión exitosamente.",
+      });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      // Continue with closing even if logout fails
+    }
+
+    // Reset form fields when closing
+    setFormData({
+      name: '',
+      lastName: '',
+      gender: '',
+      birthDate: {
+        day: '',
+        month: '',
+        year: ''
+      },
+      description: ''
+    });
+    setErrors({});
     onClose();
   };
 
@@ -215,6 +244,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tu nombre"
+                    maxLength={50}
                     disabled={isSubmitting}
                   />
                   {errors.name && (
@@ -234,6 +264,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       errors.lastName ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Tus apellidos"
+                    maxLength={50}
                     disabled={isSubmitting}
                   />
                   {errors.lastName && (
@@ -344,6 +375,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                   }`}
                   placeholder="Cuéntanos sobre ti..."
                   rows={3}
+                  maxLength={50}
                   disabled={isSubmitting}
                 />
                 {errors.description && (
