@@ -33,7 +33,7 @@
 - **UI**:
   - **shadcn/ui**: Componentes de alta calidad, accesibles y personalizables.
   - **lucide-react**: Pack de iconos limpio y consistente.
-- **Manejo de Estado**:
+- **Manejo de Estado**:      
   - **Zustand**: Estado global centralizado, reactivo y simple.
 - **Formularios**:
   - **React Hook Form + Zod**: Implementación robusta para la gestión de formularios y validación de esquemas en tiempo real.
