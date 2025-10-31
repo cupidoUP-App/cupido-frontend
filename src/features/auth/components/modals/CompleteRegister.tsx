@@ -135,16 +135,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
 
       console.log('Perfil actualizado:', response);
 
-      toast({
-        title: "¡Perfil completado!",
-        description: "Tu perfil ha sido completado exitosamente.",
-      });
-
-      // Cerrar modal y abrir dashboard
-      onClose();
-      setTimeout(() => {
-        openDashboard();
-      }, 1000);
+      // Verificar el estado del usuario después de actualizar el perfil
+      await verifyUserStatusAfterUpdate();
 
     } catch (error: any) {
       console.error('Error al completar perfil:', error);
@@ -183,8 +175,77 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   };
 
+  const verifyUserStatusAfterUpdate = async () => {
+    try {
+      // Obtener datos del usuario usando el endpoint user-get
+      const userData = await authAPI.getUserProfile();
+      
+      console.log('Datos del usuario después de actualizar:', userData);
+      
+      const estado = userData.estado;
+      const shouldCompleteProfile = userData.should_complete_profile;
+      const [showCompleteRegister, setShowCompleteRegister] = useState(false);
+
+      if (estado ===1 && shouldCompleteProfile){
+        toast({
+          title: "idiotas?!",
+          description: "Tu perfil ha sido completado exitosamente.",
+        });
+      }
+      setShowCompleteRegister(true);
+
+
+      if (estado === '2' && !shouldCompleteProfile) {
+        // Perfil completado exitosamente - redirigir al dashboard
+        toast({
+          title: "¡Perfil completado!",
+          description: "Tu perfil ha sido completado exitosamente.",
+        });
+
+        // Cerrar modal y abrir dashboard
+        onClose();
+        setTimeout(() => {
+          openDashboard();
+        }, 1000);
+      } else {
+        // Aún hay campos faltantes
+        toast({
+          title: "Perfil parcialmente completado",
+          description: "Tu perfil aún necesita más información. Revisa los campos requeridos.",
+          variant: "destructive"
+        });
+      }
+    } catch (error: any) {
+      console.error('Error al verificar estado del usuario después de actualizar:', error);
+      
+      toast({
+        title: "Error de verificación",
+        description: "No pudimos verificar el estado de tu perfil. Intenta de nuevo.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleCloseCompleteRegister = async () => {
     try {
+      // Obtener el refresh token antes de hacer logout
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (refreshToken) {
+        try {
+          // Intentar refrescar el token antes del logout
+          console.log('Refrescando token antes del logout...');
+          const refreshResponse = await authAPI.refreshToken();
+          
+          // Actualizar el access token con el nuevo token
+          localStorage.setItem('access_token', refreshResponse.access);
+          console.log('Token refrescado exitosamente');
+        } catch (refreshError) {
+          console.log('No se pudo refrescar el token:', refreshError);
+          // Continuar con el logout aunque falle el refresh
+        }
+      }
+
       // Call logout endpoint when closing
       await authAPI.logout();
 

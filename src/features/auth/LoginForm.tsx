@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { useAppStore } from '@/store/appStore';
+import { authAPI } from '@/lib/api';
+
 import EmailField from './components/forms/EmailField';
 import ReCaptchaModal from './components/modals/ReCaptchaModal';
 import ForgotPasswordModal from './components/modals/ForgotPasswordModal';
 import CompleteRegister, { RegistrationData } from './components/modals/CompleteRegister';
-import { authAPI } from '@/lib/api';
 
 interface User {
   usuario_id: number;
@@ -33,16 +34,28 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
   const { toast } = useToast();
   const { openDashboard, login, setLoading } = useAppStore();
 
+  /** --- Efecto: verificar si el usuario ya está autenticado --- */
+  useEffect(() => {
+    const initCheck = async () => {
+      try {
+        const userData = await checkExistingUserStatus();
+        if (userData) handleUserState(userData);
+      } catch (error) {
+        console.log('Error al verificar estado del usuario al cargar:', error);
+      }
+    };
+    initCheck();
+  }, []);
+
+  /** --- Manejo del envío del formulario --- */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (isSubmitting) return;
 
-    // Validaciones básicas
     if (!email.trim() || !password.trim()) {
       toast({
         title: "Campos incompletos",
-        description: "Por favor completa todos los campos",
+        description: "Por favor completa todos los campos.",
         variant: "destructive"
       });
       return;
@@ -54,91 +67,139 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
     }
 
     setIsSubmitting(true);
-    
     try {
-      // Validar que tenemos un token de reCAPTCHA válido
-      if (!recaptchaToken || recaptchaToken.trim() === '') {
-        throw new Error('Debes completar la verificación de seguridad');
-      }
+      if (!recaptchaToken.trim()) throw new Error('Debes completar la verificación de seguridad.');
 
-      // Llamar al endpoint de login del backend
+      console.log('=== ENVIANDO LOGIN AL BACKEND ===');
+      console.log('Email:', email);
+      console.log('Token CAPTCHA a enviar:', recaptchaToken);
+      console.log('==================================');
+
       const response = await authAPI.login({
-        email: email,
+        email,
         contrasena: password,
         recaptcha_token: recaptchaToken,
       });
 
       console.log('Login exitoso:', response);
 
-      // Verificar el estado de cuenta del usuario
-      const estadocuenta = response.estadocuenta;
+      localStorage.setItem('access_token', response.access);
+      localStorage.setItem('refresh_token', response.refresh);
+      login(response.user);
 
-      if (estadocuenta === 'activa') {
-        // Guardar tokens en localStorage
-        localStorage.setItem('access_token', response.access);
-        localStorage.setItem('refresh_token', response.refresh);
-
-        // Actualizar estado global de autenticación
-        login(response.user);
-
-        toast({
-          title: "¡Bienvenido!",
-          description: "Has iniciado sesión correctamente.",
-        });
-
-        onClose();
-      } else if (estadocuenta === 'incompleta') {
-        // Mostrar CompleteRegister si el perfil no está completo
-        setShowCompleteRegister(true);
-      } else {
-        // Manejar otros estados de cuenta
-        toast({
-          title: "Cuenta no disponible",
-          description: "Tu cuenta no está disponible para iniciar sesión.",
-          variant: "destructive"
-        });
-      }
+      await verifyUserStatusAndRedirect();
     } catch (error: any) {
       console.error('Error en login:', error);
-
-      let errorMessage = "Verifica tus credenciales e intenta de nuevo.";
-
-      if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error.response?.data?.email) {
-        errorMessage = Array.isArray(error.response.data.email)
-          ? error.response.data.email[0]
-          : error.response.data.email;
-      } else if (error.response?.data?.contrasena) {
-        errorMessage = Array.isArray(error.response.data.contrasena)
-          ? error.response.data.contrasena[0]
-          : error.response.data.contrasena;
-      } else if (error.response?.data?.recaptcha_token) {
-        errorMessage = Array.isArray(error.response.data.recaptcha_token)
-          ? error.response.data.recaptcha_token[0]
-          : error.response.data.recaptcha_token;
-      }
-
-      toast({
-        title: "Error al iniciar sesión",
-        description: errorMessage,
-        variant: "destructive"
-      });
+      handleLoginError(error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  /** --- Verifica si ya hay sesión activa --- */
+  const checkExistingUserStatus = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (!token) return null;
+
+      const userData = await authAPI.getUserProfile();
+      console.log('Estado del usuario existente:', userData);
+      return userData;
+    } catch (error) {
+      console.log('Token inválido o expirado:', error);
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      return null;
+    }
+  };
+
+  /** --- Verifica el estado del usuario después del login --- */
+  const verifyUserStatusAndRedirect = async () => {
+    try {
+      const userData = await authAPI.getUserProfile();
+      handleUserState(userData);
+    } catch (error) {
+      console.error('Error al verificar estado del usuario:', error);
+      toast({
+        title: "Error de verificación",
+        description: "No pudimos verificar el estado de tu cuenta.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  /** --- Control del estado del usuario --- */
+  const handleUserState = (userData: any) => {
+    const { estado, should_complete_profile } = userData;
+
+    if ((estado === '1') || should_complete_profile) {
+      toast({
+        title: "Perfil incompleto",
+        description: "Necesitas completar tu perfil para continuar.",
+      });
+      setShowCompleteRegister(true);
+      return;
+    }
+
+    if (estado === 3 && !should_complete_profile) {
+      // lógica para otro componente
+      return;
+    }
+
+    if ((estado === 2 || estado === 0) && !should_complete_profile) {
+      toast({
+        title: "¡Bienvenido!",
+        description: "Has iniciado sesión correctamente.",
+      });
+      onClose();
+      openDashboard();
+      return;
+    }
+
+    /* toast({
+      title: "Cuenta no disponible",
+      description: "Tu cuenta no está disponible para iniciar sesión.",
+      variant: "destructive",
+    }); */
+  };
+
+  /** --- CAPTCHA verificado correctamente --- */
   const handleCaptchaVerify = (token: string) => {
-    console.log('CAPTCHA verificado:', token);
+    console.log('=== LOGIN CAPTCHA VERIFICADO ===');
+    console.log('Token de CAPTCHA:', token);
+    console.log('Longitud del token:', token.length);
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('================================');
+
     setIsCaptchaVerified(true);
-    setRecaptchaToken(token); // Guardar el token real
+    setRecaptchaToken(token);
     setShowCaptcha(false);
 
-    // Una vez verificado el CAPTCHA, proceder con el login
     handleSubmit(new Event('submit') as any);
   };
 
+  /** --- Manejo de error de login --- */
+  const handleLoginError = (error: any) => {
+    let msg = "Verifica tus credenciales e intenta de nuevo.";
+
+    if (error.response?.data) {
+      const data = error.response.data;
+      msg =
+        data.error ||
+        data.email?.[0] ||
+        data.contrasena?.[0] ||
+        data.recaptcha_token?.[0] ||
+        msg;
+    }
+
+    toast({
+      title: "Error al iniciar sesión",
+      description: msg,
+      variant: "destructive",
+    });
+  };
+
+  /** --- Éxito al recuperar contraseña --- */
   const handleForgotPasswordSuccess = () => {
     setShowForgotPassword(false);
     toast({
@@ -147,91 +208,89 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
     });
   };
 
+  /** --- Completar registro (perfil incompleto) --- */
   const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
     setIsSubmitting(true);
     setLoading(true);
 
     try {
-      // Formatear fecha de nacimiento
       const birthDate = `${userData.birthDate.year}-${userData.birthDate.month.padStart(2, '0')}-${userData.birthDate.day.padStart(2, '0')}`;
-
-      // Mapear género a ID (asumiendo que el backend espera IDs numéricos)
-      const genderMapping: { [key: string]: number } = {
-        'male': 1,    // Asumiendo que 1 es masculino
-        'female': 2,  // Asumiendo que 2 es femenino
-        'other': 3    // Asumiendo que 3 es otro
-      };
-
+      const genderMapping: Record<string, number> = { male: 1, female: 2, other: 3 };
       const genderId = genderMapping[userData.gender] || 1;
 
-      // Llamar al endpoint real del backend
       const response = await authAPI.updateProfile({
         nombres: userData.name,
         apellidos: userData.lastName,
         genero_id: genderId,
         fechanacimiento: birthDate,
-        descripcion: userData.description
+        descripcion: userData.description,
       });
 
       console.log('Perfil actualizado:', response);
-
-      toast({
-        title: "¡Perfil completado!",
-        description: "Tu perfil ha sido completado exitosamente.",
-      });
-
-      setShowCompleteRegister(false);
-
-      // Guardar tokens después de completar el perfil
-      localStorage.setItem('access_token', response.access);
-      localStorage.setItem('refresh_token', response.refresh);
-
-      // Actualizar estado global de autenticación
-      login(response.user);
-
-      // En lugar de cerrar, abrir el dashboard
-      setTimeout(() => {
-        onClose(); // Cerrar el modal de CompleteRegister
-        openDashboard(); // Abrir el dashboard
-      }, 1000);
-
+      await verifyUserStatusAfterCompleteRegister();
     } catch (error: any) {
       console.error('Error al completar perfil:', error);
-
-      let errorMessage = "No pudimos completar tu perfil. Intenta de nuevo.";
-
-      if (error.response?.data?.error) {
-        errorMessage = error.response.data.error;
-      } else if (error.response?.data?.nombres) {
-        errorMessage = Array.isArray(error.response.data.nombres)
-          ? error.response.data.nombres[0]
-          : error.response.data.nombres;
-      } else if (error.response?.data?.apellidos) {
-        errorMessage = Array.isArray(error.response.data.apellidos)
-          ? error.response.data.apellidos[0]
-          : error.response.data.apellidos;
-      } else if (error.response?.data?.genero_id) {
-        errorMessage = Array.isArray(error.response.data.genero_id)
-          ? error.response.data.genero_id[0]
-          : error.response.data.genero_id;
-      } else if (error.response?.data?.fechanacimiento) {
-        errorMessage = Array.isArray(error.response.data.fechanacimiento)
-          ? error.response.data.fechanacimiento[0]
-          : error.response.data.fechanacimiento;
-      } else if (error.response?.data?.descripcion) {
-        errorMessage = Array.isArray(error.response.data.descripcion)
-          ? error.response.data.descripcion[0]
-          : error.response.data.descripcion;
-      }
-
-      toast({
-        title: "Error al completar perfil",
-        description: errorMessage,
-        variant: "destructive"
-      });
+      handleProfileError(error);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  /** --- Verifica estado del usuario después de completar registro --- */
+  const verifyUserStatusAfterCompleteRegister = async () => {
+    try {
+      const userData = await authAPI.getUserProfile();
+      console.log('Datos del usuario después de completar registro:', userData);
+
+      const { estado, should_complete_profile } = userData;
+
+      if ((estado === 2 || estado === 3) && !should_complete_profile) {
+        toast({
+          title: "¡Perfil completado!",
+          description: "Tu perfil ha sido completado exitosamente.",
+        });
+
+        setShowCompleteRegister(false);
+        setTimeout(() => {
+          onClose();
+          openDashboard();
+        }, 1000);
+      } else {
+        toast({
+          title: "Perfil parcialmente completado",
+          description: "Aún faltan datos en tu perfil.",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      console.error('Error al verificar estado del usuario después del registro:', error);
+      toast({
+        title: "Error de verificación",
+        description: "No pudimos verificar el estado de tu perfil.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  /** --- Manejo de errores al completar perfil --- */
+  const handleProfileError = (error: any) => {
+    let msg = "No pudimos completar tu perfil. Intenta de nuevo.";
+    if (error.response?.data) {
+      const data = error.response.data;
+      msg =
+        data.error ||
+        data.nombres?.[0] ||
+        data.apellidos?.[0] ||
+        data.genero_id?.[0] ||
+        data.fechanacimiento?.[0] ||
+        data.descripcion?.[0] ||
+        msg;
+    }
+    toast({
+      title: "Error al completar perfil",
+      description: msg,
+      variant: "destructive",
+    });
   };
 
   return (
@@ -364,7 +423,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onClose, onSwitchToRegister }) =>
         onVerify={handleCaptchaVerify}
         onExpired={() => {
           setIsCaptchaVerified(false);
-          setRecaptchaToken(''); // Limpiar token expirado
+          setRecaptchaToken(''); // Limpiar tokezn expirado
         }}
         onError={() => {
           setIsCaptchaVerified(false);

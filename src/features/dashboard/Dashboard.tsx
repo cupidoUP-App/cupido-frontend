@@ -9,6 +9,24 @@ const Dashboard: React.FC = () => {
 
   const handleLogout = async () => {
     try {
+      // Obtener el refresh token antes de hacer logout
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (refreshToken) {
+        try {
+          // Intentar refrescar el token antes del logout para mantener la sesión activa
+          console.log('Refrescando token antes del logout...');
+          const refreshResponse = await authAPI.refreshToken();
+          
+          // Actualizar el access token con el nuevo token
+          localStorage.setItem('access_token', refreshResponse.access);
+          console.log('Token refrescado exitosamente');
+        } catch (refreshError) {
+          console.log('No se pudo refrescar el token:', refreshError);
+          // Continuar con el logout aunque falle el refresh
+        }
+      }
+
       // Llamar al endpoint de logout del backend
       await authAPI.logout();
 

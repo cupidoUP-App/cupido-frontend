@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import SigUpForm from './SigUpForm';
-import ChangePasswordModal from './components/ChangePasswordModal';
+import ChangePasswordModal from './components/modals/ChangePasswordModal';
 
 interface AuthModalProps {
   isOpen: boolean;

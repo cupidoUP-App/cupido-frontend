@@ -41,7 +41,6 @@ api.interceptors.response.use(
       try {
         // Intentar refrescar el token
         const refreshResponse = await authAPI.refreshToken();
-
         // Guardar nuevo access token
         localStorage.setItem('access_token', refreshResponse.access);
 
@@ -106,19 +105,33 @@ export const authAPI = {
     if (!refreshToken) {
       throw new Error('No refresh token available');
     }
-
-    const response = await api.post('/auth/token/refresh/', {
-      refresh: refreshToken
-    });
-    return response.data;
   },
 
-  // Logout
-  logout: async () => {
+
+ 
+  // Logout funcional
+ /*  logout: async () => {
     const response = await api.post('/auth/logout/');
     return response.data;
-  },
+  }, */
 
+  //logout cochino
+  logout: async () => {
+    const refreshToken = localStorage.getItem('refresh_token'); // obtiene token guardado
+    if (!refreshToken) throw new Error('No refresh token available');
+  
+    const response = await api.post('/auth/logout/', {
+      refresh: refreshToken, // enviar en el body
+    });
+  
+    // opcional: limpiar tokens locales
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
+  
+    return response.data;
+  },
+  
+  
   // Logout from all devices
   logoutAll: async () => {
     const response = await api.post('/auth/logout-all/');
@@ -155,7 +168,6 @@ export const authAPI = {
     const response = await api.post('/auth/password-reset-confirm/', data);
     return response.data;
   },
-
   // Profile update
   updateProfile: async (data: {
     nombres: string;
@@ -164,13 +176,19 @@ export const authAPI = {
     fechanacimiento: string;
     descripcion: string;
   }) => {
-    const response = await api.patch('/auth/profile-update/', data);
+    const response = await api.patch('/auth/user-update/', data);
     return response.data;
   },
 
   // Deactivate account
   deactivateAccount: async () => {
     const response = await api.post('/auth/deactivate/');
+    return response.data;
+  },
+
+  // Get user profile data and status
+  getUserProfile: async () => {
+    const response = await api.get('/auth/user-get/');
     return response.data;
   },
 };
