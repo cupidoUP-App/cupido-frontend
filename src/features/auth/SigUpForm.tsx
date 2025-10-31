@@ -241,11 +241,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       });
 
       setCurrentStep('completed');
-
-      // Cerrar todo después de un éxito
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      onClose();
 
     } catch (error: any) {
       console.error('Error en verificación:', error);

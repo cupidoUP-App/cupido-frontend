@@ -184,16 +184,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
       
       const estado = userData.estado;
       const shouldCompleteProfile = userData.should_complete_profile;
-      const [showCompleteRegister, setShowCompleteRegister] = useState(false);
-
-      if (estado ===1 && shouldCompleteProfile){
-        toast({
-          title: "idiotas?!",
-          description: "Tu perfil ha sido completado exitosamente.",
-        });
-      }
-      setShowCompleteRegister(true);
-
 
       if (estado === '2' && !shouldCompleteProfile) {
         // Perfil completado exitosamente - redirigir al dashboard
@@ -227,28 +217,9 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   };
 
   const handleCloseCompleteRegister = async () => {
-    try {
-      // Obtener el refresh token antes de hacer logout
-      const refreshToken = localStorage.getItem('refresh_token');
-      
-      if (refreshToken) {
-        try {
-          // Intentar refrescar el token antes del logout
-          console.log('Refrescando token antes del logout...');
-          const refreshResponse = await authAPI.refreshToken();
-          
-          // Actualizar el access token con el nuevo token
-          localStorage.setItem('access_token', refreshResponse.access);
-          console.log('Token refrescado exitosamente');
-        } catch (refreshError) {
-          console.log('No se pudo refrescar el token:', refreshError);
-          // Continuar con el logout aunque falle el refresh
-        }
-      }
-
-      // Call logout endpoint when closing
+  // Call logout endpoint when closing
       await authAPI.logout();
-
+  try{
       toast({
         title: "Sesión cerrada",
         description: "Has cerrado sesión exitosamente.",
@@ -369,7 +340,15 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                   <input
                     type="text"
                     value={formData.name}
-                    onChange={(e) => handleInputChange('name', e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Permitir solo letras (incluye ñ, tildes y espacios)
+                      const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
+                      // Solo actualiza si pasa la validación o si el campo se está vaciando
+                      if (regex.test(value) || value === "") {
+                        handleInputChange('name', value);
+                      }
+                    }}
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                       errors.name ? 'border-red-500' : 'border-gray-300'
                     }`}
@@ -389,7 +368,17 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                   <input
                     type="text"
                     value={formData.lastName}
-                    onChange={(e) => handleInputChange('lastName', e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      // Permitir solo letras (incluye ñ, tildes y espacios)
+                      const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
+                  
+                      // Solo actualiza si pasa la validación o si el campo se está vaciando
+                      if (regex.test(value) || value === "") {
+                        handleInputChange('lastName', value);
+                      }
+                    }}
+                    //onChange={(e) => handleInputChange('lastName', e.target.value)}
                     className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
                       errors.lastName ? 'border-red-500' : 'border-gray-300'
                     }`}
@@ -499,13 +488,21 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                 </label>
                 <textarea
                   value={formData.description}
-                  onChange={(e) => handleInputChange('description', e.target.value)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    // Permitir solo letras (incluye ñ, tildes y espacios)
+                    const regex = /^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*$/;
+                    // Solo actualiza si pasa la validación o si el campo se está vaciando
+                    if (regex.test(value) || value === "") {
+                      handleInputChange('description', value);
+                    }
+                  }}
                   className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs resize-none ${
                     errors.description ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Cuéntanos sobre ti..."
                   rows={3}
-                  maxLength={50}
+                  maxLength={250}
                   disabled={isSubmitting}
                 />
                 {errors.description && (

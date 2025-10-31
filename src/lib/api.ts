@@ -22,16 +22,12 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle common errors
+// Response interceptor to handle common errors (e.g., expired access token)
 api.interceptors.response.use(
-  (response: AxiosResponse) => {
-    return response;
-  },
+  (response: AxiosResponse) => response,
   async (error) => {
     const originalRequest = error.config;
 
@@ -39,24 +35,29 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Intentar refrescar el token
+        // Refresh token
         const refreshResponse = await authAPI.refreshToken();
-        // Guardar nuevo access token
-        localStorage.setItem('access_token', refreshResponse.access);
+        const newAccessToken = refreshResponse.access;
+        const newRefreshToken = refreshResponse.refresh;
 
-        // Reintentar la request original con el nuevo token
-        originalRequest.headers.Authorization = `Bearer ${refreshResponse.access}`;
+        // Store new tokens
+        localStorage.setItem('access_token', newAccessToken);
+        if (newRefreshToken) {
+          localStorage.setItem('refresh_token', newRefreshToken);
+        }
+
+        // Retry original request with new access token
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // Refresh falló - limpiar tokens y estado
+        // Token refresh failed - clear tokens and logout
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
 
-        // Importar aquí para evitar dependencias circulares
+        // Import dynamically to avoid circular dependencies
         const { useAppStore } = await import('@/store/appStore');
         useAppStore.getState().logout();
 
-        // Redirigir a login podría hacerse aquí
         return Promise.reject(refreshError);
       }
     }
@@ -67,7 +68,6 @@ api.interceptors.response.use(
 
 // API Endpoints
 export const authAPI = {
-  // Register endpoint - sends basic info and receives verification code via email
   register: async (data: {
     email: string;
     contrasena: string;
@@ -78,73 +78,59 @@ export const authAPI = {
     return response.data;
   },
 
-  // Verify email with code
   verifyEmail: async (data: { email: string; code: string }) => {
     const response = await api.post('/auth/verify-email/', {
       email: data.email,
-      codigo: data.code  // Backend expects 'codigo', not 'code'
+      codigo: data.code,
     });
     return response.data;
   },
 
-  // Resend verification code
   resendCode: async (data: { email: string }) => {
     const response = await api.post('/auth/resend-code/', data);
     return response.data;
   },
 
-  // Login
   login: async (data: { email: string; contrasena: string; recaptcha_token: string }) => {
     const response = await api.post('/auth/login/', data);
+    const { access, refresh } = response.data;
+
+    if (access && refresh) {
+      localStorage.setItem('access_token', access);
+      localStorage.setItem('refresh_token', refresh);
+    }
+
     return response.data;
   },
 
-  // Refresh token
-  refreshToken: async () => {
+  logout: async () => {
     const refreshToken = localStorage.getItem('refresh_token');
-    if (!refreshToken) {
-      throw new Error('No refresh token available');
+    if (!refreshToken) throw new Error('No refresh token available');
+
+    try {
+      const response = await api.post('/auth/logout/', { refresh: refreshToken });
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      return response.data;
+    } catch (error) {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      throw error;
     }
   },
 
-
- 
-  // Logout funcional
- /*  logout: async () => {
-    const response = await api.post('/auth/logout/');
-    return response.data;
-  }, */
-
-  //logout cochino
-  logout: async () => {
-    const refreshToken = localStorage.getItem('refresh_token'); // obtiene token guardado
-    if (!refreshToken) throw new Error('No refresh token available');
-  
-    const response = await api.post('/auth/logout/', {
-      refresh: refreshToken, // enviar en el body
-    });
-  
-    // opcional: limpiar tokens locales
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-  
-    return response.data;
-  },
-  
-  
-  // Logout from all devices
   logoutAll: async () => {
     const response = await api.post('/auth/logout-all/');
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
     return response.data;
   },
 
-  // Get session info
   getSession: async () => {
     const response = await api.get('/auth/session/');
     return response.data;
   },
 
-  // Password change
   changePassword: async (data: {
     contrasena_actual: string;
     nueva_contrasena: string;
@@ -153,13 +139,11 @@ export const authAPI = {
     return response.data;
   },
 
-  // Password reset request
   resetPasswordRequest: async (data: { email: string }) => {
     const response = await api.post('/auth/password-reset/', data);
     return response.data;
   },
 
-  // Password reset confirm
   resetPasswordConfirm: async (data: {
     email: string;
     token: string;
@@ -168,7 +152,7 @@ export const authAPI = {
     const response = await api.post('/auth/password-reset-confirm/', data);
     return response.data;
   },
-  // Profile update
+
   updateProfile: async (data: {
     nombres: string;
     apellidos: string;
@@ -180,13 +164,11 @@ export const authAPI = {
     return response.data;
   },
 
-  // Deactivate account
   deactivateAccount: async () => {
     const response = await api.post('/auth/deactivate/');
     return response.data;
   },
 
-  // Get user profile data and status
   getUserProfile: async () => {
     const response = await api.get('/auth/user-get/');
     return response.data;
