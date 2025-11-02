@@ -63,8 +63,7 @@ const Index = () => {
 
   const handleOpenDashboard = () => {
     closeModals();
-    // Aquí iría la lógica para abrir el dashboard
-    // Por ahora, solo cerramos los modales
+    // El dashboard se abre automáticamente cuando authModal es 'dashboard'
   };
 
   return (

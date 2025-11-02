@@ -21,6 +21,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange }) => {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder="Mínimo 8 caracteres"
+          maxLength={50}
           className="w-full px-2.5 py-2 pr-8 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
         />
         <button
