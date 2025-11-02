@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import EmailField from './components/EmailField';
-import PasswordField from './components/PasswordField';
-import ConfirmPasswordField from './components/ConfirmPasswordField';
-import TermsCheckbox from './components/TermsCheckbox';
-import TermsAndConditions from './components/TermsAndConditions';
-import ReCaptchaModal from './components/ReCaptchaModal';
-import EmailVerificationModal from './components/EmailVerificationModal';
-import { FormData, FormErrors, validateForm } from './components/Validations';
+import EmailField from './components/forms/EmailField';
+import PasswordField from './components/forms/PasswordField';
+import ConfirmPasswordField from './components/forms/ConfirmPasswordField';
+import TermsCheckbox from './components/shared/TermsCheckbox';
+import TermsAndConditions from './components/modals/TermsAndConditions';
+import ReCaptchaModal from './components/modals/ReCaptchaModal';
+import EmailVerificationModal from './components/modals/EmailVerificationModal';
+import { FormData, FormErrors, validateForm } from './utils/Validations';
 import { useAppStore } from '@/store/appStore';
 import { authAPI } from '@/lib/api';
 
@@ -76,7 +76,13 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
 
   // Manejar verificación del CAPTCHA
   const handleCaptchaVerify = (token: string) => {
-    console.log('CAPTCHA verificado con token:', token);
+    console.log('=== REGISTRO CAPTCHA VERIFICADO ===');
+    console.log('Token de CAPTCHA:', token);
+    console.log('Longitud del token:', token.length);
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Email del usuario:', formData.email);
+    console.log('===================================');
+    
     setIsCaptchaVerified(true);
     setRecaptchaToken(token); // Guardar el token real
     setCurrentStep('initial'); // Volver al formulario principal
@@ -112,8 +118,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
-  
-
   // Manejar envío de código de verificación
   const handleSendVerificationCode = async () => {
     setIsVerifyingEmail(true);
@@ -130,6 +134,13 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       }
 
       // Llamar al endpoint de registro del backend con el token real
+      console.log('=== ENVIANDO REGISTRO AL BACKEND ===');
+      console.log('Email:', formData.email);
+      console.log('Token CAPTCHA a enviar:', recaptchaToken);
+      console.log('Longitud del token:', recaptchaToken.length);
+      console.log('Términos aceptados:', formData.acceptTerms);
+      console.log('====================================');
+      
       const response = await authAPI.register({
         email: formData.email,
         contrasena: formData.password,
@@ -230,11 +241,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       });
 
       setCurrentStep('completed');
-
-      // Cerrar todo después de un éxito
-      setTimeout(() => {
-        onClose();
-      }, 2000);
+      onClose();
 
     } catch (error: any) {
       console.error('Error en verificación:', error);
