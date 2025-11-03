@@ -11,6 +11,8 @@ const EditProfilePage = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
+  const [degrees, setDegrees] = useState<any[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
   const [formData, setFormData] = useState({
     telefono: "",
     nombres: "",
@@ -53,25 +55,45 @@ const EditProfilePage = () => {
           profile = null;
         }
 
+        // Cargar catálogos en paralelo
+        try {
+          const [degreesRes, locationsRes] = await Promise.all([
+            authAPI.getDegrees(),
+            authAPI.getLocations(),
+          ]);
+          setDegrees(Array.isArray(degreesRes) ? degreesRes : degreesRes?.results || []);
+          setLocations(Array.isArray(locationsRes) ? locationsRes : locationsRes?.results || []);
+        } catch (catalogError) {
+          console.log("No se pudieron cargar catálogos:", catalogError);
+        }
+
+        const programaValue = profile?.programa_academico;
+        const ubicacionValue = profile?.ubicacion;
+
+        const normalizedPhone = (userProfileData.numerotelefono && userProfileData.numerotelefono !== "0000000000")
+          ? userProfileData.numerotelefono
+          : "";
+
         setFormData({
-          telefono: profile?.telefono || userProfileData.numerotelefono || "",
+          telefono: normalizedPhone,
           nombres: userProfileData.nombres || "",
           apellidos: userProfileData.apellidos || "",
           descripcion: userProfileData.descripcion || "",
-          programa_academico: profile?.programa_academico?.id?.toString() || "",
-          ubicacion: profile?.ubicacion?.id?.toString() || "",
+          // Aceptar tanto id plano como objeto con *_id
+          programa_academico: typeof programaValue === 'number' ? String(programaValue) : (programaValue?.programa_id?.toString() || ""),
+          ubicacion: typeof ubicacionValue === 'number' ? String(ubicacionValue) : (ubicacionValue?.ubicacion_id?.toString() || ""),
         });
 
         setHeight(profile?.estatura || 1.5);
         setSelectedInterests(profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : []);
 
         console.log("Datos del formulario preparados:", {
-          telefono: profile?.telefono || userProfileData.numerotelefono || "",
+          telefono: normalizedPhone,
           nombres: userProfileData.nombres || "",
           apellidos: userProfileData.apellidos || "",
           descripcion: userProfileData.descripcion || "",
-          programa_academico: profile?.programa_academico?.id?.toString() || "",
-          ubicacion: profile?.ubicacion?.id?.toString() || "",
+          programa_academico: typeof programaValue === 'number' ? String(programaValue) : (programaValue?.programa_id?.toString() || ""),
+          ubicacion: typeof ubicacionValue === 'number' ? String(ubicacionValue) : (ubicacionValue?.ubicacion_id?.toString() || ""),
           estatura: profile?.estatura || 1.5,
           hobbies: profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
           fechanacimiento: userProfileData.fechanacimiento,
@@ -107,26 +129,23 @@ const EditProfilePage = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Actualizar datos de usuario (solo descripción)
-      if (userProfile && formData.descripcion !== userProfile.descripcion) {
-        console.log("Actualizando descripción del usuario...");
-        console.log("Datos a enviar:", {
-          nombres: userProfile.nombres || "",
-          apellidos: userProfile.apellidos || "",
-          genero_id: userProfile.genero_id || 1,
-          fechanacimiento: userProfile.fechanacimiento || "",
-          descripcion: formData.descripcion,
-          estadocuenta: userProfile.estadocuenta || "0",
-        });
+      // 1) Actualizar datos de usuario: descripción y número de teléfono
+      await authAPI.updateUserProfileDescription({
+        descripcion: formData.descripcion,
+        numerotelefono: formData.telefono,
+      });
 
-        await authAPI.updateUserProfileDescription({
-          descripcion: formData.descripcion,
-        });
+      // Refrescar inmediatamente el teléfono desde backend para reflejarlo en el formulario
+      try {
+        const refreshed = await authAPI.getUserProfile();
+        const refreshedUser = refreshed?.user;
+        setFormData(prev => ({ ...prev, telefono: (refreshedUser?.numerotelefono && refreshedUser.numerotelefono !== "0000000000") ? refreshedUser.numerotelefono : "" }));
+      } catch (e) {
+        console.warn("No se pudo refrescar el usuario tras guardar teléfono", e);
       }
 
-      // Actualizar datos del perfil
+      // 2) Actualizar datos del perfil (usar nombres de FK del backend)
       const profileData = {
-        telefono: formData.telefono,
         programa_academico: formData.programa_academico ? parseInt(formData.programa_academico) : null,
         ubicacion: formData.ubicacion ? parseInt(formData.ubicacion) : null,
         estatura: height,
@@ -236,20 +255,24 @@ const EditProfilePage = () => {
           <select
             value={formData.programa_academico}
             onChange={(e) => handleInputChange('programa_academico', e.target.value)}
-            className="w-full border rounded-md px-3 py-2 mt-1"
+            className="w-full border rounded-md px-3 py-2 mt-1 bg-white"
           >
             <option value="">Selecciona tu programa</option>
-            {/* Add program options here */}
+            {degrees.map((deg: any) => (
+              <option key={deg.programa_id ?? deg.id} value={(deg.programa_id ?? deg.id)}>{deg.descripcion ?? deg.nombre ?? deg.name}</option>
+            ))}
           </select>
 
           <label className="mt-4 block">Ubicación</label>
           <select
             value={formData.ubicacion}
             onChange={(e) => handleInputChange('ubicacion', e.target.value)}
-            className="w-full border rounded-md px-3 py-2 mt-1"
+            className="w-full border rounded-md px-3 py-2 mt-1 bg-white"
           >
             <option value="">Selecciona tu ubicación</option>
-            {/* Add location options here */}
+            {locations.map((loc: any) => (
+              <option key={loc.ubicacion_id ?? loc.id} value={(loc.ubicacion_id ?? loc.id)}>{loc.descripcion ?? loc.nombre ?? loc.name}</option>
+            ))}
           </select>
 
           <label className="mt-4 block">Estatura: {height.toFixed(2)} m</label>

@@ -8,7 +8,6 @@ interface ProfileInfoProps {
   about: string;
   interests: string[];
   programa_academico?: string;
-  telefono?: string;
 }
 
 const iconMap: Record<string, JSX.Element> = {
@@ -25,7 +24,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
   about,
   interests,
   programa_academico,
-  telefono,
 }) => {
   return (
     <div className="text-center md:text-left space-y-4">
@@ -35,7 +33,6 @@ const ProfileInfo: React.FC<ProfileInfoProps> = ({
         <p className="text-base md:text-lg">{age} años</p>
         <p className="text-base md:text-lg">{location}</p>
         {programa_academico && <p className="text-base md:text-lg">{programa_academico}</p>}
-        {telefono && <p className="text-base md:text-lg">{telefono}</p>}
       </div>
 
       <div>

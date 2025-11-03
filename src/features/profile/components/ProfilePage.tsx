@@ -43,21 +43,46 @@ const ProfilePage = () => {
           profile = null;
         }
 
+        // Cargar catálogos por si el backend retorna IDs
+        let degreesCatalog: any[] = [];
+        let locationsCatalog: any[] = [];
+        try {
+          const [degRes, locRes] = await Promise.all([
+            authAPI.getDegrees(),
+            authAPI.getLocations(),
+          ]);
+          degreesCatalog = Array.isArray(degRes) ? degRes : degRes?.results || [];
+          locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
+        } catch {}
+
         // Calculate age from birth date
         const birthDate = new Date(userProfile.fechanacimiento);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear() -
           (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()) ? 1 : 0);
 
+        const programaObj = profile?.programa_academico;
+        const programaId = programaObj?.programa_id ?? programaObj ?? null;
+        const programaDesc = programaObj?.descripcion
+          || degreesCatalog.find((d: any) => (d.programa_id ?? d.id) === programaId)?.descripcion
+          || programaObj?.nombre
+          || "No especificado";
+
+        const ubicacionObj = profile?.ubicacion;
+        const ubicacionId = ubicacionObj?.ubicacion_id ?? ubicacionObj ?? null;
+        const ubicacionDesc = ubicacionObj?.descripcion
+          || locationsCatalog.find((l: any) => (l.ubicacion_id ?? l.id) === ubicacionId)?.descripcion
+          || ubicacionObj?.nombre
+          || "No especificado";
+
         const profileData = {
           name: `${userProfile.nombres} ${userProfile.apellidos}`,
           status: profile.estado || "",
           age: age,
-          location: profile.ubicacion?.nombre || "No especificado",
+          location: ubicacionDesc,
           about: userProfile.descripcion || "Sin descripción",
           interests: profile.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
-          programa_academico: profile.programa_academico?.nombre || "No especificado",
-          telefono: userProfile.numerotelefono || profile.telefono || "",
+          programa_academico: programaDesc,
           images: [
             "/images/profile1.jpg",
             "/images/profile2.jpg",
