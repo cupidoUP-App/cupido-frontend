@@ -176,6 +176,7 @@ export const authAPI = {
 
   updateUserProfileDescription: async (data: {
     descripcion: string;
+    numerotelefono: string;
   }) => {
     const response = await api.patch("/auth/user-update/", data);
     return response.data;
@@ -194,6 +195,19 @@ export const authAPI = {
 
   getProfile: async () => {
     const response = await api.get("/profile/profileManagement/update/");
+    return response.data;
+  },
+
+  // Catalogs
+  getDegrees: async () => {
+    // GET /profile/profileManagement/degrees/
+    const response = await api.get("/profile/profileManagement/degrees/");
+    return response.data;
+  },
+
+  getLocations: async () => {
+    // GET /profile/profileManagement/locations/
+    const response = await api.get("/profile/profileManagement/locations/");
     return response.data;
   },
 
