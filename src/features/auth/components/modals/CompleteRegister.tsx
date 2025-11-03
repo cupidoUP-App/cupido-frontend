@@ -147,7 +147,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
       const genderId = genderMapping[formData.gender] || 1;
 
       // Llamar al endpoint real del backend
-      const response = await authAPI.updateProfile({
+      const response = await authAPI.updateUserProfile({
         nombres: formData.name,
         apellidos: formData.lastName,
         genero_id: genderId,

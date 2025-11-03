@@ -1,17 +1,48 @@
 import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, EffectCoverflow } from "swiper/modules";
 import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface ProfileCarouselProps {
   images: string[];
 }
 
 const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1544005318-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop",
+  ];
+
+  const slides = (images && images.length > 0 ? images : fallbackImages).slice(0, 5);
+
   return (
-    <div className="w-[280px] rounded-2xl overflow-hidden shadow-lg">
-      <Swiper spaceBetween={10} slidesPerView={1} loop={true}>
-        {images.map((img, index) => (
+    <div className="relative w-[340px] md:w-[440px] lg:w-[520px] rounded-2xl overflow-visible">
+      {/* tarjetas apiladas de fondo */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-6 top-6 h-full w-full -rotate-6 rounded-2xl bg-white/60 shadow-xl" />
+        <div className="absolute right-6 -top-4 h-full w-full rotate-3 rounded-2xl bg-white/40 shadow-lg" />
+      </div>
+      <Swiper
+        modules={[Navigation, Pagination, EffectCoverflow]}
+        effect="coverflow"
+        coverflowEffect={{ rotate: 0, stretch: 0, depth: 100, modifier: 1.2, slideShadows: false }}
+        spaceBetween={16}
+        slidesPerView={1}
+        loop={true}
+        navigation
+        pagination={{ clickable: true }}
+        className="h-[460px] md:h-[520px] lg:h-[560px] overflow-hidden rounded-2xl bg-white/70 shadow-2xl backdrop-blur-sm"
+      >
+        {slides.map((img, index) => (
           <SwiperSlide key={index}>
-            <img src={img} alt={`foto-${index}`} className="w-full h-[400px] object-cover" />
+            <img
+              src={img}
+              alt={`foto-${index}`}
+              className="w-full h-[460px] md:h-[520px] lg:h-[560px] object-cover select-none"
+              draggable={false}
+            />
           </SwiperSlide>
         ))}
       </Swiper>

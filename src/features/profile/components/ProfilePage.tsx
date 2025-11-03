@@ -115,24 +115,37 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row justify-center items-center gap-12 bg-[#FFF6F5] px-6 py-10">
-      <ProfileCarousel images={profileData.images} />
+    <div className="relative min-h-screen bg-[#FFF6F5] px-6 py-14 md:py-20">
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#E74C3C]/10 blur-3xl" />
+        <div className="absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-[#E74C3C]/10 blur-3xl" />
+      </div>
 
-      <div className="max-w-md space-y-6">
-        <ProfileInfo {...profileData} />
-        <div className="flex justify-center md:justify-start gap-6 mt-6">
-          <button
-            onClick={handleEditProfile}
-            className="bg-[#E74C3C] text-white px-6 py-2 rounded-lg shadow-md hover:opacity-90"
-          >
-            Editar Perfil
-          </button>
-          <button
-            onClick={handleEditPreferences}
-            className="bg-[#E74C3C] text-white px-6 py-2 rounded-lg shadow-md hover:opacity-90"
-          >
-            Preferencias
-          </button>
+      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-12 lg:gap-20">
+        <div className="flex justify-center md:col-span-5 md:justify-end">
+          <ProfileCarousel images={profileData.images} />
+        </div>
+
+        <div className="w-full md:col-span-7 max-w-2xl rounded-2xl bg-white/70 p-8 shadow-xl backdrop-blur-sm md:p-10">
+          <div className="space-y-6">
+            <ProfileInfo {...profileData} />
+            <div className="mt-8 flex justify-center gap-5 md:justify-start">
+              <button
+                onClick={handleEditProfile}
+                className="bg-[#E74C3C] text-white px-8 py-3 rounded-xl shadow-md hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base"
+                aria-label="Editar perfil"
+              >
+                Editar Perfil
+              </button>
+              <button
+                onClick={handleEditPreferences}
+                className="bg-white text-[#E74C3C] px-8 py-3 rounded-xl shadow-md border border-[#E74C3C]/30 hover:bg-[#E74C3C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base"
+                aria-label="Abrir preferencias"
+              >
+                Preferencias
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
