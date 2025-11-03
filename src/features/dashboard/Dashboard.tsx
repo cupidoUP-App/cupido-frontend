@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { useToast } from "@/hooks/use-toast";
 import { authAPI } from "@/lib/api";
@@ -8,6 +9,7 @@ import FiltersPage from "@/features/filters/components/FiltersPage";
 const Dashboard: React.FC = () => {
   const { closeModals, logout, user } = useAppStore();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [showFilters, setShowFilters] = useState(false);
 
   const handleLogout = async () => {
@@ -37,6 +39,12 @@ const Dashboard: React.FC = () => {
       title: "Filtros guardados",
       description: "Tus preferencias de búsqueda han sido actualizadas.",
     });
+  };
+
+  const handleProfileClick = () => {
+    console.log("Navegando a perfil...");
+    closeModals();
+    navigate('/profile');
   };
 
   return (
@@ -114,10 +122,10 @@ const Dashboard: React.FC = () => {
                   <p className="text-sm text-gray-600">Próximamente</p>
                 </div>
 
-                <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm">
+                <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm cursor-pointer hover:bg-white/90 transition-colors" onClick={handleProfileClick}>
                   <div className="text-2xl mb-2">👤</div>
                   <h3 className="font-semibold text-gray-800">Perfil</h3>
-                  <p className="text-sm text-gray-600">Próximamente</p>
+                  <p className="text-sm text-gray-600">Editar perfil</p>
                 </div>
               </div>
 

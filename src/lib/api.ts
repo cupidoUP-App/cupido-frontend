@@ -37,9 +37,11 @@ api.interceptors.response.use(
 
       try {
         // Refresh token
-        const refreshResponse = await authAPI.refreshToken();
-        const newAccessToken = refreshResponse.access;
-        const newRefreshToken = refreshResponse.refresh;
+        const refreshResponse = await api.post("/auth/token/refresh/", {
+          refresh: localStorage.getItem("refresh_token"),
+        });
+        const newAccessToken = refreshResponse.data.access;
+        const newRefreshToken = refreshResponse.data.refresh;
 
         // Store new tokens
         localStorage.setItem("access_token", newAccessToken);
@@ -160,7 +162,7 @@ export const authAPI = {
     return response.data;
   },
 
-  updateProfile: async (data: {
+  updateUserProfile: async (data: {
     nombres: string;
     apellidos: string;
     genero_id: number;
@@ -172,6 +174,14 @@ export const authAPI = {
     return response.data;
   },
 
+  updateUserProfileDescription: async (data: {
+    descripcion: string;
+  }) => {
+    const response = await api.patch("/auth/user-update/", data);
+    return response.data;
+  },
+
+
   deactivateAccount: async () => {
     const response = await api.post("/auth/deactivate/");
     return response.data;
@@ -179,6 +189,36 @@ export const authAPI = {
 
   getUserProfile: async () => {
     const response = await api.get("/auth/user-get/");
+    return response.data;
+  },
+
+  getProfile: async () => {
+    const response = await api.get("/profile/profileManagement/update/");
+    return response.data;
+  },
+
+  updateProfileData: async (data: any) => {
+    const response = await api.patch("/profile/profileManagement/update/", data);
+    return response.data;
+  },
+
+  getPreferences: async () => {
+    const response = await api.get("/preferences/preferences/");
+    return response.data;
+  },
+
+  updatePreferences: async (data: any) => {
+    const response = await api.post("/preferences/preferences/", data);
+    return response.data;
+  },
+
+  getFilters: async (userId: string) => {
+    const response = await api.get(`/preferences/filters/?usuario=${userId}`);
+    return response.data;
+  },
+
+  updateFilters: async (data: any) => {
+    const response = await api.post("/preferences/filters/", data);
     return response.data;
   },
 
