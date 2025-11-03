@@ -13,6 +13,8 @@ const EditProfilePage = () => {
   const [userProfile, setUserProfile] = useState<any>(null);
   const [degrees, setDegrees] = useState<any[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
+  const [isTelefonoLocked, setIsTelefonoLocked] = useState(false);
+  const [isProgramaLocked, setIsProgramaLocked] = useState(false);
   const [formData, setFormData] = useState({
     telefono: "",
     nombres: "",
@@ -74,15 +76,21 @@ const EditProfilePage = () => {
           ? userProfileData.numerotelefono
           : "";
 
+        const programaAcademicoValue = typeof programaValue === 'number' ? String(programaValue) : (programaValue?.programa_id?.toString() || "");
+
         setFormData({
           telefono: normalizedPhone,
           nombres: userProfileData.nombres || "",
           apellidos: userProfileData.apellidos || "",
           descripcion: userProfileData.descripcion || "",
           // Aceptar tanto id plano como objeto con *_id
-          programa_academico: typeof programaValue === 'number' ? String(programaValue) : (programaValue?.programa_id?.toString() || ""),
+          programa_academico: programaAcademicoValue,
           ubicacion: typeof ubicacionValue === 'number' ? String(ubicacionValue) : (ubicacionValue?.ubicacion_id?.toString() || ""),
         });
+
+        // Establecer estados de bloqueo basados en valores guardados existentes
+        setIsTelefonoLocked(normalizedPhone !== "" && normalizedPhone !== "0000000000");
+        setIsProgramaLocked(programaAcademicoValue !== "");
 
         setHeight(profile?.estatura || 1.5);
         setSelectedInterests(profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : []);
@@ -139,7 +147,13 @@ const EditProfilePage = () => {
       try {
         const refreshed = await authAPI.getUserProfile();
         const refreshedUser = refreshed?.user;
-        setFormData(prev => ({ ...prev, telefono: (refreshedUser?.numerotelefono && refreshedUser.numerotelefono !== "0000000000") ? refreshedUser.numerotelefono : "" }));
+        const refreshedPhone = (refreshedUser?.numerotelefono && refreshedUser.numerotelefono !== "0000000000") ? refreshedUser.numerotelefono : "";
+        setFormData(prev => ({ ...prev, telefono: refreshedPhone }));
+        
+        // Bloquear teléfono si tiene valor después de guardar
+        if (refreshedPhone !== "" && refreshedPhone !== "0000000000") {
+          setIsTelefonoLocked(true);
+        }
       } catch (e) {
         console.warn("No se pudo refrescar el usuario tras guardar teléfono", e);
       }
@@ -154,6 +168,11 @@ const EditProfilePage = () => {
 
       console.log("Guardando datos del perfil:", profileData);
       await authAPI.updateProfileData(profileData);
+
+      // Bloquear programa académico si tiene valor después de guardar
+      if (formData.programa_academico && formData.programa_academico !== "") {
+        setIsProgramaLocked(true);
+      }
 
       toast({
         title: "Éxito",
@@ -211,17 +230,22 @@ const EditProfilePage = () => {
           <label className="text-gray-500">Correo Institucional (No modificable)</label>
           <input
             type="email"
-            value={user?.email || ""}
+            value={userProfile?.email || user?.email || ""}
             className="w-full border rounded-md px-3 py-2 mt-1 bg-gray-100 text-gray-500"
             disabled
           />
 
-          <label className="mt-4 block">Número de Teléfono</label>
+          <label className={`mt-4 block ${isTelefonoLocked ? 'text-gray-500' : ''}`}>
+            Número de Teléfono {isTelefonoLocked && '(No modificable)'}
+          </label>
           <input
             type="text"
             value={formData.telefono}
             onChange={(e) => handleInputChange('telefono', e.target.value)}
-            className="w-full border rounded-md px-3 py-2 mt-1"
+            disabled={isTelefonoLocked}
+            className={`w-full border rounded-md px-3 py-2 mt-1 ${
+              isTelefonoLocked ? 'bg-gray-100 text-gray-500' : ''
+            }`}
           />
 
           <label className="mt-4 block text-gray-500">Nombres (No modificable)</label>
@@ -251,11 +275,16 @@ const EditProfilePage = () => {
         </div>
 
         <div>
-          <label>Programa Académico</label>
+          <label className={isProgramaLocked ? 'text-gray-500' : ''}>
+            Programa Académico {isProgramaLocked && '(No modificable)'}
+          </label>
           <select
             value={formData.programa_academico}
             onChange={(e) => handleInputChange('programa_academico', e.target.value)}
-            className="w-full border rounded-md px-3 py-2 mt-1 bg-white"
+            disabled={isProgramaLocked}
+            className={`w-full border rounded-md px-3 py-2 mt-1 ${
+              isProgramaLocked ? 'bg-gray-100 text-gray-500' : 'bg-white'
+            }`}
           >
             <option value="">Selecciona tu programa</option>
             {degrees.map((deg: any) => (
