@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { useToast } from "@/hooks/use-toast";
 import { authAPI } from "@/lib/api";
-//import FiltersPage from '../filters/components/FiltersPage';
 import FiltersPage from "@/features/filters/components/FiltersPage";
 
 const Dashboard: React.FC = () => {
@@ -52,7 +51,7 @@ const Dashboard: React.FC = () => {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="w-full max-w-4xl h-[80vh] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
           <button
-            onClick={handleLogout}
+            onClick={closeModals}
             className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
             aria-label="Cerrar dashboard"
           >
@@ -74,7 +73,7 @@ const Dashboard: React.FC = () => {
           <div className="h-full flex flex-col p-8">
             <div className="flex justify-center mb-6">
               <img
-                src="src/assets/logo-login.webp"
+                src="/src/assets/logo-login.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
@@ -142,10 +141,8 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* 🔥 MODAL DE FILTROS MODIFICADO - SCROLLABLE Y TRANSPARENTE */}
       {showFilters && (
         <div className="fixed inset-0 z-[60] bg-black/30 backdrop-blur-sm flex items-center justify-center p-4">
-          {/* 🔥 CONTENEDOR PRINCIPAL TRANSPARENTE Y SCROLLABLE */}
           <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden border border-white/20">
             <FiltersPage
               userId={user?.usuario_id?.toString() || ""}

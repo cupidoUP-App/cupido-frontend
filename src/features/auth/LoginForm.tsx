@@ -9,6 +9,7 @@ import CompleteRegister, {
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@/lib/api";
 import PreferencesPage from "@/features/preferences/components/PreferencesPage";
+import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 
 interface User {
   usuario_id: number;
@@ -32,6 +33,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false); // Nuevo estado para el flujo de fotos
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCompleteRegister, setShowCompleteRegister] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string>("");
@@ -59,16 +61,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
       return;
     }
 
-    // DESACTIVADO PARA TESTING: if (!isCaptchaVerified) {
-    //   setShowCaptcha(true);
-    //   return;
-    // }
+    if (!isCaptchaVerified) {
+      setShowCaptcha(true);
+      return;
+    }
 
     // Para testing rápido, simular verificación de CAPTCHA
-    if (!isCaptchaVerified) {
-      setIsCaptchaVerified(true);
-      setRecaptchaToken("test-token-bypass");
-    }
+    // if (!isCaptchaVerified) {
+    //   setIsCaptchaVerified(true);
+    //   setRecaptchaToken("test-token-bypass");
+    // }
 
     setIsSubmitting(true);
     setLoading(true);
@@ -266,9 +268,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
       const userId = response.user_id || response.id || "current-user";
       setCurrentUserId(userId);
 
-      // Cerrar registro y mostrar preferencias
+      // Cerrar registro y mostrar el siguiente paso: preferencias
       setShowCompleteRegister(false);
-      setRegistrationStep(2);
+      setRegistrationStep(2); // Marcar que el siguiente paso es el 2 (preferencias)
       setShowPreferences(true);
     } catch (error: any) {
       console.error("Error al completar perfil:", error);
@@ -310,36 +312,32 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  // ✅ FUNCIÓN CORREGIDA para manejar cuando se completan las preferencias
   const handlePreferencesComplete = async () => {
     try {
-      console.log("Preferencias completadas, continuando al dashboard...");
+      console.log("Preferencias completadas, continuando a la subida de fotos...");
 
+      // 1. Actualizar el estado de la cuenta a 3 (pendiente de fotos)
+      const userProfile = await authAPI.getUserProfile();
+      await authAPI.updateUserProfile({
+        // Se reenvían los datos para no perderlos
+        nombres: userProfile.user.nombres,
+        apellidos: userProfile.user.apellidos,
+        genero_id: userProfile.user.genero_id,
+        fechanacimiento: userProfile.user.fechanacimiento,
+        descripcion: userProfile.user.descripcion,
+        estadocuenta: "3", 
+      });
+
+      // 2. Ocultar modal de preferencias y mostrar el de subida de fotos
       setShowPreferences(false);
+      setRegistrationStep(3); // Marcar que el siguiente paso es el 3 (fotos)
+      setShowPhotoUpload(true);
 
       toast({
-        title: "¡Todo listo!",
-        description: "Tu perfil y preferencias han sido guardados.",
+        title: "¡Preferencias guardadas!",
+        description: "Ahora, sube tus mejores fotos.",
       });
 
-      
-
-      onClose();
-
-      const userProfile = await authAPI.getUserProfile();
-
-      // 3. Actualizar el estado de la cuenta a 0, manteniendo los demás datos
-      await authAPI.updateUserProfile({
-        nombres: userProfile.nombres,
-        apellidos: userProfile.apellidos,
-        genero_id: userProfile.genero_id,
-        fechanacimiento: userProfile.fechanacimiento,
-        descripcion: userProfile.descripcion,
-        estadocuenta: "0",
-      });
-
-      // Ir al dashboard
-      openDashboard();
     } catch (error) {
       console.error("Error al completar preferencias:", error);
       toast({
@@ -550,6 +548,47 @@ const LoginForm: React.FC<LoginFormProps> = ({
         }}
         isSubmitting={isSubmitting}
       />
+
+      {/* Modal de Subida de Fotos */}
+      {showPhotoUpload && (
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full h-full bg-white">
+            <PhotoUploadPage
+              onComplete={async () => {
+                try {
+                  // 1. Actualizar el estado de la cuenta a 0 (completado)
+                  const userProfile = await authAPI.getUserProfile();
+                  await authAPI.updateUserProfile({
+                    nombres: userProfile.user.nombres,
+                    apellidos: userProfile.user.apellidos,
+                    genero_id: userProfile.user.genero_id,
+                    fechanacimiento: userProfile.user.fechanacimiento,
+                    descripcion: userProfile.user.descripcion,
+                    estadocuenta: "0",
+                  });
+
+                  // 2. Cerrar todos los modales y abrir el dashboard
+                  setShowPhotoUpload(false);
+                  onClose();
+                  openDashboard();
+
+                  toast({
+                    title: "¡Felicidades!",
+                    description: "Has completado tu perfil. ¡Bienvenido a Cupido!",
+                  });
+                } catch (error) {
+                  console.error("Error al finalizar el registro:", error);
+                  toast({
+                    title: "Error",
+                    description: "No pudimos finalizar tu registro. Intenta de nuevo.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* ✅ MODAL DE PREFERENCES CORREGIDO - CON PROP onBack */}
       {showPreferences && (

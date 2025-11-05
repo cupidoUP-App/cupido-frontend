@@ -238,4 +238,29 @@ export const authAPI = {
 
 };
 
+export const photoAPI = {
+  getPhotos: async () => {
+    const response = await api.get("/profile/photos/");
+    return response.data;
+  },
+  uploadPhoto: async (file: File) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const response = await api.post("/profile/photos/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+  deletePhoto: async (photoId: number) => {
+    const response = await api.delete(`/profile/photos/${photoId}/`);
+    return response.data;
+  },
+  setPrincipalPhoto: async (photoId: number) => {
+    const response = await api.patch(`/profile/photos/${photoId}/`, { es_principal: true });
+    return response.data;
+  },
+};
+
 export default api;

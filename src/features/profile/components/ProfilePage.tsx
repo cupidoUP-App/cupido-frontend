@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
+import { authAPI, photoAPI } from "@/lib/api";
 import ProfileCarousel from "./ProfileCarousel";
 import ProfileInfo from "./ProfileInfo";
 
@@ -43,17 +43,25 @@ const ProfilePage = () => {
           profile = null;
         }
 
-        // Cargar catálogos por si el backend retorna IDs
+        // Cargar catálogos e imágenes del usuario
         let degreesCatalog: any[] = [];
         let locationsCatalog: any[] = [];
+        let userPhotos: any[] = [];
         try {
-          const [degRes, locRes] = await Promise.all([
+          const [degRes, locRes, photosRes] = await Promise.all([
             authAPI.getDegrees(),
             authAPI.getLocations(),
+            photoAPI.getPhotos(), // <-- LLAMAR A LA API DE FOTOS
           ]);
           degreesCatalog = Array.isArray(degRes) ? degRes : degRes?.results || [];
           locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
-        } catch {}
+          userPhotos = photosRes?.results || []; // <-- EXTRAER DE LA PROPIEDAD 'results'
+        } catch (e) {
+          console.error("Error cargando catálogos o fotos", e);
+        }
+
+        // Construir las URLs de las imágenes
+        const imageUrls = userPhotos.map(photo => photo.imagen).filter(Boolean);
 
         // Calculate age from birth date
         const birthDate = new Date(userProfile.fechanacimiento);
@@ -77,17 +85,13 @@ const ProfilePage = () => {
 
         const profileData = {
           name: `${userProfile.nombres} ${userProfile.apellidos}`,
-          status: profile.estado || "",
+          status: profile?.estado || "",
           age: age,
           location: ubicacionDesc,
           about: userProfile.descripcion || "Sin descripción",
-          interests: profile.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
+          interests: profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
           programa_academico: programaDesc,
-          images: [
-            "/images/profile1.jpg",
-            "/images/profile2.jpg",
-            "/images/profile3.jpg",
-          ],
+          images: imageUrls.length > 0 ? imageUrls : [], // <-- USAR IMÁGENES REALES O ARRAY VACÍO
         };
 
         console.log("Datos del perfil preparados:", profileData);
@@ -148,7 +152,13 @@ const ProfilePage = () => {
 
       <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-12 lg:gap-20">
         <div className="flex justify-center md:col-span-5 md:justify-end">
-          <ProfileCarousel images={profileData.images} />
+          {profileData.images && profileData.images.length > 0 ? (
+            <ProfileCarousel images={profileData.images} />
+          ) : (
+            <div className="w-[340px] md:w-[440px] lg:w-[520px] h-[460px] md:h-[520px] lg:h-[560px] flex items-center justify-center bg-white/70 rounded-2xl shadow-xl">
+              <p className="text-gray-500">No hay imágenes</p>
+            </div>
+          )}
         </div>
 
         <div className="w-full md:col-span-7 max-w-2xl rounded-2xl bg-white/70 p-8 shadow-xl backdrop-blur-sm md:p-10">

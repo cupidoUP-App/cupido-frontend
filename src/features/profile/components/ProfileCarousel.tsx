@@ -9,13 +9,11 @@ interface ProfileCarouselProps {
 }
 
 const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
-  const fallbackImages = [
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1544005318-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
-    "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop",
-  ];
+  if (!images || images.length === 0) {
+    return null; // O un placeholder si se prefiere, pero por ahora nada.
+  }
 
-  const slides = (images && images.length > 0 ? images : fallbackImages).slice(0, 5);
+  const slides = images.slice(0, 5);
 
   return (
     <div className="relative w-[340px] md:w-[440px] lg:w-[520px] rounded-2xl overflow-visible">
