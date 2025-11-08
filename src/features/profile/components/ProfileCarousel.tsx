@@ -1,49 +1,110 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, EffectCoverflow } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ProfileCarouselProps {
   images: string[];
 }
 
 const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
-  if (!images || images.length === 0) {
-    return null; // O un placeholder si se prefiere, pero por ahora nada.
-  }
+  const fallbackImages = [
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1544005318-94ddf0286df2?q=80&w=800&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop",
+  ];
 
-  const slides = images.slice(0, 5);
+  const slides = (images && images.length > 0 ? images : fallbackImages).slice(0, 5);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
+
+  const getImageIndex = (offset: number) => {
+    const index = (currentIndex + offset + slides.length) % slides.length;
+    return index;
+  };
 
   return (
-    <div className="relative w-[340px] md:w-[440px] lg:w-[520px] rounded-2xl overflow-visible">
-      {/* tarjetas apiladas de fondo */}
-      <div className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute left-6 top-6 h-full w-full -rotate-6 rounded-2xl bg-white/60 shadow-xl" />
-        <div className="absolute right-6 -top-4 h-full w-full rotate-3 rounded-2xl bg-white/40 shadow-lg" />
+    <div className="relative w-full max-w-[500px] h-[460px] md:h-[520px] lg:h-[560px] flex items-center justify-center">
+      {/* Imagen izquierda (desvanecida) */}
+      {slides.length > 1 && (
+        <div
+          className="absolute left-0 z-10 w-[45%] h-[85%] rounded-2xl overflow-hidden shadow-xl opacity-30 blur-sm transition-all duration-500 ease-in-out"
+          style={{ transform: 'translateX(-20%) scale(0.85)' }}
+        >
+          <img
+            src={slides[getImageIndex(-1)]}
+            alt="foto-anterior"
+            className="w-full h-full object-cover select-none"
+            draggable={false}
+          />
+        </div>
+      )}
+
+      {/* Imagen principal (centro) */}
+      <div className="relative z-20 w-[75%] md:w-[70%] h-full rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 ease-in-out">
+        <img
+          src={slides[currentIndex]}
+          alt={`foto-principal-${currentIndex}`}
+          className="w-full h-full object-cover select-none"
+          draggable={false}
+        />
+        
+        {/* Controles de navegación */}
+        {slides.length > 1 && (
+          <>
+            <button
+              onClick={goToPrevious}
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110"
+              aria-label="Imagen anterior"
+            >
+              <ChevronLeft size={24} className="text-[#E74C3C]" />
+            </button>
+            <button
+              onClick={goToNext}
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-30 bg-white/90 hover:bg-white rounded-full p-2 shadow-lg transition-all duration-200 hover:scale-110"
+              aria-label="Siguiente imagen"
+            >
+              <ChevronRight size={24} className="text-[#E74C3C]" />
+            </button>
+            
+            {/* Indicadores de puntos */}
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-30 flex gap-2">
+              {slides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`transition-all duration-300 rounded-full ${
+                    index === currentIndex
+                      ? "w-3 h-3 bg-white shadow-lg"
+                      : "w-2.5 h-2.5 bg-white/50 hover:bg-white/75"
+                  }`}
+                  aria-label={`Ir a imagen ${index + 1}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </div>
-      <Swiper
-        modules={[Navigation, Pagination, EffectCoverflow]}
-        effect="coverflow"
-        coverflowEffect={{ rotate: 0, stretch: 0, depth: 100, modifier: 1.2, slideShadows: false }}
-        spaceBetween={16}
-        slidesPerView={1}
-        loop={true}
-        navigation
-        pagination={{ clickable: true }}
-        className="h-[460px] md:h-[520px] lg:h-[560px] overflow-hidden rounded-2xl bg-white/70 shadow-2xl backdrop-blur-sm"
-      >
-        {slides.map((img, index) => (
-          <SwiperSlide key={index}>
-            <img
-              src={img}
-              alt={`foto-${index}`}
-              className="w-full h-[460px] md:h-[520px] lg:h-[560px] object-cover select-none"
-              draggable={false}
-            />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+
+      {/* Imagen derecha (desvanecida) */}
+      {slides.length > 1 && (
+        <div
+          className="absolute right-0 z-10 w-[45%] h-[85%] rounded-2xl overflow-hidden shadow-xl opacity-30 blur-sm transition-all duration-500 ease-in-out"
+          style={{ transform: 'translateX(20%) scale(0.85)' }}
+        >
+          <img
+            src={slides[getImageIndex(1)]}
+            alt="foto-siguiente"
+            className="w-full h-full object-cover select-none"
+            draggable={false}
+          />
+        </div>
+      )}
     </div>
   );
 };

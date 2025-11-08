@@ -61,16 +61,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
       return;
     }
 
-    if (!isCaptchaVerified) {
+    /* if (!isCaptchaVerified) {
       setShowCaptcha(true);
       return;
-    }
+    }*/
 
     // Para testing rápido, simular verificación de CAPTCHA
-    // if (!isCaptchaVerified) {
-    //   setIsCaptchaVerified(true);
-    //   setRecaptchaToken("test-token-bypass");
-    // }
+     if (!isCaptchaVerified) {
+       setIsCaptchaVerified(true);
+       setRecaptchaToken("test-token-bypass");
+    }
 
     setIsSubmitting(true);
     setLoading(true);
@@ -157,7 +157,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
             variant: "destructive",
           });
         }
-      } else if (estadocuenta === "0") {
+      } 
+      else if (estadocuenta === "0") {
         // Estado 0: Cuenta activa - Ir al dashboard
         console.log("Redirigiendo a Dashboard - Estado 0");
         login(response.user);
@@ -167,6 +168,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
         });
         onClose();
         openDashboard();
+      } else if (estadocuenta === "3") {
+        toast({
+          title: "Elige tus mejores fotos!",
+          description: "Tu cuenta no aun no esta completa para iniciar sesión.",
+          variant: "destructive",
+        });
+        setShowPhotoUpload(true);
       } else {
         console.log("Estado de cuenta desconocido:", estadocuenta);
         toast({
@@ -327,7 +335,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         descripcion: userProfile.user.descripcion,
         estadocuenta: "3", 
       });
-
+      console.log('testeo de guardado de informacion');
       // 2. Ocultar modal de preferencias y mostrar el de subida de fotos
       setShowPreferences(false);
       setRegistrationStep(3); // Marcar que el siguiente paso es el 3 (fotos)

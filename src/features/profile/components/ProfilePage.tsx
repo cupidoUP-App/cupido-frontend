@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@/store/appStore";
 import { useToast } from "@/hooks/use-toast";
-import { authAPI, photoAPI } from "@/lib/api";
+import { authAPI } from "@/lib/api";
 import ProfileCarousel from "./ProfileCarousel";
 import ProfileInfo from "./ProfileInfo";
 
@@ -43,25 +43,17 @@ const ProfilePage = () => {
           profile = null;
         }
 
-        // Cargar catálogos e imágenes del usuario
+        // Cargar catálogos por si el backend retorna IDs
         let degreesCatalog: any[] = [];
         let locationsCatalog: any[] = [];
-        let userPhotos: any[] = [];
         try {
-          const [degRes, locRes, photosRes] = await Promise.all([
+          const [degRes, locRes] = await Promise.all([
             authAPI.getDegrees(),
             authAPI.getLocations(),
-            photoAPI.getPhotos(), // <-- LLAMAR A LA API DE FOTOS
           ]);
           degreesCatalog = Array.isArray(degRes) ? degRes : degRes?.results || [];
           locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
-          userPhotos = photosRes?.results || []; // <-- EXTRAER DE LA PROPIEDAD 'results'
-        } catch (e) {
-          console.error("Error cargando catálogos o fotos", e);
-        }
-
-        // Construir las URLs de las imágenes
-        const imageUrls = userPhotos.map(photo => photo.imagen).filter(Boolean);
+        } catch {}
 
         // Calculate age from birth date
         const birthDate = new Date(userProfile.fechanacimiento);
@@ -85,13 +77,18 @@ const ProfilePage = () => {
 
         const profileData = {
           name: `${userProfile.nombres} ${userProfile.apellidos}`,
-          status: profile?.estado || "",
+          status: profile.estado || "",
           age: age,
           location: ubicacionDesc,
           about: userProfile.descripcion || "Sin descripción",
-          interests: profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
+          interests: profile.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
           programa_academico: programaDesc,
-          images: imageUrls.length > 0 ? imageUrls : [], // <-- USAR IMÁGENES REALES O ARRAY VACÍO
+          estatura: profile.estatura || undefined,
+          images: [
+            "/images/profile1.jpg",
+            "/images/profile2.jpg",
+            "/images/profile3.jpg",
+          ],
         };
 
         console.log("Datos del perfil preparados:", profileData);
@@ -144,41 +141,42 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#FFF6F5] px-6 py-14 md:py-20">
+    <div className="relative min-h-screen bg-[#FFF6F5] px-4 sm:px-6 py-8 sm:py-12 md:py-16 lg:py-20 flex items-center justify-center">
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#E74C3C]/10 blur-3xl" />
         <div className="absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-[#E74C3C]/10 blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#E74C3C]/5 blur-3xl" />
       </div>
 
-      <div className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-12 md:grid-cols-12 lg:gap-20">
-        <div className="flex justify-center md:col-span-5 md:justify-end">
-          {profileData.images && profileData.images.length > 0 ? (
-            <ProfileCarousel images={profileData.images} />
-          ) : (
-            <div className="w-[340px] md:w-[440px] lg:w-[520px] h-[460px] md:h-[520px] lg:h-[560px] flex items-center justify-center bg-white/70 rounded-2xl shadow-xl">
-              <p className="text-gray-500">No hay imágenes</p>
-            </div>
-          )}
+      <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 xl:gap-16">
+        {/* Imágenes - Izquierda */}
+        <div className="flex justify-center lg:col-span-5 lg:justify-end order-2 lg:order-1">
+          <ProfileCarousel images={profileData.images} />
         </div>
 
-        <div className="w-full md:col-span-7 max-w-2xl rounded-2xl bg-white/70 p-8 shadow-xl backdrop-blur-sm md:p-10">
-          <div className="space-y-6">
-            <ProfileInfo {...profileData} />
-            <div className="mt-8 flex justify-center gap-5 md:justify-start">
-              <button
-                onClick={handleEditProfile}
-                className="bg-[#E74C3C] text-white px-8 py-3 rounded-xl shadow-md hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base"
-                aria-label="Editar perfil"
-              >
-                Editar Perfil
-              </button>
-              <button
-                onClick={handleEditPreferences}
-                className="bg-white text-[#E74C3C] px-8 py-3 rounded-xl shadow-md border border-[#E74C3C]/30 hover:bg-[#E74C3C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base"
-                aria-label="Abrir preferencias"
-              >
-                Preferencias
-              </button>
+        {/* Información del perfil - Derecha */}
+        <div className="w-full lg:col-span-7 order-1 lg:order-2">
+          <div className="rounded-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl border border-white/50">
+            <div className="space-y-8">
+              <ProfileInfo {...profileData} />
+              
+              {/* Botones de acción */}
+              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 border-t border-gray-200/50">
+                <button
+                  onClick={handleEditProfile}
+                  className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base font-semibold"
+                  aria-label="Editar perfil"
+                >
+                  Editar Perfil
+                </button>
+                <button
+                  onClick={handleEditPreferences}
+                  className="bg-white text-[#E74C3C] px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-[#E74C3C]/30 hover:bg-[#E74C3C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base font-semibold"
+                  aria-label="Abrir preferencias"
+                >
+                  Preferencias
+                </button>
+              </div>
             </div>
           </div>
         </div>
