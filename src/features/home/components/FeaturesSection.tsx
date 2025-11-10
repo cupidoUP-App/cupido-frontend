@@ -76,7 +76,7 @@ export default function FeaturesSection() {
         </div>
 
         {/* 
-        🔒 Sección de estadísticas ocultada temporalmente
+        🔒 Sección de estadísticas ocultada temporalmente..
         <div className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-8">
           {[
             { value: '500+', label: 'jóvenes activos' },
