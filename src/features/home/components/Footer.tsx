@@ -90,7 +90,6 @@ export default function Footer() {
             <div className="flex items-center space-x-6 text-sm text-background/60">
               <span>Ingeniería de Software II</span>
               <span>•</span>
-              <span>Universidad de Pamplona</span>
             </div>
           </div>
         </div>
