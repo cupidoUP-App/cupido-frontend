@@ -109,10 +109,12 @@ export default {
         "slide-in-left": "slide-in-left 0.8s ease-out",
         "slide-in-right": "slide-in-right 0.8s ease-out"
       },
+
       fontFamily: {
-        sans: ['Manrope', 'Inter', 'system-ui', 'sans-serif'],
-        display: ['Prata', 'Inter', 'system-ui', 'sans-serif'],
+        sans: ['Poppins', 'system-ui', 'sans-serif'], // Para texto general
+        display: ['Poppins', 'system-ui', 'sans-serif'], // Para títulos
       },
+
       fontSize: {
         'display-xl': ['clamp(3rem, 5vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
         'display-lg': ['clamp(2.5rem, 4vw, 3rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
