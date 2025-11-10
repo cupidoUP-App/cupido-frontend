@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './ThemeToggle';
 import { useAppStore } from '@/store/appStore';
@@ -33,7 +33,7 @@ interface HeaderProps {
 
 export function Header({ onThemeChange }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme,openSigUp, openLogin } = useAppStore();
+  const { theme, openSigUp, openLogin, isAuthenticated, user, logout } = useAppStore();
   const scrolled = useScroll();
 
     // Agrega console.log para debug
@@ -74,21 +74,43 @@ export function Header({ onThemeChange }: HeaderProps) {
           </nav>
           <div className="hidden lg:flex items-center space-x-4">
             <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={openLogin}
-              className="text-foreground"
-            >
-              Ingresar
-            </Button>
-            <Button
-              onClick={openSigUp}
-              size="sm"
-              className="btn-hero px-6"
-            >
-              Crear cuenta
-            </Button>
+            {isAuthenticated ? (
+              <>
+                <div className="flex items-center space-x-2 text-foreground">
+                  <User className="h-4 w-4" />
+                  <span className="text-sm font-medium">
+                    {user?.nombres || user?.email}
+                  </span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={logout}
+                  className="text-foreground"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Salir
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={openLogin}
+                  className="text-foreground"
+                >
+                  Ingresar
+                </Button>
+                <Button
+                  onClick={openSigUp}
+                  size="sm"
+                  className="btn-hero px-6"
+                >
+                  Crear cuenta
+                </Button>
+              </>
+            )}
           </div>
           <button
             className="lg:hidden p-2"
@@ -115,19 +137,40 @@ export function Header({ onThemeChange }: HeaderProps) {
                 <div className="flex justify-center pb-2">
                   <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
                 </div>
-                <Button
-                  variant="outline"
-                  onClick={() => { openLogin(); setIsMenuOpen(false); }}
-                  className="justify-start text-foreground"
-                >
-                  Ingresar
-                </Button>
-                <Button
-                  onClick={() => { openSigUp(); setIsMenuOpen(false); }}
-                  className="btn-hero justify-start"
-                >
-                  Crear cuenta
-                </Button>
+                {isAuthenticated ? (
+                  <>
+                    <div className="flex items-center space-x-2 text-foreground px-3 py-2">
+                      <User className="h-4 w-4" />
+                      <span className="text-sm font-medium">
+                        {user?.nombres || user?.email}
+                      </span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      onClick={() => { logout(); setIsMenuOpen(false); }}
+                      className="justify-start text-foreground"
+                    >
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Salir
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline"
+                      onClick={() => { openLogin(); setIsMenuOpen(false); }}
+                      className="justify-start text-foreground"
+                    >
+                      Ingresar
+                    </Button>
+                    <Button
+                      onClick={() => { openSigUp(); setIsMenuOpen(false); }}
+                      className="btn-hero justify-start"
+                    >
+                      Crear cuenta
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>

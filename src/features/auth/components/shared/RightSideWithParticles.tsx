@@ -1,5 +1,5 @@
 import React from 'react';
-import { ParticlesComponent } from '../../home/components/Particles';
+import { ParticlesComponent } from '../../../home/components/Particles';
 
 interface RightSideWithParticlesProps {
   children?: React.ReactNode;
