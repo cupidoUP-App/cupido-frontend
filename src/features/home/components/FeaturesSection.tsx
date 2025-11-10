@@ -43,7 +43,7 @@ export default function FeaturesSection() {
             </span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Cada característica pensada para crear conexiones auténticas en el ambiente universitario
+            Cada característica pensada para crear conexiones auténticas en el ambiente universitario.
           </p>
         </div>
 
