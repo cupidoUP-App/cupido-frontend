@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 // API Configuration
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
+  import.meta.env.VITE_API_BASE_URL;
 
 // Create axios instance with default config
 const api: AxiosInstance = axios.create({
