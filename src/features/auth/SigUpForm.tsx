@@ -295,16 +295,16 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     if (!validateBasicFields()) return;
 
     // DESACTIVADO PARA TESTING: PRIMER CLIC: Mostrar CAPTCHA si no está verificado
-    // if (!isCaptchaVerified) {
-    //   setCurrentStep('captcha');
-    //   return;
-    // }
+     if (!isCaptchaVerified) {
+       setCurrentStep('captcha');
+       return;
+     }
 
     // Para testing rápido, simular verificación de CAPTCHA
-    if (!isCaptchaVerified) {
+    /*if (!isCaptchaVerified) {
       setIsCaptchaVerified(true);
       setRecaptchaToken("test-token-bypass");
-    }
+    }*/
 
     // SEGUNDO CLIC: CAPTCHA ya verificado, enviar código de verificación
     // Validar que tenemos todos los campos requeridos Y un token de reCAPTCHA válido
