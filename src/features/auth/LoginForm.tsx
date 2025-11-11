@@ -61,16 +61,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
       return;
     }
 
-    /* if (!isCaptchaVerified) {
+     if (!isCaptchaVerified) {
       setShowCaptcha(true);
       return;
-    }*/
+    }
 
     // Para testing rápido, simular verificación de CAPTCHA
-     if (!isCaptchaVerified) {
+     /*if (!isCaptchaVerified) {
        setIsCaptchaVerified(true);
        setRecaptchaToken("test-token-bypass");
-    }
+    }*/
 
     setIsSubmitting(true);
     setLoading(true);
