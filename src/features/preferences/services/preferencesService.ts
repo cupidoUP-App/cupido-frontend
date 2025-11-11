@@ -15,7 +15,7 @@ export interface UserPreferences {
   }
   
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL
+  import.meta.env.VITE_API_BASE_URL;
   
   export const preferencesService = {
     async savePreferences(userId: string, preferences: Omit<UserPreferences, 'id' | 'fecha_creacion'>) {
