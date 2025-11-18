@@ -1,0 +1,315 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Feminine Theme (default) */
+  :root,
+  [data-theme="femenino"] {
+    --background: 15 59% 88%;         /* #F2D6CD - soft pink */
+    --foreground: 0 10% 23%;          /* #403535 - dark text */
+
+    /* Card and surface colors */
+    --card: 14 52% 88%;
+    --card-foreground: 0 10% 23%;
+
+    --popover: 14 52% 88%;
+    --popover-foreground: 0 10% 23%;
+
+    /* Primary brand colors */
+    --primary: 5 55% 50%;            /* #BF4A3F - warm red */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary with muted elegance */
+    --secondary: 14 7% 52%;           /* #8C7D7B - muted brown */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Neutral grays */
+    --muted: 14 7% 52%;              /* #8C7D7B */
+    --muted-foreground: 0 10% 23%;
+
+    /* Accent for highlights and CTAs */
+    --accent: 5 56% 67%;            /* #D9857E - light coral */
+    --accent-foreground: 0 0% 100%;
+
+    /* Hero section background */
+    --hero-bg: 15 59% 88%;          /* Matches background */
+
+    /* Status colors */
+    --destructive: 0 72% 49%;         /* #D92D20 */
+    --destructive-foreground: 0 0% 100%;
+
+    /* Interactive elements */
+    --border: 14 7% 52%;
+    --input: 14 7% 52%;
+    --ring: 5 55% 50%;
+
+    --radius: 0.75rem;
+    --card-border-radius: 1.5rem; /* More rounded */
+
+    /* Gradient definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(5 55% 50%), hsl(5 56% 67%));
+    --gradient-hero: linear-gradient(135deg, hsl(5 55% 50% / 0.1), hsl(5 56% 67% / 0.1));
+    --gradient-card: linear-gradient(145deg, hsl(14 52% 92%), hsl(14 52% 85%));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px hsl(5 55% 50% / 0.1);
+    --shadow-glow: 0 0 40px hsl(5 55% 50% / 0.25);
+    --shadow-card: 0 8px 32px hsl(0 10% 23% / 0.08);
+    
+    /* Animation timings */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Masculine Theme */
+  [data-theme="masculino"] {
+    --background: 26 45% 89%;         /* #EBE0D0 - light cream */
+    --foreground: 30 43% 16%;         /* #3A2B1B - very dark brown */
+
+    /* Card and surface colors */
+    --card: 26 45% 92%;               /* Lighter cream for cards */
+    --card-foreground: 30 43% 16%;
+
+    --popover: 26 45% 92%;
+    --popover-foreground: 30 43% 16%;
+
+    /* Primary brand colors */
+    --primary: 193 34% 30%;           /* #325048 - dark teal */
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary */
+    --secondary: 35 30% 11%;          /* #1F1A14 - dark brown */
+    --secondary-foreground: 0 0% 100%;
+
+    /* Neutral/muted */
+    --muted: 23 57% 66%;              /* #D4B899 - beige/tan */
+    --muted-foreground: 30 43% 16%;
+
+    /* Accent */
+    --accent: 23 57% 66%;             /* #D4B899 - beige/tan for accents */
+    --accent-foreground: 30 43% 16%;
+
+    /* Hero section background - REQUIRED GREEN */
+    --hero-bg: 120 14% 50%;           /* #6D916D - sage green */
+
+    /* Status colors */
+    --destructive: 0 72% 49%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 145 63% 42%;
+    --warning: 32 95% 51%;
+
+    /* Interactive elements */
+    --border: 35 30% 25%;             /* Darker border */
+    --input: 35 30% 25%;
+    --ring: 193 34% 30%;              /* Matches primary */
+
+    --radius: 0.75rem;
+    --card-border-radius: 0.75rem; /* Less rounded */
+
+    /* Gradient definitions */
+    --gradient-primary: linear-gradient(135deg, hsl(193 50% 40%), hsl(193 34% 30%));
+    --gradient-hero: linear-gradient(135deg, hsl(120 14% 50% / 0.3), hsl(120 14% 45% / 0.2));
+    --gradient-card: linear-gradient(145deg, hsl(26 45% 94%), hsl(26 45% 88%));
+    
+    /* Shadows */
+    --shadow-soft: 0 4px 20px hsl(193 34% 30% / 0.15);
+    --shadow-glow: 0 0 40px hsl(193 34% 30% / 0.3);
+    --shadow-card: 0 8px 32px hsl(30 43% 16% / 0.1);
+    
+    /* Animation timings */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+
+  /* Dark mode support (optional future enhancement) */
+  .dark {
+    --background: 30 43% 12%;
+    --foreground: 26 45% 92%;
+    --hero-bg: 120 14% 35%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html,
+  body {
+    height: 100%;
+    overflow-y: auto;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased cursor-default;
+    font-feature-settings: "cv03", "cv04", "cv11";
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  button, a {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  /* Hero button with gradient shine effect */
+  .btn-hero {
+    @apply relative overflow-hidden text-primary-foreground font-semibold;
+    @apply px-8 py-4 rounded-2xl shadow-lg transition-all duration-300;
+    @apply hover:scale-105 hover:shadow-glow focus:scale-105 focus:shadow-glow;
+    background: var(--gradient-primary);
+  }
+  
+  .btn-hero::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
+    @apply translate-x-[-100%] skew-x-12 transition-transform duration-700;
+  }
+  
+  .btn-hero:hover::before {
+    @apply translate-x-[100%];
+  }
+
+  .btn-hero svg {
+    @apply transition-transform duration-300;
+  }
+
+  .btn-hero:hover svg {
+    @apply scale-110;
+  }
+
+  .btn-hero::after {
+    content: '';
+    @apply absolute inset-0 rounded-2xl;
+    @apply bg-white/30 opacity-0 scale-0 transition-all duration-300 ease-out;
+  }
+
+  .btn-hero:active::after {
+    @apply scale-100 opacity-100;
+  }
+
+  /* Secondary outline button */
+  .btn-outline {
+    @apply border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .text-gradient-primary {
+    background-image: var(--gradient-primary);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  /* Floating card with gradient background */
+  .card-floating {
+    @apply relative bg-white/80 backdrop-blur-md border-transparent rounded-[var(--card-border-radius)];
+    @apply shadow-card transition-all duration-300;
+    @apply hover:shadow-glow hover:-translate-y-1;
+  }
+
+  .card-floating::before {
+    content: '';
+    @apply absolute -inset-px rounded-[var(--card-border-radius)] -z-10;
+    @apply bg-gradient-to-br from-white/50 to-white/20;
+  }
+  
+  /* Feature card with hover effects */
+  .feature-card {
+    @apply card-floating p-8 text-center cursor-pointer;
+  }
+
+  @layer components {
+    .perspective {
+      perspective: 1200px;
+    }
+
+    .transform-style-preserve-3d {
+      transform-style: preserve-3d;
+    }
+
+    .backface-hidden {
+      backface-visibility: hidden;
+    }
+
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+
+    .flip-transition {
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.3, 1.4);
+      transform-origin: center;
+    }
+  }
+  
+  .feature-card:hover .feature-icon {
+    @apply scale-110 text-primary;
+  }
+
+
+
+  
+  /* Modal backdrop */
+  .modal-backdrop {
+    @apply fixed inset-0 bg-black/50 backdrop-blur-sm z-50;
+    @apply flex items-center justify-center p-4;
+  }
+  
+  /* Animated loader */
+  .preloader {
+    @apply fixed inset-0 bg-background z-[100] flex items-center justify-center;
+    animation: fadeOut 0.6s ease-in-out 3s forwards;
+  }
+  
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  
+  @keyframes fadeOutShrink {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.8); }
+  }
+  
+  .animate-fade-out-shrink {
+    animation: fadeOutShrink 0.5s ease-out forwards;
+  }
+  
+  /* Pulse animation for floating GIF */
+  .pulse-gentle {
+    animation: pulseGentle 3s ease-in-out infinite;
+  }
+  
+  @keyframes pulseGentle {
+    0%, 100% { opacity: 0.8; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.05); } 
+  }
+  
+  /* Typing animation */
+  .typing-animation {
+    @apply border-r-2 border-primary;
+    animation: typing 3s steps(40) 1s both, blink 1s ease-in-out infinite;
+  }
+  
+  @keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+  }
+  
+  @keyframes blink {
+    50% { border-color: transparent; }
+  }
+
+  /* Theme Transition Overlay Animations */
+  .animate-fade-in-out {
+    animation: fadeInOut 0.6s ease-in-out forwards;
+  }
+
+  @keyframes fadeInOut {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+}
