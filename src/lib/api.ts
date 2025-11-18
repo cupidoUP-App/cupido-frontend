@@ -2,7 +2,7 @@ import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 // API Configuration
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api/v1";
+  import.meta.env.VITE_API_BASE_URL;
 
 // Create axios instance with default config
 const api: AxiosInstance = axios.create({
@@ -37,9 +37,11 @@ api.interceptors.response.use(
 
       try {
         // Refresh token
-        const refreshResponse = await authAPI.refreshToken();
-        const newAccessToken = refreshResponse.access;
-        const newRefreshToken = refreshResponse.refresh;
+        const refreshResponse = await api.post("/auth/token/refresh/", {
+          refresh: localStorage.getItem("refresh_token"),
+        });
+        const newAccessToken = refreshResponse.data.access;
+        const newRefreshToken = refreshResponse.data.refresh;
 
         // Store new tokens
         localStorage.setItem("access_token", newAccessToken);
@@ -160,13 +162,21 @@ export const authAPI = {
     return response.data;
   },
 
-  updateProfile: async (data: {
+  updateUserProfile: async (data: {
     nombres: string;
     apellidos: string;
     genero_id: number;
     fechanacimiento: string;
     descripcion: string;
     estadocuenta: string;
+  }) => {
+    const response = await api.patch("/auth/user-update/", data);
+    return response.data;
+  },
+
+  updateUserProfileDescription: async (data: {
+    descripcion: string;
+    numerotelefono: string;
   }) => {
     const response = await api.patch("/auth/user-update/", data);
     return response.data;
@@ -182,6 +192,82 @@ export const authAPI = {
     return response.data;
   },
 
+  getProfile: async () => {
+    const response = await api.get("/profile/profileManagement/update/");
+    return response.data;
+  },
+
+  // Catalogs
+  getDegrees: async () => {
+    // GET /profile/profileManagement/degrees/
+    const response = await api.get("/profile/profileManagement/degrees/");
+    return response.data;
+  },
+
+  getLocations: async () => {
+    // GET /profile/profileManagement/locations/
+    const response = await api.get("/profile/profileManagement/locations/");
+    return response.data;
+  },
+
+  updateProfileData: async (data: any) => {
+    const response = await api.patch("/profile/profileManagement/update/", data);
+    return response.data;
+  },
+
+  // 🔥 NUEVA FUNCIÓN: Actualizar perfil con preferencias
+  updateProfileWithPreferences: async (preferencesId: number) => {
+    const response = await api.patch("/profile/profileManagement/update/", {
+      preferencias: preferencesId
+    });
+    return response.data;
+  },
+
+  getPreferences: async () => {
+    const response = await api.get("/preferences/preferences/");
+    return response.data;
+  },
+
+  updatePreferences: async (data: any) => {
+    const response = await api.post("/preferences/preferences/", data);
+    return response.data;
+  },
+
+  getFilters: async (userId: string) => {
+    const response = await api.get(`/preferences/filters/?usuario=${userId}`);
+    return response.data;
+  },
+
+  updateFilters: async (data: any) => {
+    const response = await api.post("/preferences/filters/", data);
+    return response.data;
+  },
+
+};
+
+export const photoAPI = {
+  getPhotos: async () => {
+    const response = await api.get("/profile/photos/");
+    return response.data;
+  },
+  uploadPhoto: async (file: File) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const response = await api.post("/profile/photos/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+  deletePhoto: async (photoId: number) => {
+    const response = await api.delete(`/profile/photos/${photoId}/`);
+    return response.data;
+  },
+  setPrincipalPhoto: async (photoId: number) => {
+    const response = await api.patch(`/profile/photos/${photoId}/`, { es_principal: true });
+    return response.data;
+  },
 };
 
 export default api;

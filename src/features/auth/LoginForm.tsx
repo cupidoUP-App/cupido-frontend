@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from "@/store/appStore";
 import EmailField from "./components/forms/EmailField";
+import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
 import ForgotPasswordModal from "./components/modals/ForgotPasswordModal";
 import CompleteRegister, {
@@ -9,6 +10,7 @@ import CompleteRegister, {
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@/lib/api";
 import PreferencesPage from "@/features/preferences/components/PreferencesPage";
+import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 
 interface User {
   usuario_id: number;
@@ -32,6 +34,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCompleteRegister, setShowCompleteRegister] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string>("");
@@ -89,19 +92,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
       console.log("Estado de cuenta recibido:", estadocuenta);
 
       if (estadocuenta === "1") {
-        // Estado 1: Necesita completar registro
-        // console.log("Mostrando CompleteRegister - Estado 1");
         setRegistrationStep(1);
         setShowCompleteRegister(true);
       } else if (estadocuenta === "2") {
         console.log("Mostrando Preferences - Estado 2");
 
         try {
-          // Hacer una llamada adicional para obtener los datos del usuario
           const userData = await authAPI.getUserProfile();
           console.log("Datos del usuario obtenidos:", userData);
 
-          // OBTENER EL ID DE FORMA CORRECTA - revisar todas las posibilidades
           const realUserId =
             userData.id ||
             userData.usuario_id ||
@@ -124,14 +123,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
             localStorage.setItem("current_user_id", realUserId.toString());
             setRegistrationStep(2);
             setShowPreferences(true);
-            //onClose();
 
             toast({
               title: "¡Bienvenido de nuevo!",
               description: "Completa tus preferencias para continuar.",
             });
           } else {
-            // Si no encontramos el ID, mostrar todos los datos para debuggear
             console.error(
               "No se pudo encontrar el ID del usuario. Datos completos:",
               {
@@ -150,7 +147,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
           });
         }
       } else if (estadocuenta === "0") {
-        // Estado 0: Cuenta activa - Ir al dashboard
         console.log("Redirigiendo a Dashboard - Estado 0");
         login(response.user);
         toast({
@@ -159,6 +155,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
         });
         onClose();
         openDashboard();
+      } else if (estadocuenta === "3") {
+        toast({
+          title: "Elige tus mejores fotos!",
+          description: "Tu cuenta no aun no esta completa para iniciar sesión.",
+          variant: "destructive",
+        });
+        setShowPhotoUpload(true);
       } else {
         console.log("Estado de cuenta desconocido:", estadocuenta);
         toast({
@@ -240,8 +243,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       const genderId = genderMapping[userData.gender] || 1;
 
-      // Llamar al endpoint real del backend
-      const response = await authAPI.updateProfile({
+      const response = await authAPI.updateUserProfile({
         nombres: userData.name,
         apellidos: userData.lastName,
         genero_id: genderId,
@@ -260,7 +262,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
       const userId = response.user_id || response.id || "current-user";
       setCurrentUserId(userId);
 
-      // Cerrar registro y mostrar preferencias
       setShowCompleteRegister(false);
       setRegistrationStep(2);
       setShowPreferences(true);
@@ -304,36 +305,29 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  // ✅ FUNCIÓN CORREGIDA para manejar cuando se completan las preferencias
   const handlePreferencesComplete = async () => {
     try {
-      console.log("Preferencias completadas, continuando al dashboard...");
-
-      setShowPreferences(false);
-
-      toast({
-        title: "¡Todo listo!",
-        description: "Tu perfil y preferencias han sido guardados.",
-      });
-
-      
-
-      onClose();
+      console.log("Preferencias completadas, continuando a la subida de fotos...");
 
       const userProfile = await authAPI.getUserProfile();
+      await authAPI.updateUserProfile({
+        nombres: userProfile.user.nombres,
+        apellidos: userProfile.user.apellidos,
+        genero_id: userProfile.user.genero_id,
+        fechanacimiento: userProfile.user.fechanacimiento,
+        descripcion: userProfile.user.descripcion,
+        estadocuenta: "3", 
+      });
+      
+      setShowPreferences(false);
+      setRegistrationStep(3);
+      setShowPhotoUpload(true);
 
-      // 3. Actualizar el estado de la cuenta a 0, manteniendo los demás datos
-      await authAPI.updateProfile({
-        nombres: userProfile.nombres,
-        apellidos: userProfile.apellidos,
-        genero_id: userProfile.genero_id,
-        fechanacimiento: userProfile.fechanacimiento,
-        descripcion: userProfile.descripcion,
-        estadocuenta: "0",
+      toast({
+        title: "¡Preferencias guardadas!",
+        description: "Ahora, sube tus mejores fotos.",
       });
 
-      // Ir al dashboard
-      openDashboard();
     } catch (error) {
       console.error("Error al completar preferencias:", error);
       toast({
@@ -343,23 +337,22 @@ const LoginForm: React.FC<LoginFormProps> = ({
       });
     }
   };
+
   const handleBackFromPreferences = () => {
     if (registrationStep === 2) {
-      // Si venimos de complete register (estado 1), volver allí
       setShowPreferences(false);
       setRegistrationStep(1);
       setShowCompleteRegister(true);
     } else {
-      // Si no, cerrar todo
       setShowPreferences(false);
       onClose();
     }
   };
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="w-[439px] h-[680px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
-          {/* Botón para cerrar */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
@@ -380,9 +373,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </svg>
           </button>
 
-          {/* Contenido del formulario */}
           <div className="h-full flex flex-col p-5">
-            {/* Logo centrado en la parte superior */}
             <div className="flex justify-center mb-4">
               <img
                 src="src/assets/logo-login.webp"
@@ -391,7 +382,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
               />
             </div>
 
-            {/* Header */}
             <div className="mb-6 text-center">
               <div className="text-black text-2xl font-normal font-['Poppins']">
                 Bienvenido a{" "}
@@ -403,7 +393,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
               </div>
             </div>
 
-            {/* Formulario */}
             <form
               onSubmit={handleSubmit}
               className="flex-1 flex flex-col justify-between"
@@ -411,30 +400,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
               <div className="space-y-4">
                 <EmailField value={email} onChange={setEmail} />
 
-                <div className="w-full">
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Ingresa tu contraseña"
-                    maxLength={50}
-                    className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
-                  />
-
-                  {/* Enlace para recuperar contraseña */}
-                  <div className="text-right mt-1">
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(true)}
-                      className="text-[#E93923] hover:text-[#d1321f] text-xs underline"
-                    >
-                      ¿Olvidaste tu contraseña?
-                    </button>
-                  </div>
-                </div>
+                {/* ✅ Usando el componente PasswordField importado */}
+                <PasswordField
+                  value={password}
+                  onChange={setPassword}
+                />
 
                 {/* Indicador de estado del CAPTCHA */}
                 <div className="mb-4">
@@ -538,21 +508,59 @@ const LoginForm: React.FC<LoginFormProps> = ({
           setShowCompleteRegister(false);
         }}
         onComplete={() => {
-          // Cuando se completa el registro, mostrar preferencias
           setShowCompleteRegister(false);
           setShowPreferences(true);
         }}
         isSubmitting={isSubmitting}
       />
 
-      {/* ✅ MODAL DE PREFERENCES CORREGIDO - CON PROP onBack */}
+      {/* Modal de Subida de Fotos */}
+      {showPhotoUpload && (
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full h-full bg-white">
+            <PhotoUploadPage
+              onComplete={async () => {
+                try {
+                  const userProfile = await authAPI.getUserProfile();
+                  await authAPI.updateUserProfile({
+                    nombres: userProfile.user.nombres,
+                    apellidos: userProfile.user.apellidos,
+                    genero_id: userProfile.user.genero_id,
+                    fechanacimiento: userProfile.user.fechanacimiento,
+                    descripcion: userProfile.user.descripcion,
+                    estadocuenta: "0",
+                  });
+
+                  setShowPhotoUpload(false);
+                  onClose();
+                  openDashboard();
+
+                  toast({
+                    title: "¡Felicidades!",
+                    description: "Has completado tu perfil. ¡Bienvenido a Cupido!",
+                  });
+                } catch (error) {
+                  console.error("Error al finalizar el registro:", error);
+                  toast({
+                    title: "Error",
+                    description: "No pudimos finalizar tu registro. Intenta de nuevo.",
+                    variant: "destructive",
+                  });
+                }
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Preferences */}
       {showPreferences && (
         <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full h-full bg-white">
             <PreferencesPage
               userId={currentUserId}
               onComplete={handlePreferencesComplete}
-              onBack={handleBackFromPreferences} // 🔥 Pasar la función de retroceso
+              onBack={handleBackFromPreferences}
             />
           </div>
         </div>

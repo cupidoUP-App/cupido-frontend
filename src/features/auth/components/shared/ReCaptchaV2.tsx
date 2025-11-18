@@ -1,5 +1,5 @@
-// ReCaptchaV2.tsx - VERSIÓN MEJORADA
-import React, { useEffect, useRef, useState } from 'react';
+// ReCaptchaV2.tsx - VERSIÓN CON LOGS DETALLADOS
+import React, { useEffect, useRef, useState } from "react";
 
 declare global {
   interface Window {
@@ -29,7 +29,7 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
   onVerify,
   onExpired,
   onError,
-  siteKey
+  siteKey,
 }) => {
   const recaptchaRef = useRef<HTMLDivElement>(null);
   const widgetId = useRef<number | null>(null);
@@ -38,179 +38,190 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
   const [hasError, setHasError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Función para renderizar reCAPTCHA
+  const logState = (msg: string) => {
+    console.log(`[ReCAPTCHA DEBUG] ${msg}`, {
+      loadAttempt,
+      isLoaded,
+      hasError,
+      isLoading,
+      siteKey,
+      widgetId: widgetId.current,
+    });
+  };
+
   const renderRecaptcha = React.useCallback(() => {
+    console.group("[ReCAPTCHA DEBUG] renderRecaptcha()");
+    logState("Intentando renderizar reCAPTCHA...");
+
     if (recaptchaRef.current && window.grecaptcha) {
       try {
-        // Limpiar completamente el contenedor antes de renderizar
-        if (recaptchaRef.current) {
-          // Resetear cualquier widget existente
-          if (widgetId.current !== null) {
-            try {
-              window.grecaptcha.reset(widgetId.current);
-            } catch (resetError) {
-              console.warn('Error resetting previous reCAPTCHA widget:', resetError);
-            }
-          }
-
-          // Limpiar el HTML del contenedor
-          recaptchaRef.current.innerHTML = '';
-
-          // Pequeño delay para asegurar que el DOM esté limpio
-          setTimeout(() => {
-            if (recaptchaRef.current && window.grecaptcha) {
-              widgetId.current = window.grecaptcha.render(recaptchaRef.current, {
-                sitekey: siteKey,
-                callback: onVerify,
-                'expired-callback': onExpired,
-                'error-callback': onError,
-                theme: 'light',
-                size: 'normal'
-              });
-              console.log('reCAPTCHA rendered successfully with widget ID:', widgetId.current);
-              setIsLoaded(true);
-              setHasError(false);
-              setIsLoading(false);
-            }
-          }, 100);
+        if (widgetId.current !== null) {
+          console.log("[ReCAPTCHA DEBUG] Reset widget existente:", widgetId.current);
+          window.grecaptcha.reset(widgetId.current);
         }
+
+        recaptchaRef.current.innerHTML = "";
+        console.log("[ReCAPTCHA DEBUG] Contenedor HTML limpiado.");
+
+        setTimeout(() => {
+          console.log("[ReCAPTCHA DEBUG] Renderizando nuevo widget...");
+          widgetId.current = window.grecaptcha.render(recaptchaRef.current!, {
+            sitekey: siteKey,
+            callback: (token) => {
+              console.log("[ReCAPTCHA DEBUG] TOKEN recibido:", token);
+              onVerify(token);
+            },
+            'expired-callback': () => {
+              console.warn("[ReCAPTCHA DEBUG] TOKEN expirado");
+              onExpired();
+            },
+            'error-callback': () => {
+              console.error("[ReCAPTCHA DEBUG] Error en widget");
+              onError();
+            },
+            theme: "light",
+            size: "normal",
+          });
+
+          console.log("[ReCAPTCHA DEBUG] Render exitoso con ID:", widgetId.current);
+          setIsLoaded(true);
+          setHasError(false);
+          setIsLoading(false);
+          console.groupEnd();
+        }, 200);
       } catch (error) {
-        console.error('Error rendering reCAPTCHA:', error);
+        console.error("[ReCAPTCHA DEBUG] Error durante render:", error);
         handleLoadError();
+        console.groupEnd();
       }
+    } else {
+      console.error("[ReCAPTCHA DEBUG] grecaptcha o contenedor no disponible.");
+      handleLoadError();
+      console.groupEnd();
     }
   }, [siteKey, onVerify, onExpired, onError]);
 
   const handleLoadError = React.useCallback(() => {
     const newAttempt = loadAttempt + 1;
+    console.warn(`[ReCAPTCHA DEBUG] Error en carga (intento ${newAttempt})`);
     setLoadAttempt(newAttempt);
     setHasError(true);
     setIsLoaded(false);
     setIsLoading(false);
-    
-    console.warn(`reCAPTCHA load attempt ${newAttempt} failed`);
-    
-    // Llamar onError después de varios intentos fallidos
+
     if (newAttempt >= 3) {
+      console.error("[ReCAPTCHA DEBUG] 3 intentos fallidos, ejecutando onError()");
       onError();
     }
   }, [loadAttempt, onError]);
 
   const loadRecaptchaScript = React.useCallback(() => {
+    console.group("[ReCAPTCHA DEBUG] loadRecaptchaScript()");
+    logState("Cargando script...");
     setIsLoading(true);
-    
-    // Si ya está cargado, renderizar directamente
+
     if (window.grecaptcha) {
-      console.log('reCAPTCHA already loaded, rendering...');
+      console.log("[ReCAPTCHA DEBUG] grecaptcha ya disponible, renderizando...");
       renderRecaptcha();
+      console.groupEnd();
       return;
     }
 
-    // Limpiar script existente si hay error previo
     const existingScript = document.querySelector('script[src*="recaptcha"]');
     if (existingScript) {
+      console.log("[ReCAPTCHA DEBUG] Eliminando script previo...");
       existingScript.remove();
     }
 
-    const script = document.createElement('script');
-    script.src = `https://www.google.com/recaptcha/api.js?render=explicit`;
+    const script = document.createElement("script");
+    script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
     script.async = true;
     script.defer = true;
-    
+
     let scriptLoaded = false;
-    
+
     script.onload = () => {
       scriptLoaded = true;
-      console.log('reCAPTCHA script loaded successfully');
-      
-      // Pequeño delay para asegurar que grecaptcha esté disponible
+      console.log("[ReCAPTCHA DEBUG] Script cargado correctamente.");
       setTimeout(() => {
         if (window.grecaptcha) {
+          console.log("[ReCAPTCHA DEBUG] grecaptcha disponible, renderizando widget...");
           renderRecaptcha();
         } else {
-          console.error('reCAPTCHA not available after script load');
+          console.error("[ReCAPTCHA DEBUG] grecaptcha no disponible tras carga.");
           handleLoadError();
         }
-      }, 100);
+      }, 200);
     };
-    
+
     script.onerror = () => {
-      console.error('Error loading reCAPTCHA script');
-      if (!scriptLoaded) {
-        handleLoadError();
-      }
+      console.error("[ReCAPTCHA DEBUG] Error al cargar el script de Google.");
+      if (!scriptLoaded) handleLoadError();
     };
-    
-    // Agregar un timeout como fallback (10 segundos)
+
     setTimeout(() => {
       if (!window.grecaptcha && !scriptLoaded) {
-        console.error('reCAPTCHA script load timeout');
+        console.error("[ReCAPTCHA DEBUG] Timeout al cargar script (10s).");
         handleLoadError();
       }
     }, 10000);
-    
+
     document.head.appendChild(script);
+    console.groupEnd();
   }, [renderRecaptcha, handleLoadError]);
 
-  // Cargar automáticamente cuando el componente se monta
   useEffect(() => {
-    // Solo cargar si tenemos una siteKey válida
+    console.group("[ReCAPTCHA DEBUG] useEffect -> montaje del componente");
     if (!siteKey || siteKey.length <= 10) {
-      console.error('Invalid reCAPTCHA site key');
+      console.error("[ReCAPTCHA DEBUG] Clave de sitio inválida:", siteKey);
       onError();
+      console.groupEnd();
       return;
     }
 
-    console.log('Auto-loading reCAPTCHA...');
+    console.log("[ReCAPTCHA DEBUG] Clave válida. Iniciando carga...");
     loadRecaptchaScript();
 
-    // Cleanup function
     return () => {
+      console.log("[ReCAPTCHA DEBUG] Desmontando componente...");
       if (widgetId.current !== null && window.grecaptcha) {
         try {
-          // Solo resetear, no destruir completamente para evitar problemas de re-renderizado
           window.grecaptcha.reset(widgetId.current);
+          console.log("[ReCAPTCHA DEBUG] Widget reseteado correctamente.");
         } catch (error) {
-          console.warn('Error resetting reCAPTCHA on unmount:', error);
+          console.warn("[ReCAPTCHA DEBUG] Error al resetear:", error);
         }
       }
-      // Limpiar el widget ID pero mantener el contenedor
       widgetId.current = null;
+      console.groupEnd();
     };
   }, [siteKey, loadRecaptchaScript, onError]);
 
   const resetCaptcha = () => {
+    console.log("[ReCAPTCHA DEBUG] Forzando reset manual...");
     if (widgetId.current !== null && window.grecaptcha) {
       try {
         window.grecaptcha.reset(widgetId.current);
-        console.log('reCAPTCHA reset successfully');
+        console.log("[ReCAPTCHA DEBUG] Reset exitoso.");
       } catch (error) {
-        console.error('Error resetting reCAPTCHA:', error);
-        // Si hay error al resetear, intentar re-renderizar
-        setTimeout(() => {
-          renderRecaptcha();
-        }, 500);
+        console.error("[ReCAPTCHA DEBUG] Error al resetear:", error);
+        setTimeout(() => renderRecaptcha(), 500);
       }
     } else {
-      // Si no hay widget, intentar renderizar uno nuevo
       renderRecaptcha();
     }
   };
 
   const retryLoad = () => {
-    console.log('Retrying reCAPTCHA load...');
+    console.warn("[ReCAPTCHA DEBUG] Reintentando carga...");
     setHasError(false);
-    setLoadAttempt(prev => prev + 1);
+    setLoadAttempt((prev) => prev + 1);
     setIsLoaded(false);
     setIsLoading(false);
-    
-    // Forzar recarga del script
+
     const existingScript = document.querySelector('script[src*="recaptcha"]');
-    if (existingScript) {
-      existingScript.remove();
-    }
-    
-    // Pequeño delay antes de reintentar
+    if (existingScript) existingScript.remove();
+
     setTimeout(() => {
       loadRecaptchaScript();
     }, 500);
@@ -218,48 +229,43 @@ const ReCaptchaV2: React.FC<ReCaptchaV2Props> = ({
 
   return (
     <div className="flex flex-col items-center space-y-4">
-      {/* Indicador de carga */}
       {isLoading && (
         <div className="text-center">
           <div className="flex items-center justify-center space-x-2">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-amber-500"></div>
+            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
             <span className="text-xs text-gray-600">Cargando reCAPTCHA...</span>
           </div>
         </div>
       )}
-      
+
       <div
         ref={recaptchaRef}
         key={`recaptcha-${loadAttempt}-${siteKey}`}
-        className={`${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
-        style={{ minHeight: '78px' }} // Altura mínima para evitar saltos
+        className={`${isLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+        style={{ minHeight: "78px" }}
       />
-      
+
       {hasError && (
         <div className="text-center">
-          <p className="text-xs text-amber-600 mb-2">
-            {loadAttempt > 1 
-              ? 'Problemas cargando reCAPTCHA. Por favor, intenta de nuevo.' 
-              : 'No se pudo cargar reCAPTCHA.'
-            }
+          <p className="text-xs text-red-600 mb-2">
+            No se pudo cargar reCAPTCHA. Intenta nuevamente.
           </p>
           <button
             type="button"
             onClick={retryLoad}
-            className="text-xs bg-amber-500 hover:bg-amber-600 text-white px-3 py-1 rounded transition-colors"
+            className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
             disabled={isLoading}
           >
-            {isLoading ? 'Cargando...' : 'Reintentar'}
+            Reintentar
           </button>
         </div>
       )}
-      
-      {/* Botón de recargar - siempre visible cuando está cargado */}
+
       {isLoaded && !hasError && (
         <button
           type="button"
           onClick={resetCaptcha}
-          className="text-xs text-gray-500 hover:text-gray-700 underline transition-colors mt-2"
+          className="text-xs text-gray-500 hover:text-gray-700 underline mt-2"
         >
           Recargar CAPTCHA
         </button>
