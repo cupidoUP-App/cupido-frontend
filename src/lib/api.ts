@@ -182,7 +182,10 @@ export const authAPI = {
     return response.data;
   },
 
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
   deactivateAccount: async () => {
     const response = await api.post("/auth/deactivate/");
     return response.data;
@@ -216,6 +219,17 @@ export const authAPI = {
     return response.data;
   },
 
+<<<<<<< Updated upstream
+=======
+  // 🔥 NUEVA FUNCIÓN: Actualizar perfil con preferencias
+  updateProfileWithPreferences: async (preferencesId: number) => {
+    const response = await api.patch("/profile/profileManagement/update/", {
+      preferencias: preferencesId
+    });
+    return response.data;
+  },
+
+>>>>>>> Stashed changes
   getPreferences: async () => {
     const response = await api.get("/preferences/preferences/");
     return response.data;
@@ -236,6 +250,34 @@ export const authAPI = {
     return response.data;
   },
 
+<<<<<<< Updated upstream
+};
+
+export const photoAPI = {
+  getPhotos: async () => {
+    const response = await api.get("/profile/photos/");
+    return response.data;
+  },
+  uploadPhoto: async (file: File) => {
+    const formData = new FormData();
+    formData.append('imagen', file);
+    const response = await api.post("/profile/photos/", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  },
+  deletePhoto: async (photoId: number) => {
+    const response = await api.delete(`/profile/photos/${photoId}/`);
+    return response.data;
+  },
+  setPrincipalPhoto: async (photoId: number) => {
+    const response = await api.patch(`/profile/photos/${photoId}/`, { es_principal: true });
+    return response.data;
+  },
+=======
+>>>>>>> Stashed changes
 };
 
 export const photoAPI = {

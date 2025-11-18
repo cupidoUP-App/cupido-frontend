@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from "@/store/appStore";
 import EmailField from "./components/forms/EmailField";
+import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
 import ForgotPasswordModal from "./components/modals/ForgotPasswordModal";
 import CompleteRegister, {
@@ -33,7 +34,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [showCaptcha, setShowCaptcha] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+<<<<<<< Updated upstream
   const [showPhotoUpload, setShowPhotoUpload] = useState(false); // Nuevo estado para el flujo de fotos
+=======
+  const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+>>>>>>> Stashed changes
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCompleteRegister, setShowCompleteRegister] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState<string>("");
@@ -97,19 +102,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
       console.log("Estado de cuenta recibido:", estadocuenta);
 
       if (estadocuenta === "1") {
-        // Estado 1: Necesita completar registro
-        // console.log("Mostrando CompleteRegister - Estado 1");
         setRegistrationStep(1);
         setShowCompleteRegister(true);
       } else if (estadocuenta === "2") {
         console.log("Mostrando Preferences - Estado 2");
 
         try {
-          // Hacer una llamada adicional para obtener los datos del usuario
           const userData = await authAPI.getUserProfile();
           console.log("Datos del usuario obtenidos:", userData);
 
-          // OBTENER EL ID DE FORMA CORRECTA - revisar todas las posibilidades
           const realUserId =
             userData.id ||
             userData.usuario_id ||
@@ -132,14 +133,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
             localStorage.setItem("current_user_id", realUserId.toString());
             setRegistrationStep(2);
             setShowPreferences(true);
-            //onClose();
 
             toast({
               title: "¡Bienvenido de nuevo!",
               description: "Completa tus preferencias para continuar.",
             });
           } else {
-            // Si no encontramos el ID, mostrar todos los datos para debuggear
             console.error(
               "No se pudo encontrar el ID del usuario. Datos completos:",
               {
@@ -157,9 +156,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
             variant: "destructive",
           });
         }
+<<<<<<< Updated upstream
       } 
       else if (estadocuenta === "0") {
         // Estado 0: Cuenta activa - Ir al dashboard
+=======
+      } else if (estadocuenta === "0") {
+>>>>>>> Stashed changes
         console.log("Redirigiendo a Dashboard - Estado 0");
         login(response.user);
         toast({
@@ -256,7 +259,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       const genderId = genderMapping[userData.gender] || 1;
 
+<<<<<<< Updated upstream
       // Llamar al endpoint real del backend
+=======
+>>>>>>> Stashed changes
       const response = await authAPI.updateUserProfile({
         nombres: userData.name,
         apellidos: userData.lastName,
@@ -276,7 +282,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
       const userId = response.user_id || response.id || "current-user";
       setCurrentUserId(userId);
 
+<<<<<<< Updated upstream
       // Cerrar registro y mostrar el siguiente paso: preferencias
+=======
+>>>>>>> Stashed changes
       setShowCompleteRegister(false);
       setRegistrationStep(2); // Marcar que el siguiente paso es el 2 (preferencias)
       setShowPreferences(true);
@@ -324,10 +333,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
     try {
       console.log("Preferencias completadas, continuando a la subida de fotos...");
 
+<<<<<<< Updated upstream
       // 1. Actualizar el estado de la cuenta a 3 (pendiente de fotos)
       const userProfile = await authAPI.getUserProfile();
       await authAPI.updateUserProfile({
         // Se reenvían los datos para no perderlos
+=======
+      const userProfile = await authAPI.getUserProfile();
+      await authAPI.updateUserProfile({
+>>>>>>> Stashed changes
         nombres: userProfile.user.nombres,
         apellidos: userProfile.user.apellidos,
         genero_id: userProfile.user.genero_id,
@@ -335,10 +349,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
         descripcion: userProfile.user.descripcion,
         estadocuenta: "3", 
       });
+<<<<<<< Updated upstream
       console.log('testeo de guardado de informacion');
       // 2. Ocultar modal de preferencias y mostrar el de subida de fotos
       setShowPreferences(false);
       setRegistrationStep(3); // Marcar que el siguiente paso es el 3 (fotos)
+=======
+      
+      setShowPreferences(false);
+      setRegistrationStep(3);
+>>>>>>> Stashed changes
       setShowPhotoUpload(true);
 
       toast({
@@ -355,23 +375,22 @@ const LoginForm: React.FC<LoginFormProps> = ({
       });
     }
   };
+
   const handleBackFromPreferences = () => {
     if (registrationStep === 2) {
-      // Si venimos de complete register (estado 1), volver allí
       setShowPreferences(false);
       setRegistrationStep(1);
       setShowCompleteRegister(true);
     } else {
-      // Si no, cerrar todo
       setShowPreferences(false);
       onClose();
     }
   };
+
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="w-[439px] h-[680px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
-          {/* Botón para cerrar */}
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
@@ -392,9 +411,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </svg>
           </button>
 
-          {/* Contenido del formulario */}
           <div className="h-full flex flex-col p-5">
-            {/* Logo centrado en la parte superior */}
             <div className="flex justify-center mb-4">
               <img
                 src="src/assets/logo-login.webp"
@@ -403,7 +420,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
               />
             </div>
 
-            {/* Header */}
             <div className="mb-6 text-center">
               <div className="text-black text-2xl font-normal font-['Poppins']">
                 Bienvenido a{" "}
@@ -415,7 +431,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
               </div>
             </div>
 
-            {/* Formulario */}
             <form
               onSubmit={handleSubmit}
               className="flex-1 flex flex-col justify-between"
@@ -423,30 +438,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
               <div className="space-y-4">
                 <EmailField value={email} onChange={setEmail} />
 
-                <div className="w-full">
-                  <label className="block text-xs font-medium text-gray-700 mb-1.5">
-                    Contraseña
-                  </label>
-                  <input
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Ingresa tu contraseña"
-                    maxLength={50}
-                    className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
-                  />
-
-                  {/* Enlace para recuperar contraseña */}
-                  <div className="text-right mt-1">
-                    <button
-                      type="button"
-                      onClick={() => setShowForgotPassword(true)}
-                      className="text-[#E93923] hover:text-[#d1321f] text-xs underline"
-                    >
-                      ¿Olvidaste tu contraseña?
-                    </button>
-                  </div>
-                </div>
+                {/* ✅ Usando el componente PasswordField importado */}
+                <PasswordField
+                  value={password}
+                  onChange={setPassword}
+                />
 
                 {/* Indicador de estado del CAPTCHA */}
                 <div className="mb-4">
@@ -550,7 +546,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
           setShowCompleteRegister(false);
         }}
         onComplete={() => {
-          // Cuando se completa el registro, mostrar preferencias
           setShowCompleteRegister(false);
           setShowPreferences(true);
         }}
@@ -564,7 +559,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
             <PhotoUploadPage
               onComplete={async () => {
                 try {
+<<<<<<< Updated upstream
                   // 1. Actualizar el estado de la cuenta a 0 (completado)
+=======
+>>>>>>> Stashed changes
                   const userProfile = await authAPI.getUserProfile();
                   await authAPI.updateUserProfile({
                     nombres: userProfile.user.nombres,
@@ -575,7 +573,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     estadocuenta: "0",
                   });
 
+<<<<<<< Updated upstream
                   // 2. Cerrar todos los modales y abrir el dashboard
+=======
+>>>>>>> Stashed changes
                   setShowPhotoUpload(false);
                   onClose();
                   openDashboard();
@@ -598,14 +599,18 @@ const LoginForm: React.FC<LoginFormProps> = ({
         </div>
       )}
 
+<<<<<<< Updated upstream
       {/* ✅ MODAL DE PREFERENCES CORREGIDO - CON PROP onBack */}
+=======
+      {/* Modal de Preferences */}
+>>>>>>> Stashed changes
       {showPreferences && (
         <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full h-full bg-white">
             <PreferencesPage
               userId={currentUserId}
               onComplete={handlePreferencesComplete}
-              onBack={handleBackFromPreferences} // 🔥 Pasar la función de retroceso
+              onBack={handleBackFromPreferences}
             />
           </div>
         </div>

@@ -1,12 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import GenderSelector from './GenderSelector';
-import HeightSelector from './HeightSelector';
-import LocationSelector from './LocationSelector';
-import RangeSelector from './RangeSelector';
-import InterestsSelector from './InterestsSelector';
-import { preferencesService } from '../services/preferencesService';
-import { ArrowLeft } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState, useEffect } from "react";
+import GenderSelector from "./GenderSelector";
+import HeightSelector from "./HeightSelector";
+import LocationSelector from "./LocationSelector";
+import RangeSelector from "./RangeSelector";
+import InterestsSelector from "./InterestsSelector";
+import { preferencesService } from "../services/preferencesService";
+import { ArrowLeft } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { authAPI } from "@/lib/api"; // 🔥 IMPORTAR AUTHAPI
 
 interface PreferencesPageProps {
   userId: string;
@@ -106,82 +107,103 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
     // 🔎 Validar campos antes de guardar
     if (!selectedGenero) {
       toast({
-        title: 'Error',
-        description: 'Por favor selecciona un género preferido.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Por favor selecciona un género preferido.",
+        variant: "destructive",
       });
       return;
     }
-  
+
     if (!selectedUbicacion) {
       toast({
-        title: 'Error',
-        description: 'Por favor selecciona una ubicación.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Por favor selecciona una ubicación.",
+        variant: "destructive",
       });
       return;
     }
-  
+
     if (!intereses || intereses.length !== 3) {
       toast({
-        title: 'Error',
-        description: 'Por favor selecciona 3 Intereses.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Por favor selecciona 3 Intereses.",
+        variant: "destructive",
       });
       return;
     }
-  
+
     if (rangoEdad[0] < 18 || rangoEdad[1] <= rangoEdad[0]) {
       toast({
-        title: 'Error',
-        description: 'Por favor selecciona un rango de edad válido.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Por favor selecciona un rango de edad válido.",
+        variant: "destructive",
       });
       return;
     }
-  
+
     if (rangoEstatura[0] < 100 || rangoEstatura[1] <= rangoEstatura[0]) {
       toast({
-        title: 'Error',
-        description: 'Por favor selecciona un rango de estatura válido.',
-        variant: 'destructive',
+        title: "Error",
+        description: "Por favor selecciona un rango de estatura válido.",
+        variant: "destructive",
       });
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
-      await preferencesService.savePreferences(userId, {
-        genero_preferido: selectedGenero,
-        hobbies_preferidos: JSON.stringify(intereses),
-        ubicacion: selectedUbicacion,
-        rango_edad_min: rangoEdad[0],
-        rango_edad_max: rangoEdad[1],
-        rango_estatura_min: rangoEstatura[0],
-        rango_estatura_max: rangoEstatura[1],
-      });
-  
+      // 1. Guardar preferencias primero
+      const savedPreferences = await preferencesService.savePreferences(
+        userId,
+        {
+          genero_preferido: selectedGenero,
+          hobbies_preferidos: JSON.stringify(intereses),
+          ubicacion: selectedUbicacion,
+          rango_edad_min: rangoEdad[0],
+          rango_edad_max: rangoEdad[1],
+          rango_estatura_min: rangoEstatura[0],
+          rango_estatura_max: rangoEstatura[1],
+        }
+      );
+
+      // 2. 🔥 ACTUALIZAR EL PERFIL CON LA FK DE PREFERENCIAS
+      // Obtener el ID de las preferencias recién creadas
+      const preferencesId =
+        savedPreferences.id || savedPreferences.preference_id;
+
+      if (preferencesId) {
+        await authAPI.updateProfileWithPreferences(preferencesId);
+      } else {
+        // Si no obtenemos el ID directamente, buscamos las preferencias del usuario
+        const userPreferences = await preferencesService.getPreferencesByUserId(
+          userId
+        );
+        if (userPreferences && userPreferences.id) {
+          await authAPI.updateProfileWithPreferences(userPreferences.id);
+        }
+      }
+
       toast({
-        title: 'Éxito',
-        description: 'Preferencias guardadas con éxito.',
-        variant: 'default', // 👈 CORREGIDO
+        title: "Éxito",
+        description: "Preferencias guardadas con éxito.",
+        variant: "default",
       });
-  
+
       onComplete();
     } catch (error) {
-      console.error('Error saving preferences:', error);
+      console.error("Error saving preferences:", error);
       toast({
-        title: 'Error al guardar',
-        description: 'No se pudieron guardar las preferencias. Intenta nuevamente.',
-        variant: 'destructive',
+        title: "Error al guardar",
+        description:
+          "No se pudieron guardar las preferencias. Intenta nuevamente.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);
     }
   };
-  
- 
+
   const handleReset = () => {
     setRangoEdad([18, 40]);
     setGenero("");

@@ -12,6 +12,10 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
     "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?q=80&w=800&auto=format&fit=crop",
   ];
 
+<<<<<<< Updated upstream
+=======
+  // 🔥 Usar imágenes reales o fallbacks
+>>>>>>> Stashed changes
   const slides = (images && images.length > 0 ? images : fallbackImages).slice(0, 5);
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -28,6 +32,16 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
     return index;
   };
 
+<<<<<<< Updated upstream
+=======
+  // 🔥 Función para manejar errores de carga de imágenes
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement;
+    console.error(`Error cargando imagen: ${target.src}`);
+    // Podrías establecer una imagen de fallback aquí si lo deseas
+  };
+
+>>>>>>> Stashed changes
   return (
     <div className="relative w-full max-w-[500px] h-[460px] md:h-[520px] lg:h-[560px] flex items-center justify-center">
       {/* Imagen izquierda (desvanecida) */}
@@ -41,6 +55,10 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
             alt="foto-anterior"
             className="w-full h-full object-cover select-none"
             draggable={false}
+<<<<<<< Updated upstream
+=======
+            onError={handleImageError} // 🔥 Manejar errores
+>>>>>>> Stashed changes
           />
         </div>
       )}
@@ -52,6 +70,10 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
           alt={`foto-principal-${currentIndex}`}
           className="w-full h-full object-cover select-none"
           draggable={false}
+<<<<<<< Updated upstream
+=======
+          onError={handleImageError} // 🔥 Manejar errores
+>>>>>>> Stashed changes
         />
         
         {/* Controles de navegación */}
@@ -102,6 +124,10 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
             alt="foto-siguiente"
             className="w-full h-full object-cover select-none"
             draggable={false}
+<<<<<<< Updated upstream
+=======
+            onError={handleImageError} // 🔥 Manejar errores
+>>>>>>> Stashed changes
           />
         </div>
       )}
@@ -109,4 +135,8 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
   );
 };
 
+<<<<<<< Updated upstream
 export default ProfileCarousel;
+=======
+export default ProfileCarousel;
+>>>>>>> Stashed changes
