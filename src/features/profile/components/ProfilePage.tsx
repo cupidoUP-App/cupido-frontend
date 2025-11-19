@@ -189,12 +189,12 @@ const ProfilePage = () => {
 
       <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 xl:gap-16">
         {/* Imágenes - Izquierda */}
-        <div className="flex justify-center lg:col-span-5 lg:justify-end order-2 lg:order-1">
+        <div className="flex justify-center lg:col-span-5 lg:justify-end order-first">
           <ProfileCarousel images={userImages} />
         </div>
 
         {/* Información del perfil - Derecha */}
-        <div className="w-full lg:col-span-7 order-1 lg:order-2">
+        <div className="w-full lg:col-span-7 order-last lg:order-none">
           <div className="rounded-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl border border-white/50">
             <div className="space-y-8">
               <ProfileInfo {...profileData} />

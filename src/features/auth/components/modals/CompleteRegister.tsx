@@ -339,32 +339,30 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   const days = Array.from({ length: 31 }, (_, i) =>
     (i + 1).toString().padStart(2, "0")
   );
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 100 }, (_, i) =>
-    (currentYear - i).toString()
+  const startYear = 2007;
+  const years = Array.from({ length: startYear - 1900 + 1 }, (_, i) =>
+    (startYear - i).toString()
   );
 
   if (!isOpen) return null;
 
   return (
     <>
-      <div className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm overflow-auto">
-        {/* Contenedor principal RESPONSIVE */}
-        <div className="w-full min-h-full bg-[#F2D6CD] relative flex items-center justify-center lg:justify-start py-4">
-          {/* Componente de mitad derecha con partículas - OCULTO EN MÓVIL */}
-          <div className="hidden lg:block">
-            <RightSideWithParticles>
-              {/* Imagen más grande */}
-              <div className="absolute right-0 bottom-0 h-[85vh] max-w-[45vw] flex items-end z-10">
-                <img
-                  src="src\assets\flat-valentine-s-day-photocall-template-Photoroom 1.webp"
-                  alt="Decoración"
-                  className="h-full w-auto object-right-bottom object-contain"
-                />
-              </div>
-            </RightSideWithParticles>
-          </div>
+      <div className="fixed inset-0 z-[70] bg-[#F2D6CD] backdrop-blur-sm overflow-auto">
+        {/* Partículas en TODO el fondo */}
+        <RightSideWithParticles className="z-0" />
+        {/* Imagen decorativa - solo en desktop y posicionada a la derecha */}
+        <div className="hidden lg:block absolute right-0 bottom-0 h-[85vh] max-w-[45vw] flex items-end z-10">
+          <img
+            src="src\assets\flat-valentine-s-day-photocall-template-Photoroom 1.webp"
+            alt="Decoración"
+            className="h-full w-auto object-right-bottom object-contain"
+          />
+        </div>
 
+        {/* Contenedor principal RESPONSIVE */}
+        <div className="w-full min-h-full relative flex items-center justify-center lg:justify-start lg:pl-32 xl:pl-48 2xl:pl-64 py-12 z-10">
+          {" "}
           {/* Botón para cerrar */}
           <button
             onClick={handleCloseCompleteRegister}
@@ -385,9 +383,9 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
               />
             </svg>
           </button>
-
           {/* Contenedor del formulario RESPONSIVE */}
-          <div className="w-full max-w-md mx-4 lg:mx-0 lg:ml-10 xl:ml-20 2xl:ml-28 z-20 bg-white/80 lg:bg-transparent rounded-xl lg:rounded-none p-6 lg:p-0">
+          <div className="w-full max-w-md mx-4 lg:mx-0 lg:ml-10 xl:ml-20 2xl:ml-28 z-20 bg-white/80 lg:bg-transparent rounded-xl lg:rounded-none p-6 lg:p-0 transform lg:scale-125 origin-center">
+            {" "}
             {/* Logo más compacto */}
             <div className="flex justify-center mb-4">
               <img
@@ -396,7 +394,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                 className="w-16 h-14"
               />
             </div>
-
             {/* Header más compacto y centrado */}
             <div className="mb-6">
               <div className="text-black text-base font-normal font-['Poppins'] text-center">
@@ -411,7 +408,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                 experiencia.
               </p>
             </div>
-
             <form onSubmit={handleSubmit} className="space-y-3">
               {/* Nombre y Apellidos - RESPONSIVE */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">

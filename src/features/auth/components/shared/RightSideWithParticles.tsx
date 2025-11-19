@@ -3,19 +3,21 @@ import { ParticlesComponent } from '../../../home/components/Particles';
 
 interface RightSideWithParticlesProps {
   children?: React.ReactNode;
+  className?: string;
 }
 
-const RightSideWithParticles: React.FC<RightSideWithParticlesProps> = ({ 
-  children 
+const RightSideWithParticles: React.FC<RightSideWithParticlesProps> = React.memo(({ 
+  children,
+  className = ""
 }) => {
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-1/2 h-full overflow-hidden">
-      {/* Efecto de partículas en toda la mitad derecha */}
+    <div className={`fixed inset-0 w-full h-full overflow-hidden ${className}`}>
+      {/* Efecto de partículas en toda la pantalla */}
       <div className="absolute inset-0 z-0">
-        <ParticlesComponent id="right-side-particles" />
+        <ParticlesComponent id="complete-register-particles" />
       </div>
       
-      {/* Contenido children (opcional) */}
+      {/* Contenido children */}
       {children && (
         <div className="relative z-10 h-full">
           {children}
@@ -23,6 +25,9 @@ const RightSideWithParticles: React.FC<RightSideWithParticlesProps> = ({
       )}
     </div>
   );
-};
+});
+
+
+RightSideWithParticles.displayName = 'RightSideWithParticles';
 
 export default RightSideWithParticles;
