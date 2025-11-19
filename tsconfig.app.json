@@ -1,30 +1,42 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2022",
+    //Mas moderno que 2020
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
 
     /* Bundler mode */
+    "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
 
     /* Linting */
-    "strict": false,
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "noImplicitAny": false,
-    "noFallthroughCasesInSwitch": false,
+    /* Tipado estricto */
+    "strictNullChecks": true,
+    "strict": true,
+    //relajacion del tipado con "false" contradice a tsconfig.node.json
+    //"noUnusedLocals": false,
+    //"noUnusedParameters": false,
+    //redundancia
+    "noImplicitAny": true,
+    //deuda tecnica con false
+    "noFallthroughCasesInSwitch": true,
+    //En false relaja y no es acorde al node.json mejor evitar bugs silenciosos
 
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    "skipLibCheck": true
+
   },
   "include": ["src"]
 }
+
+    
+
+

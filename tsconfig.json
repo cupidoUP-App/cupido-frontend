@@ -1,18 +1,34 @@
 {
   "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
+  "references": [
+    { "path": "./tsconfig.app.json" },
+    { "path": "./tsconfig.node.json" }
+  ],
   "compilerOptions": {
+    /* Configuración compartida */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false,
     "types": ["vitest/globals"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   }
 }
+//"noImplicitAny": true,
+//relajacion con false
+//"noUnusedParameters": false,
+//"allowJs": true,
+//Donde se usa javascript? 
+//"noUnusedLocals": false,
+//"strictNullChecks": true,
+//relajacion con false
+//ESTE ARCHIVO debería ser mínimo y solo contener configuraciones compartidas 
+// (paths, baseUrl, types). Ahora mismo mezcla reglas de linting y relajación de tipos
+// que contradicen lo que se tiene en tsconfig.node.json.
+
+//Root → solo referencias y paths.
+
+//App → frontend React, estricto, con DOM y JSX.
+
+//Node → scripts/tooling, estricto, con bundler mode (porque el backend es FastAPI).
