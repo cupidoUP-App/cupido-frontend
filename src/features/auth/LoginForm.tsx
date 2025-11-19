@@ -307,7 +307,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const handlePreferencesComplete = async () => {
     try {
-      console.log("Preferencias completadas, continuando a la subida de fotos...");
+      console.log(
+        "Preferencias completadas, continuando a la subida de fotos..."
+      );
 
       const userProfile = await authAPI.getUserProfile();
       await authAPI.updateUserProfile({
@@ -316,9 +318,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
         genero_id: userProfile.user.genero_id,
         fechanacimiento: userProfile.user.fechanacimiento,
         descripcion: userProfile.user.descripcion,
-        estadocuenta: "3", 
+        estadocuenta: "3",
       });
-      
+
       setShowPreferences(false);
       setRegistrationStep(3);
       setShowPhotoUpload(true);
@@ -327,7 +329,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         title: "¡Preferencias guardadas!",
         description: "Ahora, sube tus mejores fotos.",
       });
-
     } catch (error) {
       console.error("Error al completar preferencias:", error);
       toast({
@@ -401,10 +402,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 <EmailField value={email} onChange={setEmail} />
 
                 {/* ✅ Usando el componente PasswordField importado */}
-                <PasswordField
-                  value={password}
-                  onChange={setPassword}
-                />
+                <PasswordField value={password} onChange={setPassword} />
 
                 {/* Indicador de estado del CAPTCHA */}
                 <div className="mb-4">
@@ -442,6 +440,17 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     </div>
                   )}
                 </div>
+              </div>
+
+              {/* Enlace para recuperar contraseña */}
+              <div className="text-right mt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowForgotPassword(true)}
+                  className="text-[#E93923] hover:text-[#d1321f] text-xs underline"
+                >
+                  ¿Olvidaste tu contraseña?
+                </button>
               </div>
 
               {/* Botón de iniciar sesión */}
@@ -537,13 +546,15 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
                   toast({
                     title: "¡Felicidades!",
-                    description: "Has completado tu perfil. ¡Bienvenido a Cupido!",
+                    description:
+                      "Has completado tu perfil. ¡Bienvenido a Cupido!",
                   });
                 } catch (error) {
                   console.error("Error al finalizar el registro:", error);
                   toast({
                     title: "Error",
-                    description: "No pudimos finalizar tu registro. Intenta de nuevo.",
+                    description:
+                      "No pudimos finalizar tu registro. Intenta de nuevo.",
                     variant: "destructive",
                   });
                 }
