@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate, Outlet } from 'react-router-dom';
-import { photoAPI } from '@/lib/api';
+import { photoAPI } from '@lib/api';
 
 const ProtectedRoute = () => {
   const { data, isLoading, isError } = useQuery({

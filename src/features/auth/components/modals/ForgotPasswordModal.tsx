@@ -1,6 +1,6 @@
 // ForgotPasswordModal.tsx
 import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@hooks/use-toast';
 import EmailField from '../forms/EmailField';
 import PasswordField from '../forms/PasswordField';
 import ConfirmPasswordField from '../forms/ConfirmPasswordField';
@@ -74,7 +74,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const { authAPI } = await import('@/lib/api');
+      const { authAPI } = await import('@lib/api');
       await authAPI.resetPasswordRequest({ email });
 
       toast({
@@ -109,7 +109,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
 
   const handleResendVerificationCode = async () => {
     try {
-      const { authAPI } = await import('@/lib/api');
+      const { authAPI } = await import('@lib/api');
       await authAPI.resetPasswordRequest({ email });
 
       toast({
@@ -186,7 +186,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     setIsSubmitting(true);
 
     try {
-      const { authAPI } = await import('@/lib/api');
+      const { authAPI } = await import('@lib/api');
       await authAPI.resetPasswordConfirm({
         email,
         token: resetToken,

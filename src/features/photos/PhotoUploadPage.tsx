@@ -1,10 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Star } from "lucide-react";
-import fondo from "../../assets/fondoCargueImagenes.png";
-import logo from "../../assets/logo-login.webp";
+import fondo from "@assets/fondoCargueImagenes.png";
+import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
-import { photoAPI } from "@/lib/api";
+import { photoAPI } from "@lib/api";
 
 interface PhotoFile extends File {
   preview: string;

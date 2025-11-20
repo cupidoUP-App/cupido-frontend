@@ -1,6 +1,6 @@
-import { useCountUp } from '@/hooks/useCountUp';
+import { useCountUp } from '@hooks/useCountUp';
 import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@lib/utils';
 
 interface AnimatedStatProps {
   value: string;

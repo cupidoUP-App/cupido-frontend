@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "@/store/appStore";
-import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
+import { useAppStore } from "@store/appStore";
+import { useToast } from "@hooks/use-toast";
+import { authAPI } from "@lib/api";
 import { interests } from "../data/interests";
 import {
   AlertDialog,
@@ -13,7 +13,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from "@ui/alert-dialog";
 
 const estados = [
   "Ganoso de arrunchis",

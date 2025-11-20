@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Star, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { Button } from '@ui/button';
+import { Badge } from '@ui/badge';
+import { Avatar, AvatarFallback } from '@ui/avatar';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 import AnimatedStat from './AnimatedStat';
 
 export default function TestimonialsSection() {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { InfoCircledIcon } from '@radix-ui/react-icons';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 
 interface BannerInfoProps {
   title: string;

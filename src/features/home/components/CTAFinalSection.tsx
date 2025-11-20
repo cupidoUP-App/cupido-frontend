@@ -1,6 +1,6 @@
 import { Heart, ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { Button } from '@ui/button';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 
 interface CTAFinalSectionProps {
   onSignupClick: () => void;

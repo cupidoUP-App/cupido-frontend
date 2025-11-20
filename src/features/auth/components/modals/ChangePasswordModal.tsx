@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@hooks/use-toast';
 import PasswordField from '../forms/PasswordField';
 import ConfirmPasswordField from '../forms/ConfirmPasswordField';
-import { authAPI } from '@/lib/api';
+import { authAPI } from '@lib/api';
 
 interface ChangePasswordModalProps {
   isOpen: boolean;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { TrashIcon, StarIcon } from '@radix-ui/react-icons';
-import { Button } from '@/components/ui/button'; // Shadcn/ui button
+import { Button } from '@ui/button'; // Shadcn/ui button
 
 interface PhotoSlotProps {
   file: File & { preview: string }; // File object with a preview URL

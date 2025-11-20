@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button } from '@/components/ui/button'; // Shadcn/ui button
+import { Button } from '@ui/button'; // Shadcn/ui button
 import { TrashIcon, CheckIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 
 interface ActionButtonsProps {

@@ -82,6 +82,7 @@ In the project directory, you can run:
 
 -   `npm run dev`: Inicia el servidor de desarrollo.
 -   `npm run build`: Compila la aplicación para producción.
+-   `npm run build:dev` Compila para desarrollo.
 -   `npm run lint`: Ejecuta el linter para analizar el código.
 -   `npm run preview`: Sirve la build de producción localmente.
 -   `npm test`: Ejecuta la suite de pruebas con Vitest.

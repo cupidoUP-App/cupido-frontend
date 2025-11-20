@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "@/store/appStore";
-import { useToast } from "@/hooks/use-toast";
-import { authAPI, photoAPI } from "@/lib/api";
+import { useAppStore } from "@store/appStore";
+import { useToast } from "@hooks/use-toast";
+import { authAPI, photoAPI } from "@lib/api";
 import ProfileCarousel from "./ProfileCarousel";
 import ProfileInfo from "./ProfileInfo";
 
@@ -66,7 +66,7 @@ const ProfilePage = () => {
               }
               
               return "";
-            }).filter(url => url !== "" && url !== null && url !== undefined);
+            }).filter((url: string | null | undefined) => url !== "" && url !== null && url !== undefined);
           }
           
           console.log("✅ Imágenes procesadas:", userPhotos);

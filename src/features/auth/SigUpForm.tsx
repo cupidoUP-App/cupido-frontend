@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@hooks/use-toast';
 import EmailField from './components/forms/EmailField';
 import PasswordField from './components/forms/PasswordField';
 import ConfirmPasswordField from './components/forms/ConfirmPasswordField';
-import TermsCheckbox from './components/shared/TermsCheckbox';
+import TermsCheckbox from '@lib/recaptcha/TermsCheckbox';
 import TermsAndConditions from './components/modals/TermsAndConditions';
 import ReCaptchaModal from './components/modals/ReCaptchaModal';
 import EmailVerificationModal from './components/modals/EmailVerificationModal';
 import { FormData, FormErrors, validateForm } from './utils/Validations';
-import { useAppStore } from '@/store/appStore';
-import { authAPI } from '@/lib/api';
+import { useAppStore } from '@store/appStore';
+import { authAPI } from '@lib/api';
 
 interface RegistroProps {
   onClose: () => void;

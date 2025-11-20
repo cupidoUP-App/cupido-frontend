@@ -1,8 +1,8 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@ui/button';
 import heroPreloaderGif from '@/assets/hero-preloader.webp';
 import manGif from '@/assets/man.webp';
-import { useAppStore } from '@/store/appStore';
+import { useAppStore } from '@store/appStore';
 import { useEffect } from 'react';
 import { ParticlesComponent } from './Particles';
 
