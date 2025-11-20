@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": [
+      "node",
+      "vitest/globals" 
+    ],
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "isolatedModules": true,
+    "emitDeclarationOnly": true,
+    "jsx": "react-jsx",
+    "strictNullChecks": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noFallthroughCasesInSwitch": true,
+    "esModuleInterop": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["../../src/*"],
+      "@ui/*": ["../../src/shared/components/ui/*"],
+      "@store/*": ["../../src/shared/store/*"],
+      "@hooks/*": ["../../src/shared/hooks/*"],
+      "@lib/*": ["../../src/shared/lib/*"],
+      "@types/*": ["../../src/shared/types/*"],
+      "@home/*": ["../../src/features/home/*"],
+      "@pages/*": ["../../src/pages/*"],
+      "@profile/*": ["../../src/features/profile/*"],
+      "@filters/*": ["../../src/features/filters/*"],
+      "@preferences/*": ["../../src/features/preferences/*"],
+      "@assets/*": ["../../src/assets/*"],
+      "@test/*": ["../../src/shared/test/*"],
+      "@features/*": ["../../src/features/*"],
+    },
+
+    "skipLibCheck": true
+
+  },
+  "include": ["src"]
+}
+
+    
+
+

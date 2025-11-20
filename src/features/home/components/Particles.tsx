@@ -1,4 +1,4 @@
-import { useAppStore } from "@/store/appStore";
+import { useAppStore } from "@store/appStore";
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";

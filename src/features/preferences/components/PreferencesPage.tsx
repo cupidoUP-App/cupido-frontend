@@ -6,8 +6,8 @@ import RangeSelector from "./RangeSelector";
 import InterestsSelector from "./InterestsSelector";
 import { preferencesService } from "../services/preferencesService";
 import { ArrowLeft } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api"; // 🔥 IMPORTAR AUTHAPI
+import { useToast } from "@hooks/use-toast";
+import { authAPI } from "@lib/api"; // 🔥 IMPORTAR AUTHAPI
 
 interface PreferencesPageProps {
   userId: string;

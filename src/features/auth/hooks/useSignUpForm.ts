@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import { useAppStore } from '@/store/appStore';
+import { useToast } from '@hooks/use-toast';
+import { useAppStore } from '@store/appStore';
 import { useFormSteps } from './useFormSteps';
 import { useEmailVerification } from './useEmailVerification';
 import { FormData } from '../types';
-import { RegistrationData } from '../components/CompleteRegister';
+import { RegistrationData } from '../components/modals/CompleteRegister';
 
 interface UseSignUpFormProps {
   onClose: () => void;

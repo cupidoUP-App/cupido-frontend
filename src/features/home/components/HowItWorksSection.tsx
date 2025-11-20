@@ -1,5 +1,5 @@
 import { CheckCircle, UserCheck, MessageSquare } from 'lucide-react';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 
 export default function HowItWorksSection() {
   const steps = [

@@ -29,4 +29,6 @@ dist-ssr
 .github/instructions/kluster-code-verify.instructions.md
 .kluster
 .env
-.env
+.env.development
+.env.production
+.env.test

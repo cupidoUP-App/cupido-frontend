@@ -1,4 +1,4 @@
-import heroPreloaderGif from '@/assets/hero-preloader.webp';
+import heroPreloaderGif from '@assets/hero-preloader.webp';
 
 interface FloatingGifProps {
   isVisible: boolean;

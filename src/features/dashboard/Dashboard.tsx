@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "@/store/appStore";
-import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
-import FiltersPage from "@/features/filters/components/FiltersPage";
+import { useAppStore } from "@store/appStore";
+import { useToast } from "@hooks/use-toast";
+import { authAPI } from "@lib/api";
+import FiltersPage from "@filters/components/FiltersPage";
 
 const Dashboard: React.FC = () => {
   const { closeModals, logout, user } = useAppStore();

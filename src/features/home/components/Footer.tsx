@@ -1,5 +1,5 @@
 import { Heart } from 'lucide-react';
-import { useAppStore } from '@/store/appStore';
+import { useAppStore } from '@store/appStore';
 import logofemlight from '@/assets/logofemlight.webp';
 import logomasclight from '@/assets/logomasclight.webp';
 

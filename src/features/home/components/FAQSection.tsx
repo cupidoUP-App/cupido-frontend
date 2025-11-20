@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);

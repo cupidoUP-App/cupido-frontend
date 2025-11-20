@@ -1,6 +1,6 @@
 import { Shield, UserX, BookOpen, Eye } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { Button } from '@ui/button';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 
 export default function SafetySection() {
   const safetyFeatures = [

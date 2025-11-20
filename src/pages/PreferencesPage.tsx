@@ -1,6 +1,6 @@
 import React from 'react';
-import FiltersPage from '@/features/filters/components/FiltersPage';
-import { useUserSession } from '@/hooks/useUserSession';
+import FiltersPage from '@filters/components/FiltersPage';
+import { useUserSession } from '@hooks/useUserSession';
 
 // 1. Definir las props del componente
 interface PreferencesPageProps {

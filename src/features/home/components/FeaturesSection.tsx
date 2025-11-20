@@ -1,5 +1,5 @@
 import { Heart, Zap, Shield, MapPin } from 'lucide-react';
-import { useAnimateOnScroll } from '@/hooks/useAnimateOnScroll';
+import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 import AnimatedStat from './AnimatedStat';
 
 export default function FeaturesSection() {

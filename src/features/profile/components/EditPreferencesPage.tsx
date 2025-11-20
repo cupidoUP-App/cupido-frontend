@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAppStore } from "@/store/appStore";
-import { useToast } from "@/hooks/use-toast";
-import { authAPI } from "@/lib/api";
+import { useAppStore } from "@store/appStore";
+import { useToast } from "@hooks/use-toast";
+import { authAPI } from "@lib/api";
 
 const EditPreferencesPage: React.FC = () => {
   const [preferences, setPreferences] = useState({

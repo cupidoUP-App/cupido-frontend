@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useToast } from "@/hooks/use-toast";
-import { useAppStore } from "@/store/appStore";
+import { useToast } from "@hooks/use-toast";
+import { useAppStore } from "@store/appStore";
 import EmailField from "./components/forms/EmailField";
 import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
@@ -8,8 +8,8 @@ import ForgotPasswordModal from "./components/modals/ForgotPasswordModal";
 import CompleteRegister, {
   RegistrationData,
 } from "./components/modals/CompleteRegister";
-import { authAPI } from "@/lib/api";
-import PreferencesPage from "@/features/preferences/components/PreferencesPage";
+import { authAPI } from "@lib/api";
+import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 
 interface User {

@@ -1,10 +1,10 @@
 // CompleteRegister.tsx - RESPONSIVE
 import React, { useState, useEffect } from "react";
-import RightSideWithParticles from "../shared/RightSideWithParticles";
-import { authAPI } from "@/lib/api";
-import { useToast } from "@/hooks/use-toast";
-import { useAppStore } from "@/store/appStore";
-import PreferencesPage from "@/features/preferences/components/PreferencesPage";
+import RightSideWithParticles from "@lib/recaptcha/RightSideWithParticles";
+import { authAPI } from "@lib/api";
+import { useToast } from "@hooks/use-toast";
+import { useAppStore } from "@store/appStore";
+import PreferencesPage from "@preferences/components/PreferencesPage";
 
 interface CompleteRegisterProps {
   isOpen: boolean;

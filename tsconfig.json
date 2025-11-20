@@ -1,18 +1,8 @@
 {
-  "files": [],
-  "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }],
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-    "noImplicitAny": false,
-    "noUnusedParameters": false,
-    "skipLibCheck": true,
-    "allowJs": true,
-    "noUnusedLocals": false,
-    "strictNullChecks": false,
-    "types": ["vitest/globals"],
-    "esModuleInterop": true
-  }
+  "extends": "./config/tsconfig/tsconfig.app.json",
+  "references": [
+    { "path": "config/tsconfig/tsconfig.app.json" },
+    { "path": "config/tsconfig/tsconfig.node.json" }
+  ],
+  "include": ["src"]
 }
