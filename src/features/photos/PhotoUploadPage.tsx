@@ -6,11 +6,13 @@ import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
 import { photoAPI } from "@lib/api";
 
-interface PhotoFile extends File {
-  preview: string;
+interface PhotoFile {
   id?: number;
+  name: string;
+  preview: string;
   es_principal?: boolean;
   imagen?: string;
+  file?: File;
 }
 
 interface PhotoUploadPageProps {
@@ -19,8 +21,10 @@ interface PhotoUploadPageProps {
 
 const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   const queryClient = useQueryClient();
-  const [localFiles, setLocalFiles] = useState<PhotoFile[]>([]);
+  const [serverFiles, setServerFiles] = useState<PhotoFile[]>([]);
+  const [newFiles, setNewFiles] = useState<PhotoFile[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
 
   const {
     data: serverPhotos,
@@ -33,7 +37,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     queryFn: photoAPI.getPhotos,
   });
 
-  // Efecto para manejar success
   useEffect(() => {
     if (!isSuccess || !serverPhotos) return;
 
@@ -41,26 +44,27 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
     const photosArray = serverPhotos.results || serverPhotos;
 
-    const fetchedFiles: PhotoFile[] = photosArray.map((photo: any) => ({
-      name: photo.imagen.split("/").pop(),
-      size: 0,
-      type: "image/jpeg",
-      preview: photo.imagen,
-      id: photo.imagen_id || photo.id,
-      es_principal: photo.es_principal,
-      imagen: photo.imagen,
-    }));
+    const fetchedFiles: PhotoFile[] = photosArray.map((photo: any) => {
+      const imageUrl = photo.imagen;
+      const fileName = imageUrl ? imageUrl.split("/").pop() : `photo_${photo.id}`;
+      
+      return {
+        name: fileName,
+        preview: imageUrl,
+        id: photo.imagen_id || photo.id,
+        es_principal: photo.es_principal,
+        imagen: imageUrl,
+      };
+    });
 
-    setLocalFiles(fetchedFiles);
+    setServerFiles(fetchedFiles);
   }, [isSuccess, serverPhotos]);
 
-  // Efecto para manejar error
   useEffect(() => {
     if (!isError || !error) return;
 
     console.error("Error cargando fotos:", error);
 
-    // Typescript: error puede no tener response
     const err: any = error;
 
     toast.error(
@@ -68,7 +72,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     );
   }, [isError, error]);
 
-  // Mutación para subir fotos
   const uploadMutation = useMutation({
     mutationFn: photoAPI.uploadPhoto,
     onSuccess: (data) => {
@@ -133,72 +136,118 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     },
   });
 
-  const handleFileInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(e.target.files || []);
-      const currentTotalFiles = localFiles.length;
-      const maxFilesAllowed = 3;
-      const remainingSlots = maxFilesAllowed - currentTotalFiles;
+  const processFiles = useCallback((files: File[], targetIndex?: number) => {
+    const currentTotalFiles = serverFiles.length + newFiles.length;
+    const maxFilesAllowed = 3;
+    const remainingSlots = maxFilesAllowed - currentTotalFiles;
 
-      if (files.length === 0) return;
+    if (files.length === 0) return;
 
-      let acceptedFiles = files;
-      if (files.length > remainingSlots) {
-        toast.error(`Solo puedes subir ${remainingSlots} imagen(es) más.`);
-        acceptedFiles = files.slice(0, remainingSlots);
-      }
+    let acceptedFiles = files;
+    if (files.length > remainingSlots) {
+      toast.error(`Solo puedes subir ${remainingSlots} imagen(es) más.`);
+      acceptedFiles = files.slice(0, remainingSlots);
+    }
 
-      const newFiles: PhotoFile[] = [];
-      acceptedFiles.forEach((file) => {
-        const max_size_mb = 5;
-        if (file.size > max_size_mb * 1024 * 1024) {
-          toast.error(
-            `El archivo '${file.name}' es muy grande. Máximo ${max_size_mb}MB.`
-          );
-          return;
-        }
-
-        // Validar tipo de archivo
-        if (!file.type.startsWith("image/")) {
-          toast.error(`El archivo '${file.name}' no es una imagen válida.`);
-          return;
-        }
-
-        newFiles.push(
-          Object.assign(file, {
-            preview: URL.createObjectURL(file),
-            es_principal: false,
-          })
+    const processedFiles: PhotoFile[] = [];
+    acceptedFiles.forEach((file) => {
+      const max_size_mb = 5;
+      if (file.size > max_size_mb * 1024 * 1024) {
+        toast.error(
+          `El archivo '${file.name}' es muy grande. Máximo ${max_size_mb}MB.`
         );
-      });
-
-      setLocalFiles((prevFiles) => {
-        const updatedFiles = [...prevFiles, ...newFiles];
-
-        // Si es la primera imagen que se sube, marcarla como principal localmente
-        if (prevFiles.length === 0 && newFiles.length > 0) {
-          updatedFiles[0].es_principal = true;
-        }
-
-        return updatedFiles;
-      });
-
-      if (newFiles.length > 0) {
-        toast.info(`${newFiles.length} imagen(es) lista(s) para guardar.`);
+        return;
       }
 
-      // Limpiar el input
+      if (!file.type.startsWith("image/")) {
+        toast.error(`El archivo '${file.name}' no es una imagen válida.`);
+        return;
+      }
+
+      processedFiles.push({
+        name: file.name,
+        preview: URL.createObjectURL(file),
+        es_principal: false,
+        file: file
+      });
+    });
+
+    setNewFiles((prevFiles) => {
+      let updatedFiles = [...prevFiles];
+      
+      if (targetIndex !== undefined) {
+        // Si hay targetIndex, reemplazar/agregar en esa posición específica
+        let currentIndex = targetIndex;
+        for (const processedFile of processedFiles) {
+          if (currentIndex < updatedFiles.length) {
+            // Liberar URL anterior si existe
+            if (updatedFiles[currentIndex].preview.startsWith("blob:")) {
+              URL.revokeObjectURL(updatedFiles[currentIndex].preview);
+            }
+            updatedFiles[currentIndex] = processedFile;
+          } else {
+            // Agregar en posición específica
+            updatedFiles[currentIndex] = processedFile;
+          }
+          currentIndex++;
+          
+          // No exceder el máximo de archivos
+          if (currentIndex >= maxFilesAllowed) break;
+        }
+      } else {
+        // Sin targetIndex, agregar al final
+        updatedFiles = [...prevFiles, ...processedFiles];
+      }
+
+      // Filtrar elementos undefined y limitar a máximo 3
+      updatedFiles = updatedFiles.filter(file => file !== undefined).slice(0, maxFilesAllowed);
+
+      // Si es la primera imagen, marcarla como principal
+      if (prevFiles.length === 0 && serverFiles.length === 0 && processedFiles.length > 0) {
+        updatedFiles[0].es_principal = true;
+      }
+
+      return updatedFiles;
+    });
+
+    if (processedFiles.length > 0) {
+      toast.info(`${processedFiles.length} imagen(es) lista(s) para guardar.`);
+    }
+  }, [serverFiles.length, newFiles.length]);
+
+  const handleFileInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>, targetIndex?: number) => {
+      const files = Array.from(e.target.files || []);
+      processFiles(files, targetIndex);
       e.target.value = "";
     },
-    [localFiles]
+    [processFiles]
   );
 
+  const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDraggingIndex(index);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDraggingIndex(null);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault();
+    setDraggingIndex(null);
+    
+    const files = Array.from(e.dataTransfer.files || []);
+    processFiles(files, targetIndex);
+  }, [processFiles]);
+
   const handleDeleteFile = useCallback(
-    (fileToDelete: PhotoFile) => {
-      if (fileToDelete.id) {
+    (fileToDelete: PhotoFile, isServerFile: boolean) => {
+      if (isServerFile && fileToDelete.id) {
         deleteMutation.mutate(fileToDelete.id);
       } else {
-        setLocalFiles((prevFiles) => {
+        setNewFiles((prevFiles) => {
           const newFiles = prevFiles.filter((file) => file !== fileToDelete);
           // Si eliminamos la imagen principal, establecer la primera como principal
           if (fileToDelete.es_principal && newFiles.length > 0) {
@@ -206,7 +255,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
           }
           return newFiles;
         });
-        // Liberar URL del objeto
+        // Liberar URL
         if (fileToDelete.preview.startsWith("blob:")) {
           URL.revokeObjectURL(fileToDelete.preview);
         }
@@ -217,13 +266,12 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   );
 
   const handleSetPrincipal = useCallback(
-    (fileToSetPrincipal: PhotoFile) => {
-      if (fileToSetPrincipal.id) {
-        // Si ya está en el servidor, actualizar directamente
+    (fileToSetPrincipal: PhotoFile, isServerFile: boolean) => {
+      if (isServerFile && fileToSetPrincipal.id) {
         setPrincipalMutation.mutate(fileToSetPrincipal.id);
-      } else {
-        // Si es local, actualizar el estado local
-        setLocalFiles((prevFiles) =>
+      } else if (!isServerFile) {
+        // Para archivos nuevos, actualizar el estado local
+        setNewFiles((prevFiles) =>
           prevFiles.map((file) => ({
             ...file,
             es_principal: file === fileToSetPrincipal,
@@ -239,11 +287,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
   const handleSave = useCallback(
     async (onSuccess?: () => void) => {
-      const newFiles = localFiles.filter((file) => !file.id);
-      const principalFile = localFiles.find(
-        (file) => file.es_principal && !file.id
-      );
-
       if (newFiles.length === 0) {
         toast.info("No hay nuevas imágenes para guardar.");
         onSuccess?.();
@@ -255,80 +298,57 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
       try {
         console.log("🚀 Iniciando subida de", newFiles.length, "archivos");
 
-        // Subir archivos uno por uno
+        // Subir nuevas imágenes
         for (let i = 0; i < newFiles.length; i++) {
-          const file = newFiles[i];
-          console.log(
-            `📤 Subiendo archivo ${i + 1}/${newFiles.length}:`,
-            file.name
-          );
+          const fileData = newFiles[i];
+          if (fileData.file) {
+            console.log(
+              `📤 Subiendo archivo ${i + 1}/${newFiles.length}:`,
+              fileData.name
+            );
 
-          await uploadMutation.mutateAsync(file);
-
-          // Esperar un poco para que el backend procese la imagen
-          await new Promise((resolve) => setTimeout(resolve, 500));
+            await uploadMutation.mutateAsync(fileData.file);
+            await new Promise((resolve) => setTimeout(resolve, 500));
+          }
         }
 
-        // Invalidar queries para obtener los nuevos datos
+        // Buscar imagen principal entre las nuevas
+        const principalNewFile = newFiles.find((file) => file.es_principal);
+
+        // Esperar y refrescar datos del servidor
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         await queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
 
-        // Si hay una imagen principal local, establecerla como principal en el servidor
-        if (principalFile) {
-          console.log("🎯 Buscando imagen principal para establecer...");
+        // Establecer imagen principal si hay una seleccionada
+        if (principalNewFile) {
+          console.log("🎯 Buscando imagen principal...");
 
-          // Esperar un poco más y obtener las fotos actualizadas
-          await new Promise((resolve) => setTimeout(resolve, 1000));
-
-          // Obtener las fotos actualizadas del servidor
           const updatedPhotosResponse = await queryClient.fetchQuery({
             queryKey: ["userPhotos"],
             queryFn: photoAPI.getPhotos,
           });
 
-          console.log("📷 Respuesta actualizada:", updatedPhotosResponse);
+          const updatedPhotos = updatedPhotosResponse.results || updatedPhotosResponse;
 
-          // Acceder a results si existe, sino usar el array directamente
-          const updatedPhotos =
-            updatedPhotosResponse.results || updatedPhotosResponse;
-          console.log("📸 Fotos actualizadas (array):", updatedPhotos);
-
-          if (Array.isArray(updatedPhotos)) {
-            // Buscar la imagen principal por nombre (aproximación)
+          if (Array.isArray(updatedPhotos) && updatedPhotos.length > 0) {
+            // Buscar la imagen principal por nombre
             const principalServerPhoto = updatedPhotos.find((photo: any) => {
-              const photoName = photo.imagen.split("/").pop().toLowerCase();
-              const principalName = principalFile.name.toLowerCase();
-              return (
-                photoName.includes(principalName.split(".")[0]) ||
-                photo.es_principal
-              );
+              const photoName = photo.imagen?.split("/").pop()?.toLowerCase() || '';
+              const principalName = principalNewFile.name?.toLowerCase() || '';
+              return photoName.includes(principalName.split(".")[0]);
             });
 
             if (principalServerPhoto) {
-              console.log(
-                "🎯 Estableciendo imagen principal:",
-                principalServerPhoto
-              );
-              const photoId =
-                principalServerPhoto.imagen_id || principalServerPhoto.id;
+              console.log("🎯 Estableciendo imagen principal:", principalServerPhoto);
+              const photoId = principalServerPhoto.imagen_id || principalServerPhoto.id;
               await setPrincipalMutation.mutateAsync(photoId);
-              console.log("✅ Imagen principal establecida");
-            } else {
-              console.warn(
-                "⚠️ No se encontró la imagen principal en el servidor"
-              );
-              // Si no se encuentra, establecer la primera imagen como principal
-              if (updatedPhotos.length > 0) {
-                const firstPhoto = updatedPhotos[0];
-                const photoId = firstPhoto.imagen_id || firstPhoto.id;
-                console.log(
-                  "🔄 Estableciendo primera imagen como principal:",
-                  firstPhoto
-                );
-                await setPrincipalMutation.mutateAsync(photoId);
-              }
+            } else if (updatedPhotos.length > 0) {
+              // Fallback: establecer primera imagen como principal
+              const firstPhoto = updatedPhotos[0];
+              const photoId = firstPhoto.imagen_id || firstPhoto.id;
+              console.log("🔄 Estableciendo primera imagen como principal:", firstPhoto);
+              await setPrincipalMutation.mutateAsync(photoId);
             }
-          } else {
-            console.error("❌ updatedPhotos no es un array:", updatedPhotos);
           }
         }
 
@@ -336,47 +356,51 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
         onSuccess?.();
       } catch (error) {
         console.error("💥 Error durante la subida:", error);
+        toast.error("Error al guardar las imágenes");
       } finally {
         setIsSaving(false);
       }
     },
-    [localFiles, uploadMutation, setPrincipalMutation, queryClient]
+    [newFiles, uploadMutation, setPrincipalMutation, queryClient]
   );
 
   const handleDeleteAll = useCallback(() => {
-    const serverFileIds = localFiles.filter((f) => f.id).map((f) => f.id);
-    if (serverFileIds.length > 0) {
-      serverFileIds.forEach((id) => id && deleteMutation.mutate(id));
-    }
+    // Eliminar archivos del servidor
+    serverFiles.forEach((file) => {
+      if (file.id) {
+        deleteMutation.mutate(file.id);
+      }
+    });
 
-    // Liberar URLs de objetos
-    localFiles.forEach((file) => {
+    // Liberar URLs de archivos nuevos
+    newFiles.forEach((file) => {
       if (file.preview.startsWith("blob:")) {
         URL.revokeObjectURL(file.preview);
       }
     });
 
-    setLocalFiles([]);
+    setNewFiles([]);
     toast.info("Todas las imágenes removidas.");
-  }, [localFiles, deleteMutation]);
+  }, [serverFiles, newFiles, deleteMutation]);
 
   const handleContinue = useCallback(() => {
-    if (localFiles.length === 0) {
+    const totalFiles = serverFiles.length + newFiles.length;
+    if (totalFiles === 0) {
       toast.error("Debes subir al menos una imagen para continuar.");
       return;
     }
     handleSave(onComplete);
-  }, [localFiles, handleSave, onComplete]);
+  }, [serverFiles.length, newFiles, handleSave, onComplete]);
 
   useEffect(() => {
     return () => {
-      localFiles.forEach((file) => {
+      newFiles.forEach((file) => {
         if (file.preview.startsWith("blob:")) {
           URL.revokeObjectURL(file.preview);
         }
       });
     };
-  }, [localFiles]);
+  }, [newFiles]);
 
   if (isLoadingPhotos) {
     return (
@@ -389,9 +413,88 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     );
   }
 
+  const renderImageSlot = (index: number) => {
+    const allFiles = [...serverFiles, ...newFiles];
+    const photo = allFiles[index];
+    const isServerFile = index < serverFiles.length;
+    const isLarge = index === 0;
+    const width = isLarge ? "w-72" : "w-56";
+    const height = isLarge ? "h-96" : "h-44";
+    
+    return (
+      <div>
+        {photo ? (
+          <div className={`${width} ${height} rounded-3xl overflow-hidden shadow-2xl relative group`}>
+            <img
+              src={photo.preview}
+              alt={isLarge ? "Principal" : `Secundaria ${index}`}
+              className="w-full h-full object-cover"
+            />
+            <div className={`absolute ${isLarge ? 'top-4 right-4' : 'top-3 right-3'} flex gap-2`}>
+              <button
+                onClick={() => handleSetPrincipal(photo, isServerFile)}
+                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center shadow-lg hover:bg-white transition-all ${
+                  photo.es_principal
+                    ? "opacity-100"
+                    : "opacity-0 group-hover:opacity-100"
+                }`}
+              >
+                <Star
+                  className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} ${
+                    photo.es_principal
+                      ? "fill-yellow-400 text-yellow-400"
+                      : "text-gray-700"
+                  }`}
+                />
+              </button>
+              <button
+                onClick={() => handleDeleteFile(photo, isServerFile)}
+                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100`}
+              >
+                <Trash2 className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} text-gray-700`} />
+              </button>
+            </div>
+            {photo.es_principal && (
+              <div className={`absolute ${isLarge ? 'top-4 left-4' : 'top-3 left-3'} bg-red-500 text-white ${isLarge ? 'px-3 py-1 text-sm' : 'px-2 py-1 text-xs'} rounded-full font-semibold`}>
+                Principal
+              </div>
+            )}
+          </div>
+        ) : (
+          <label 
+            className={`${width} ${height} rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all shadow-lg ${
+              draggingIndex === index 
+                ? "border-red-500 bg-red-50 border-4" 
+                : "border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50"
+            }`}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDragLeave={(e) => handleDragLeave(e, index)}
+            onDrop={(e) => handleDrop(e, index)}
+          >
+            <input
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              multiple={true}
+              className="hidden"
+              onChange={(e) => handleFileInputChange(e, index)}
+            />
+            <div className={`${isLarge ? 'text-6xl mb-3' : 'text-4xl mb-2'}`}>📷</div>
+            <p className={`text-gray-500 ${isLarge ? 'text-base' : 'text-sm'} font-medium`}>
+              {draggingIndex === index ? "Suelta las imágenes aquí" : "Subir foto"}
+            </p>
+            {isLarge && (
+              <p className="text-gray-400 text-sm mt-2">
+                o arrastra y suelta
+              </p>
+            )}
+          </label>
+        )}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen w-full flex relative bg-[#FFF0EC]">
-      {/* Fondo pegado abajo */}
       <div
         className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3"
         style={{
@@ -402,36 +505,29 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
         }}
       />
 
-      {/* Botón volver - esquina superior izquierda */}
       <button className="absolute top-8 left-8 text-gray-600 hover:text-gray-800 text-2xl z-20">
         ←
       </button>
 
-      {/* Contenedor principal dividido en 2 columnas */}
       <div className="flex flex-1 w-full relative z-10">
-        {/* COLUMNA IZQUIERDA - 50% */}
         <div className="w-1/2 flex flex-col items-center justify-center px-12 -mt-60">
           <div className="max-w-md text-center">
-            {/* Logo */}
             <div className="flex justify-center mb-6">
               <img src={logo} alt="Logo" className="w-24 h-24 object-contain" />
             </div>
 
-            {/* Título */}
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Sube tus mejores fotos
             </h1>
 
-            {/* Descripción */}
             <p className="text-gray-700 text-lg mb-8">
               Puedes subir entre 1 y 3 imágenes para tu perfil.
             </p>
 
-            {/* Botón Continuar */}
             <button
               onClick={handleContinue}
               disabled={
-                localFiles.length === 0 || isSaving || uploadMutation.isPending
+                (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
               }
               className="w-full px-10 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-lg shadow-lg"
             >
@@ -442,135 +538,21 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
           </div>
         </div>
 
-        {/* COLUMNA DERECHA - 50% */}
         <div className="w-1/2 flex flex-col items-center justify-center pr-12">
           <div className="flex gap-6 mb-8">
-            {/* Foto Principal (grande vertical) */}
-            <div>
-              {localFiles[0] ? (
-                <div className="w-72 h-96 rounded-3xl overflow-hidden shadow-2xl relative group">
-                  <img
-                    src={localFiles[0].preview}
-                    alt="Principal"
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      onClick={() => handleSetPrincipal(localFiles[0])}
-                      className={`bg-white/95 backdrop-blur-sm rounded-xl w-11 h-11 flex items-center justify-center shadow-lg hover:bg-white transition-all ${
-                        localFiles[0].es_principal
-                          ? "opacity-100"
-                          : "opacity-0 group-hover:opacity-100"
-                      }`}
-                    >
-                      <Star
-                        className={`w-5 h-5 ${
-                          localFiles[0].es_principal
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-700"
-                        }`}
-                      />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteFile(localFiles[0])}
-                      className="bg-white/95 backdrop-blur-sm rounded-xl w-11 h-11 flex items-center justify-center shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 className="w-5 h-5 text-gray-700" />
-                    </button>
-                  </div>
-                  {localFiles[0].es_principal && (
-                    <div className="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Principal
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <label className="w-72 h-96 rounded-3xl border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all shadow-lg">
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png,image/webp"
-                    multiple
-                    className="hidden"
-                    onChange={handleFileInputChange}
-                  />
-                  <div className="text-6xl mb-3">📷</div>
-                  <p className="text-gray-500 text-base font-medium">
-                    Subir foto
-                  </p>
-                </label>
-              )}
-            </div>
-
-            {/* Fotos Secundarias (2 pequeñas apiladas) */}
+            {renderImageSlot(0)}
+            
             <div className="flex flex-col gap-6">
-              {[1, 2].map((index) => {
-                const photo = localFiles[index];
-                return (
-                  <div key={index}>
-                    {photo ? (
-                      <div className="w-56 h-44 rounded-3xl overflow-hidden shadow-2xl relative group">
-                        <img
-                          src={photo.preview}
-                          alt={`Secundaria ${index}`}
-                          className="w-full h-full object-cover"
-                        />
-                        <div className="absolute top-3 right-3 flex gap-2">
-                          <button
-                            onClick={() => handleSetPrincipal(photo)}
-                            className={`bg-white/95 backdrop-blur-sm rounded-xl w-10 h-10 flex items-center justify-center shadow-lg hover:bg-white transition-all ${
-                              photo.es_principal
-                                ? "opacity-100"
-                                : "opacity-0 group-hover:opacity-100"
-                            }`}
-                          >
-                            <Star
-                              className={`w-4 h-4 ${
-                                photo.es_principal
-                                  ? "fill-yellow-400 text-yellow-400"
-                                  : "text-gray-700"
-                              }`}
-                            />
-                          </button>
-                          <button
-                            onClick={() => handleDeleteFile(photo)}
-                            className="bg-white/95 backdrop-blur-sm rounded-xl w-10 h-10 flex items-center justify-center shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100"
-                          >
-                            <Trash2 className="w-4 h-4 text-gray-700" />
-                          </button>
-                        </div>
-                        {photo.es_principal && (
-                          <div className="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                            Principal
-                          </div>
-                        )}
-                      </div>
-                    ) : (
-                      <label className="w-56 h-44 rounded-3xl border-2 border-dashed border-gray-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 hover:bg-gray-50 transition-all shadow-lg">
-                        <input
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp"
-                          multiple
-                          className="hidden"
-                          onChange={handleFileInputChange}
-                        />
-                        <div className="text-4xl mb-2">📷</div>
-                        <p className="text-gray-500 text-sm font-medium">
-                          Subir foto
-                        </p>
-                      </label>
-                    )}
-                  </div>
-                );
-              })}
+              {renderImageSlot(1)}
+              {renderImageSlot(2)}
             </div>
           </div>
 
-          {/* BOTONES DEBAJO DE LAS IMÁGENES */}
           <div className="flex gap-6">
             <button
               onClick={() => handleSave()}
               disabled={
-                localFiles.length === 0 || isSaving || uploadMutation.isPending
+                newFiles.length === 0 || isSaving || uploadMutation.isPending
               }
               className="px-12 py-3.5 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-lg text-base"
             >
@@ -581,7 +563,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
             <button
               onClick={handleDeleteAll}
-              disabled={localFiles.length === 0}
+              disabled={(serverFiles.length + newFiles.length) === 0}
               className="px-12 py-3.5 bg-red-400 text-white rounded-xl font-semibold hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-lg text-base"
             >
               Eliminar
