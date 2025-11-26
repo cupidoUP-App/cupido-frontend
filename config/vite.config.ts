@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => {
     },
     plugins: [react(), isDev && componentTagger()].filter(Boolean),
     envDir: './config/env',
-    root: path.resolve(__dirname, ".."), 
+    root: path.resolve(__dirname, ".."),
     css: {
       postcss: path.resolve(__dirname, "./postcss.config.cjs"),
     },
@@ -36,13 +36,14 @@ export default defineConfig(({ mode }) => {
         "@lib": path.resolve(__dirname, "../src/shared/lib"),
         "@types": path.resolve(__dirname, "../src/shared/types"),
         "@home": path.resolve(__dirname, "../src/features/home"),
-        "@pages": path.resolve(__dirname, "../src/pages"),
+        "@pages": path.resolve(__dirname, "../src/shared/pages"),
         "@profile": path.resolve(__dirname, "../src/features/profile"),
         "@filters": path.resolve(__dirname, "../src/features/filters"),
         "@preferences": path.resolve(__dirname, "../src/features/preferences"),
         "@assets": path.resolve(__dirname, "../src/assets"),
         "@test": path.resolve(__dirname, "../src/shared/test"),
-        "@features": path.resolve(__dirname, "../src/features")
+        "@features": path.resolve(__dirname, "../src/features"),
+        "@components": path.resolve(__dirname, "../src/shared/components"),
       },
     },
     test: {
@@ -53,4 +54,4 @@ export default defineConfig(({ mode }) => {
   };
 });
 
-  
+

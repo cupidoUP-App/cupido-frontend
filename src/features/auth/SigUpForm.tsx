@@ -4,7 +4,7 @@ import EmailField from './components/forms/EmailField';
 import PasswordField from './components/forms/PasswordField';
 import ConfirmPasswordField from './components/forms/ConfirmPasswordField';
 import TermsCheckbox from '@lib/recaptcha/TermsCheckbox';
-import TermsAndConditions from './components/modals/TermsAndConditions';
+import TermsAndConditions from '@components/modals/TermsAndConditions';
 import ReCaptchaModal from './components/modals/ReCaptchaModal';
 import EmailVerificationModal from './components/modals/EmailVerificationModal';
 import { FormData, FormErrors, validateForm } from './utils/Validations';
@@ -13,7 +13,7 @@ import { authAPI } from '@lib/api';
 
 interface RegistroProps {
   onClose: () => void;
-  onSwitchToLogin?: () => void; 
+  onSwitchToLogin?: () => void;
 }
 
 
@@ -21,7 +21,7 @@ interface RegistroProps {
 type FormStep = 'initial' | 'captcha' | 'email-verification' | 'completed';
 
 const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
-    const { openLogin } = useAppStore();
+  const { openLogin } = useAppStore();
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -82,7 +82,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     console.log('Timestamp:', new Date().toISOString());
     console.log('Email del usuario:', formData.email);
     console.log('===================================');
-    
+
     setIsCaptchaVerified(true);
     setRecaptchaToken(token); // Guardar el token real
     setCurrentStep('initial'); // Volver al formulario principal
@@ -140,7 +140,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       console.log('Longitud del token:', recaptchaToken.length);
       console.log('Términos aceptados:', formData.acceptTerms);
       console.log('====================================');
-      
+
       const response = await authAPI.register({
         email: formData.email,
         contrasena: formData.password,
@@ -223,7 +223,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   };
 
   // Manejar verificación del código
-    const handleVerifyEmailCode = async (code: string) => {
+  const handleVerifyEmailCode = async (code: string) => {
     setIsSubmitting(true);
 
     try {
@@ -266,7 +266,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   // Validar campos básicos
   const validateBasicFields = (): boolean => {
     const emptyFields: string[] = [];
-    
+
     if (!formData.email.trim()) emptyFields.push('correo electrónico');
     if (!formData.password.trim()) emptyFields.push('contraseña');
     if (!formData.confirmPassword.trim()) emptyFields.push('confirmar contraseña');
@@ -281,7 +281,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       });
       return false;
     }
-    
+
     return true;
   };
 
@@ -295,10 +295,10 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     if (!validateBasicFields()) return;
 
     // DESACTIVADO PARA TESTING: PRIMER CLIC: Mostrar CAPTCHA si no está verificado
-     if (!isCaptchaVerified) {
-       setCurrentStep('captcha');
-       return;
-     }
+    if (!isCaptchaVerified) {
+      setCurrentStep('captcha');
+      return;
+    }
 
     // Para testing rápido, simular verificación de CAPTCHA
     /*if (!isCaptchaVerified) {
@@ -345,7 +345,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="w-[439px] h-[680px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
-          
+
           {/* Botón para cerrar */}
           <button
             onClick={onClose}
@@ -355,15 +355,15 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
-          </button>  
-          
+          </button>
+
           {/* Contenido del formulario */}
           <div className="h-full flex flex-col p-5">
             {/* Logo centrado en la parte superior */}
             <div className="flex justify-center mb-4">
-              <img 
-                src="src/assets/logo-login.webp" 
-                alt="CUPIDO Logo" 
+              <img
+                src="src/assets/logo-login.webp"
+                alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
             </div>
@@ -375,7 +375,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
                 Bienvenido a{' '}
                 <span className="text-[#E93923] font-semibold">CUPIDO</span>
               </div>
-              
+
               {/* Línea 2: "Registrarse" más grande */}
               <div className="text-black text-4xl font-medium font-['Poppins'] mt-2">
                 Registrarse
@@ -420,7 +420,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
                     Primero debes completar la verificación de seguridad
                   </div>
                 )}
-                
+
                 {isCaptchaVerified && (
                   <div className="flex items-center justify-center text-green-600 text-xs">
                     <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">

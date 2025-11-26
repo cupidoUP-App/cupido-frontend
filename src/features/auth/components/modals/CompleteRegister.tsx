@@ -4,7 +4,7 @@ import RightSideWithParticles from "@lib/recaptcha/RightSideWithParticles";
 import { authAPI } from "@lib/api";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
-import PreferencesPage from "@preferences/components/PreferencesPage";
+import PreferencesPage from "@/features/preferences/pages/PreferencesPage";
 
 interface CompleteRegisterProps {
   isOpen: boolean;
@@ -130,12 +130,11 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
 
     try {
       // Formatear fecha de nacimiento
-      const birthDate = `${
-        formData.birthDate.year
-      }-${formData.birthDate.month.padStart(
-        2,
-        "0"
-      )}-${formData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${formData.birthDate.year
+        }-${formData.birthDate.month.padStart(
+          2,
+          "0"
+        )}-${formData.birthDate.day.padStart(2, "0")}`;
 
       // Mapear género a ID (asumiendo que el backend espera IDs numéricos)
       const genderMapping: { [key: string]: number } = {
@@ -427,9 +426,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                         handleInputChange("name", value);
                       }
                     }}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                      errors.name ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.name ? "border-red-500" : "border-gray-300"
+                      }`}
                     placeholder="Tu nombre"
                     maxLength={50}
                     disabled={isSubmitting}
@@ -458,9 +456,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                         handleInputChange("lastName", value);
                       }
                     }}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                      errors.lastName ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.lastName ? "border-red-500" : "border-gray-300"
+                      }`}
                     placeholder="Tus apellidos"
                     maxLength={50}
                     disabled={isSubmitting}
@@ -481,9 +478,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                 <select
                   value={formData.gender}
                   onChange={(e) => handleInputChange("gender", e.target.value)}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                    errors.gender ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.gender ? "border-red-500" : "border-gray-300"
+                    }`}
                   disabled={isSubmitting}
                 >
                   <option value="">Selecciona</option>
@@ -513,9 +509,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       onChange={(e) =>
                         handleBirthDateChange("day", e.target.value)
                       }
-                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                        errors.birthDate ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.birthDate ? "border-red-500" : "border-gray-300"
+                        }`}
                       disabled={isSubmitting}
                     >
                       <option value="">DD</option>
@@ -534,9 +529,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       onChange={(e) =>
                         handleBirthDateChange("month", e.target.value)
                       }
-                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                        errors.birthDate ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.birthDate ? "border-red-500" : "border-gray-300"
+                        }`}
                       disabled={isSubmitting}
                     >
                       <option value="">MM</option>
@@ -555,9 +549,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       onChange={(e) =>
                         handleBirthDateChange("year", e.target.value)
                       }
-                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                        errors.birthDate ? "border-red-500" : "border-gray-300"
-                      }`}
+                      className={`w-full px-2 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${errors.birthDate ? "border-red-500" : "border-gray-300"
+                        }`}
                       disabled={isSubmitting}
                     >
                       <option value="">AAAA</option>
@@ -592,9 +585,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
                       handleInputChange("description", value);
                     }
                   }}
-                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs resize-none ${
-                    errors.description ? "border-red-500" : "border-gray-300"
-                  }`}
+                  className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs resize-none ${errors.description ? "border-red-500" : "border-gray-300"
+                    }`}
                   placeholder="Cuéntanos sobre ti..."
                   rows={3}
                   maxLength={250}
