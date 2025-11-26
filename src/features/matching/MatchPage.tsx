@@ -398,7 +398,7 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
               >
                 <img
                   src={OptionDots}
-                  alt="Options"
+                  alt="Options menu icon (three vertical dots)"
                   className={`w-6 h-6  ${isAtTop ? "invert" : ""}`}
                   style={isAtTop ? { filter: "invert(1)" } : { filter: "invert(0)" }}
                 />
