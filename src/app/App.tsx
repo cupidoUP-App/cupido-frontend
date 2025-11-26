@@ -8,6 +8,7 @@ import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
 import EditPreferencesPage from "@profile/components/EditPreferencesPage";
 import NotFound from "@pages/NotFound";
+import MatchPage from "../features/matching/MatchPage";
 
 
 const queryClient = new QueryClient();
@@ -21,6 +22,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/Match" element={<MatchPage/>} />
           <Route path="/edit-profile" element={<EditProfilePage />} />
           <Route path="/edit-preferences" element={<EditPreferencesPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
