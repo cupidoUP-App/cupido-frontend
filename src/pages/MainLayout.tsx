@@ -1,0 +1,28 @@
+import { Outlet } from "react-router-dom";
+import { useState } from "react";
+import Sidebar from "@features/sidebar/components/Sidebar";
+import ModalCerrarSesion from "@features/sidebar/components/ModalCerrarSesion";
+
+
+const MainLayout = () => {
+  const [modalCerrar, setModalCerrar] = useState(false);
+
+  return (
+    <div style={{ display: "flex" }}>
+      {/* Sidebar solo se muestra aquí */}
+      <Sidebar abrirModalCerrar={() => setModalCerrar(true)} />
+
+      {/* Contenido principal */}
+      <div style={{ flex: 1 }}>
+        <Outlet />
+      </div>
+
+      {/* Modal */}
+      {modalCerrar && (
+        <ModalCerrarSesion onCancel={() => setModalCerrar(false)} />
+      )}
+    </div>
+  );
+};
+
+export default MainLayout;
