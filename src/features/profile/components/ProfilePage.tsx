@@ -32,14 +32,12 @@ const ProfilePage = () => {
           profile = null;
         }
 
-        // 🔥 OBTENER IMÁGENES REALES DEL USUARIO - CORREGIDO
         console.log("Obteniendo imágenes del usuario...");
         let userPhotos: string[] = [];
         try {
           const photosResponse = await photoAPI.getPhotos();
           console.log("🔍 Respuesta CRUDA de imágenes:", photosResponse);
-          
-          // La respuesta tiene estructura {count, next, previous, results}
+
           if (photosResponse && photosResponse.results && Array.isArray(photosResponse.results)) {
             userPhotos = photosResponse.results.map((photo: any) => {
               console.log("🔍 Procesando foto:", photo);
@@ -47,21 +45,17 @@ const ProfilePage = () => {
               if (photo.imagen) {
                 const imageUrl = photo.imagen;
                 console.log("🔍 URL de imagen encontrada:", imageUrl);
-                
-                // 🔥 CORRECCIÓN: Verificar si ya es una URL completa
+
                 if (imageUrl.startsWith('http')) {
-                  return imageUrl; // Ya es URL completa, usar directamente
+                  return imageUrl; 
                 }
-                
-                // 🔥 CORRECCIÓN: Si es una ruta de media, construir URL correcta
+
                 if (imageUrl.startsWith('/media/')) {
-                  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-                  // Remover el /api/v1/ duplicado que se estaba agregando
+                  const baseUrl = import.meta.env.VITE_API_BASE_URL;
                   return `${baseUrl}${imageUrl}`;
                 }
-                
-                // Para cualquier otra ruta relativa
-                const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
+                const baseUrl = import.meta.env.VITE_API_BASE_URL;
                 return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
               }
               
@@ -75,7 +69,6 @@ const ProfilePage = () => {
           userPhotos = [];
         }
 
-        // Si no hay imágenes, usar algunas de prueba locales
         if (userPhotos.length === 0) {
           console.log("⚠️ No se encontraron imágenes, usando imágenes de prueba locales");
           userPhotos = [
@@ -85,7 +78,6 @@ const ProfilePage = () => {
           ];
         }
 
-        // Cargar catálogos
         let degreesCatalog: any[] = [];
         let locationsCatalog: any[] = [];
         try {
@@ -97,7 +89,6 @@ const ProfilePage = () => {
           locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
         } catch {}
 
-        // Calculate age from birth date
         const birthDate = new Date(userProfile.fechanacimiento);
         const today = new Date();
         const age = today.getFullYear() - birthDate.getFullYear() -

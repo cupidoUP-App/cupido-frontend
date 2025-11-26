@@ -1,0 +1,51 @@
+.opciones-menu {
+    position: fixed;
+    background: white;
+    padding: 18px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    width: 200px;
+    z-index: 999;
+    font-family: "Poppins", sans-serif;
+    left: 70px;
+    bottom: 80px;
+  }
+  
+  .opcion-item {
+    background: none;
+    border: none;
+    font-size: 17px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px 0;
+    font-family: "Poppins", sans-serif;
+  }
+  
+  .opcion-item:hover {
+    background: #f2f2f2;
+    border-radius: 8px;
+  }
+  
+  .linea-separadora {
+    margin: 10px 0;
+    border: none;
+    height: 1px;
+    background: #e5e5e5;
+  }
+  
+  .opcion-desactivada {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  @media (max-width: 820px) {
+    .opciones-menu {
+      position: fixed;
+      bottom: 90px;   
+      left: 50%;     
+      transform: translateX(-50%);
+      right: auto;
+    }
+  }
+  
