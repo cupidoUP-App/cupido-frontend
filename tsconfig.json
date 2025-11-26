@@ -1,8 +1,11 @@
 {
   "extends": "./config/tsconfig/tsconfig.app.json",
   "references": [
-    { "path": "config/tsconfig/tsconfig.app.json" },
-    { "path": "config/tsconfig/tsconfig.node.json" }
-  ],
-  "include": ["src"]
+    {
+      "path": "config/tsconfig/tsconfig.app.json"
+    },
+    {
+      "path": "config/tsconfig/tsconfig.node.json"
+    }
+  ]
 }

@@ -9,7 +9,7 @@ import CompleteRegister, {
   RegistrationData,
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@lib/api";
-import PreferencesPage from "@preferences/components/PreferencesPage";
+import PreferencesPage from "@/features/preferences/pages/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 
 interface User {
@@ -228,12 +228,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${
-        userData.birthDate.year
-      }-${userData.birthDate.month.padStart(
-        2,
-        "0"
-      )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${userData.birthDate.year
+        }-${userData.birthDate.month.padStart(
+          2,
+          "0"
+        )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,

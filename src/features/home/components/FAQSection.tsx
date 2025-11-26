@@ -72,7 +72,7 @@ export default function FAQSection() {
                     <ChevronDown className="w-5 h-5 text-muted-foreground flex-shrink-0" />
                   )}
                 </button>
-                
+
                 {openIndex === index && (
                   <div
                     id={`faq-answer-${index}`}
@@ -93,7 +93,7 @@ export default function FAQSection() {
               ¿No encuentras la respuesta que buscas?
             </p>
             <button className="text-primary hover:text-accent transition-colors font-medium">
-              Contáctanos para más ayuda
+              <a target="_blank" href="https://github.com/cupidoUP-App">Contáctanos para más ayuda</a>
             </button>
           </div>
         </div>
