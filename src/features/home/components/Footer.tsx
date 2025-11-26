@@ -1,17 +1,29 @@
+import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useAppStore } from '@store/appStore';
+import TermsAndConditions from '@components/modals/TermsAndConditions';
 import logofemlight from '@/assets/logofemlight.webp';
 import logomasclight from '@/assets/logomasclight.webp';
 
 export default function Footer() {
   const { theme } = useAppStore();
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
+  const handleLegalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href?: string) => {
+    // Si es un enlace legal (términos, privacidad, cookies), abrir el modal
+    if (href && (href.includes('#terms') || href.includes('#privacy') || href.includes('#cookies'))) {
+      e.preventDefault();
+      setIsTermsModalOpen(true);
+    }
+  };
+
   const footerSections = [
     {
       title: 'cUPido',
       links: [
-        { label: 'Acerca de', href: '#about' },
-        { label: 'Equipo', href: '#team' },
-        { label: 'Blog (futuro)', href: '#blog', disabled: true }
+        { label: 'Acerca de', target: '_blank', href: 'https://github.com/cupidoUP-App' },
+        { label: 'Equipo', target: '_blank', href: 'https://github.com/orgs/cupidoUP-App/people' },
+        { label: 'Blog (futuro)', disabled: true }
       ]
     },
     {
@@ -25,9 +37,9 @@ export default function Footer() {
     {
       title: 'Soporte',
       links: [
-        { label: 'Ayuda', href: '#help' },
-        { label: 'Contacto', href: '#contact' },
-        { label: 'Reportar', href: '#report' }
+        { label: 'Ayuda', href: '#faq' },
+        { label: 'Contacto', target: '_blank', href: 'https://github.com/cupidoUP-App' },
+        { label: 'Reportar (Futuro)', disabled: true }
       ]
     }
   ];
@@ -35,65 +47,76 @@ export default function Footer() {
   const logo = theme === 'femenino' ? logofemlight : logomasclight;
 
   return (
-    <footer className="bg-foreground text-background">
-      <div className="container mx-auto px-6 lg:px-8 py-16">
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Brand section */}
-          <div className="md:col-span-2 lg:col-span-1">
-            <div className="flex items-center space-x-3 mb-6">
-              <img src={logo} alt="cUPido" className="h-8 w-auto" />
-              <span className="font-display font-bold text-xl">cUPido</span>
+    <>
+      <footer className="bg-foreground text-background">
+        <div className="container mx-auto px-6 lg:px-8 py-16">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {/* Brand section */}
+            <div className="md:col-span-2 lg:col-span-1">
+              <div className="flex items-center space-x-3 mb-6">
+                <img src={logo} alt="cUPido" className="h-8 w-auto" />
+                <span className="font-display font-bold text-xl">cUPido</span>
+              </div>
+              <p className="text-background/80 mb-6 leading-relaxed">
+                Conecta con estudiantes verificados en tu campus.
+                Matches auténticos para relaciones reales.
+              </p>
+              <div className="flex items-center space-x-2 text-sm text-background/60">
+                <span>Hecho con</span>
+                <Heart className="w-4 h-4 text-accent fill-current" />
+                <span>para jóvenes</span>
+              </div>
             </div>
-            <p className="text-background/80 mb-6 leading-relaxed">
-              Conecta con estudiantes verificados en tu campus. 
-              Matches auténticos para relaciones reales.
-            </p>
-            <div className="flex items-center space-x-2 text-sm text-background/60">
-              <span>Hecho con</span>
-              <Heart className="w-4 h-4 text-accent fill-current" />
-              <span>para jóvenes</span>
-            </div>
+
+            {/* Links sections */}
+            {footerSections.map((section, index) => (
+              <div key={index}>
+                <h4 className="font-display font-semibold text-lg mb-6">
+                  {section.title}
+                </h4>
+                <ul className="space-y-3">
+                  {section.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <a
+                        href={link.href}
+                        onClick={(e) => handleLegalLinkClick(e, link.href)}
+                        className={`text-background/80 hover:text-background transition-colors duration-200 ${link.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+                          }`}
+                        {...(link.disabled && { 'aria-disabled': 'true' })}
+                        {...(link.target && { target: link.target, rel: 'noopener noreferrer' })}
+                      >
+                        {link.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
 
-          {/* Links sections */}
-          {footerSections.map((section, index) => (
-            <div key={index}>
-              <h4 className="font-display font-semibold text-lg mb-6">
-                {section.title}
-              </h4>
-              <ul className="space-y-3">
-                {section.links.map((link, linkIndex) => (
-                  <li key={linkIndex}>
-                    <a
-                      href={link.href}
-                      className={`text-background/80 hover:text-background transition-colors duration-200 ${
-                        link.disabled ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      {...(link.disabled && { 'aria-disabled': 'true' })}
-                    >
-                      {link.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
+          {/* Bottom section */}
+          <div className="border-t border-background/20 pt-8">
+            <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+              <div className="text-background/60 text-sm">
+                © 2025 cUPido — Proyecto académico. Todos los derechos reservados.
+              </div>
 
-        {/* Bottom section */}
-        <div className="border-t border-background/20 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-background/60 text-sm">
-              © 2025 cUPido — Proyecto académico. Todos los derechos reservados.
-            </div>
-            
-            <div className="flex items-center space-x-6 text-sm text-background/60">
-              <span>Ingeniería de Software II</span>
-              <span>•</span>
+              <div className="flex items-center space-x-6 text-sm text-background/60">
+                <span>Ingeniería de Software II</span>
+                <span>•</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </footer>
+      </footer>
+
+      {/* Modal de Términos y Condiciones */}
+      <TermsAndConditions
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        onAccept={() => setIsTermsModalOpen(false)}
+        onReject={() => setIsTermsModalOpen(false)}
+      />
+    </>
   );
 }

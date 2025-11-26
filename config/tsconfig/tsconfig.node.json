@@ -1,11 +1,14 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["ES2023"],
+    "lib": [
+      "ES2023"
+    ],
     "module": "ESNext",
     "skipLibCheck": true,
-    "types": ["node"],
-
+    "types": [
+      "node"
+    ],
     "moduleResolution": "bundler",
     "isolatedModules": true,
     "emitDeclarationOnly": true,
@@ -13,9 +16,10 @@
     "strict": true,
     "noFallthroughCasesInSwitch": true
   },
-  
-  "include": ["config/vite.config.ts",
-  "config/postcss.config.ts",
-  "config/eslint.config.ts",
-  "config/tailwind.config.ts"]
+  "include": [
+    "../../config/vite.config.ts",
+    "../../config/postcss.config.ts",
+    "../../config/eslint.config.ts",
+    "../../config/tailwind.config.ts"
+  ]
 }
