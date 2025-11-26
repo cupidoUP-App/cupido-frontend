@@ -45,11 +45,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <TooltipProvider>
-                <Toaster />
-                <Sonner />
-                <BrowserRouter>{children}</BrowserRouter>
-            </TooltipProvider>
+            <BrowserRouter>
+                <TooltipProvider>
+                    <Toaster />
+                    <Sonner />
+                    {children}
+                </TooltipProvider>
+            </BrowserRouter>
         </QueryClientProvider>
     );
 };

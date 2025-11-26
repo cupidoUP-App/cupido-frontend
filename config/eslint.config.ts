@@ -25,7 +25,8 @@ export default tseslint.config(
             ["@preferences", path.resolve(__dirname, "src/features/preferences")],
             ["@assets", path.resolve(__dirname, "src/assets")],
             ["@test", path.resolve(__dirname, "src/shared/test")],
-            ["@features", path.resolve(__dirname, "src/features")]
+            ["@features", path.resolve(__dirname, "src/features")],
+            ["@components", path.resolve(__dirname, "src/shared/components")]
           ],
           extensions: [".ts", ".tsx", ".js", ".jsx"]
         }
