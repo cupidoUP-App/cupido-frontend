@@ -228,12 +228,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${
-        userData.birthDate.year
-      }-${userData.birthDate.month.padStart(
-        2,
-        "0"
-      )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${userData.birthDate.year
+        }-${userData.birthDate.month.padStart(
+          2,
+          "0"
+        )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,

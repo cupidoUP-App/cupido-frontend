@@ -1,8 +1,12 @@
+import { useState } from 'react';
 import { Shield, UserX, BookOpen, Eye } from 'lucide-react';
 import { Button } from '@ui/button';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
+import TermsAndConditions from '@components/modals/TermsAndConditions';
 
 export default function SafetySection() {
+  const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
   const safetyFeatures = [
     {
       icon: Shield,
@@ -32,7 +36,7 @@ export default function SafetySection() {
     <section id="safety" className="py-20 lg:py-32 bg-white/80" ref={animationRef}>
       <div className="container mx-auto px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-center">
-          
+
           {/* Content */}
           <div className="opacity-0" data-animate="animate-slide-in-left">
             <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
@@ -41,16 +45,16 @@ export default function SafetySection() {
                 nuestra prioridad
               </span>
             </h2>
-            
+
             <p className="text-xl text-muted-foreground mb-8 leading-relaxed max-w-prose">
-              Creamos un ambiente seguro y respetuoso donde puedas conectar con confianza. 
+              Creamos un ambiente seguro y respetuoso donde puedas conectar con confianza.
               Cada característica está diseñada pensando en tu bienestar.
             </p>
 
             <div className="space-y-6 mb-8">
               {safetyFeatures.map((feature, index) => {
                 const Icon = feature.icon;
-                
+
                 return (
                   <div key={index} className="flex items-start space-x-4 group">
                     <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-success/20 to-primary/20 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
@@ -69,7 +73,7 @@ export default function SafetySection() {
               })}
             </div>
 
-            <Button className="btn-outline">
+            <Button className="btn-outline" onClick={() => setIsTermsModalOpen(true)}>
               Conoce nuestras prácticas
             </Button>
           </div>
@@ -97,7 +101,7 @@ export default function SafetySection() {
               <div className="absolute -top-8 -left-8 w-16 h-16 bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center animate-float shadow-lg">
                 <UserX className="w-8 h-8 text-destructive" />
               </div>
-              
+
               <div className="absolute -bottom-8 -right-8 w-16 h-16 bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl flex items-center justify-center animate-float shadow-lg" style={{ animationDelay: '1s' }}>
                 <Eye className="w-8 h-8 text-primary" />
               </div>
@@ -105,6 +109,14 @@ export default function SafetySection() {
           </div>
         </div>
       </div>
+
+      {/* Modal de Términos y Condiciones */}
+      <TermsAndConditions
+        isOpen={isTermsModalOpen}
+        onClose={() => setIsTermsModalOpen(false)}
+        onAccept={() => setIsTermsModalOpen(false)}
+        onReject={() => setIsTermsModalOpen(false)}
+      />
     </section>
   );
 }

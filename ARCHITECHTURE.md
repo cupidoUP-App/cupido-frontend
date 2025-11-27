@@ -66,11 +66,10 @@ src/
 ├── app/                        # Application core
 │   ├── App.tsx                # Main application component
 │   ├── main.tsx               # Application entry point
-│   ├── App.css               # Main application styles
 │   └── index.css             # Global styles
+│   ├── router.tsx             # Route configuration
+│   ├── providers.tsx          # Context providers
 ├── assets/                    # Static assets
-│   ├── images/               # Images, logos, backgrounds
-│   └── icons/                # Application icons
 ├── features/                  # Feature-based modules
 │   ├── auth/                 # Authentication system
 │   │   ├── components/       # Auth-specific components
@@ -92,9 +91,9 @@ src/
 │   ├── photos/               # Photo management
 │   ├── chat/                 # Chat system
 │   ├── matching/             # Matching algorithm
-│   └── notifications/        # Notification system
-├── pages/                     # Page-level components
-├── shared/                    # Shared utilities and components
+│   └── notifications/        # Notification system                   # Page-level components
+├── shared/
+|   ├── pages/                      # Shared utilities and components
 │   ├── components/           # Reusable components
 │   │   └── ui/               # shadcn/ui components
 │   ├── hooks/                # Global hooks
@@ -135,6 +134,9 @@ features/{feature-name}/
 ├── constants/                     # Feature constants
 │   ├── {featureName}Constants.ts
 │   └── index.ts
+|---pages/                         # Feature-specific pages
+│   ├── {PageName}.tsx
+│   └── index.ts
 ├── {FeatureName}.module.css       # Feature-specific styles
 └── README.md                      # Feature documentation
 ```
@@ -174,7 +176,8 @@ shared/
 │   │   ├── api.ts                # API constants
 │   │   ├── app.ts                # App constants
 │   │   └── index.ts
-│   └── recaptcha/                # reCAPTCHA implementation
+│   └── recaptcha/  
+|-- pages/                        # Page components
 ├── store/                        # State management
 │   ├── authStore.ts              # Authentication state
 │   ├── uiStore.ts                # UI state
@@ -200,15 +203,14 @@ src/
 │   ├── main.tsx                 # Application entry point
 │   ├── router.tsx               # Route configuration
 │   ├── providers.tsx            # Context providers
-│   └── styles/
-│       ├── globals.css          # Global styles
-│       └── variables.css        # CSS custom properties
+|   |-- index.css
 ├── features/                    # Feature modules
 │   ├── auth/                    # Authentication
 │   │   ├── components/
 │   │   │   ├── forms/
 │   │   │   ├── layout/
 │   │   │   └── modals/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── services/
 │   │   ├── types/
@@ -217,12 +219,14 @@ src/
 │   │   └── index.ts             # Feature exports
 │   ├── home/                    # Landing page
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── types/
 │   │   ├── utils/
 │   │   └── index.ts
 │   ├── profile/                 # User profiles
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── services/
 │   │   ├── types/
@@ -231,6 +235,7 @@ src/
 │   │   └── index.ts
 │   ├── matching/                # Matching system
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── services/
 │   │   ├── types/
@@ -239,6 +244,7 @@ src/
 │   │   └── index.ts
 │   ├── chat/                    # Messaging system
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── services/
 │   │   ├── types/
@@ -247,6 +253,7 @@ src/
 │   │   └── index.ts
 │   ├── preferences/             # User preferences
 │   │   ├── components/
+│   │   ├── pages/
 │   │   ├── hooks/
 │   │   ├── services/
 │   │   ├── types/
@@ -255,6 +262,7 @@ src/
 │   │   └── index.ts
 │   └── notifications/           # Notification system
 │       ├── components/
+│       ├── pages/
 │       ├── hooks/
 │       ├── services/
 │       ├── types/
@@ -267,6 +275,7 @@ src/
 │   │   ├── layout/              # Layout components
 │   │   ├── forms/               # Form components
 │   │   └── index.ts
+│   ├── pages/                   # Page components
 │   ├── hooks/                   # Global hooks
 │   │   ├── useAuth.ts
 │   │   ├── useTheme.ts
@@ -291,14 +300,7 @@ src/
 │       ├── globals.css
 │       ├── components.css
 │       └── utilities.css
-├── pages/                       # Page components (optional)
-│   ├── HomePage.tsx
-│   ├── ProfilePage.tsx
-│   └── index.ts
 └── assets/                      # Static assets
-    ├── images/
-    ├── icons/
-    └── fonts/
 ```
 
 ### Architecture Benefits
