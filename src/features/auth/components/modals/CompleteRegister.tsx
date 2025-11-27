@@ -4,7 +4,7 @@ import RightSideWithParticles from "@lib/recaptcha/RightSideWithParticles";
 import { authAPI } from "@lib/api";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
-import PreferencesPage from "@/features/preferences/pages/PreferencesPage";
+import PreferencesPage from "@preferences/components/PreferencesPage";
 
 interface CompleteRegisterProps {
   isOpen: boolean;

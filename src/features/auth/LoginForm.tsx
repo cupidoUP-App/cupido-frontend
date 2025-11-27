@@ -9,7 +9,7 @@ import CompleteRegister, {
   RegistrationData,
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@lib/api";
-import PreferencesPage from "@/features/preferences/pages/PreferencesPage";
+import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 
 interface User {
