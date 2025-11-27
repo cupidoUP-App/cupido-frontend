@@ -17,9 +17,6 @@ export const AppRouter = () => {
             <Route path="/Match" element={<MatchPage />} />
 
             {/* RUTAS CON SIDEBAR */}
-            <Route element={<MainLayout />}>
-                <Route path="/profile" element={<ProfilePage />} />
-            </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
         </Routes>
