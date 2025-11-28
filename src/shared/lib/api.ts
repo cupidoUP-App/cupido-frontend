@@ -1,8 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 // API Configuration
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Create axios instance with default config
 const api: AxiosInstance = axios.create({
@@ -10,54 +9,81 @@ const api: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  timeout: 30000, // 30 seconds timeout
-  withCredentials: true, // Enable sending cookies and credentials
+  timeout: 30000,
+  withCredentials: true,
 });
 
-// Request interceptor to add auth token if available
+// --------------------------------------------------------
+// REQUEST INTERCEPTOR (corregido)
+// NO manda "Bearer null" ni "Bearer undefined"
+// --------------------------------------------------------
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("access_token");
-    if (token) {
+
+    if (
+      token &&
+      token !== "null" &&
+      token !== "undefined" &&
+      token.trim() !== ""
+    ) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor to handle common errors (e.g., expired access token)
+// --------------------------------------------------------
+// Cliente separado para refresh token (SIN interceptores)
+// --------------------------------------------------------
+const refreshClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
+// --------------------------------------------------------
+// RESPONSE INTERCEPTOR (corregido)
+// --------------------------------------------------------
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
+
   async (error) => {
     const originalRequest = error.config;
 
+    // Si la respuesta es 401 y no se reintentó aún
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        // Refresh token
-        const refreshResponse = await api.post("/auth/token/refresh/", {
+        const refreshResponse = await refreshClient.post("/auth/token/refresh/", {
           refresh: localStorage.getItem("refresh_token"),
         });
+
         const newAccessToken = refreshResponse.data.access;
         const newRefreshToken = refreshResponse.data.refresh;
 
-        // Store new tokens
-        localStorage.setItem("access_token", newAccessToken);
+        // Guardar tokens nuevos
+        if (newAccessToken) {
+          localStorage.setItem("access_token", newAccessToken);
+        }
         if (newRefreshToken) {
           localStorage.setItem("refresh_token", newRefreshToken);
         }
 
-        // Retry original request with new access token
+        // reintentar request original
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
+
       } catch (refreshError) {
-        // Token refresh failed - clear tokens and logout
+        // Si falla refresh → logout
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
-        // Import dynamically to avoid circular dependencies
         const { useAppStore } = await import("@store/appStore");
         useAppStore.getState().logout();
 
@@ -69,7 +95,10 @@ api.interceptors.response.use(
   }
 );
 
+// --------------------------------------------------------
 // API Endpoints
+// --------------------------------------------------------
+
 export const authAPI = {
   register: async (data: {
     email: string;
@@ -197,15 +226,12 @@ export const authAPI = {
     return response.data;
   },
 
-  // Catalogs
   getDegrees: async () => {
-    // GET /profile/profileManagement/degrees/
     const response = await api.get("/profile/profileManagement/degrees/");
     return response.data;
   },
 
   getLocations: async () => {
-    // GET /profile/profileManagement/locations/
     const response = await api.get("/profile/profileManagement/locations/");
     return response.data;
   },
@@ -215,10 +241,9 @@ export const authAPI = {
     return response.data;
   },
 
-  // 🔥 NUEVA FUNCIÓN: Actualizar perfil con preferencias
   updateProfileWithPreferences: async (preferencesId: number) => {
     const response = await api.patch("/profile/profileManagement/update/", {
-      preferencias: preferencesId
+      preferencias: preferencesId,
     });
     return response.data;
   },
@@ -242,7 +267,6 @@ export const authAPI = {
     const response = await api.post("/preferences/filters/", data);
     return response.data;
   },
-
 };
 
 export const photoAPI = {
@@ -252,12 +276,12 @@ export const photoAPI = {
   },
   uploadPhoto: async (file: File) => {
     const formData = new FormData();
-    formData.append('imagen', file);
+    formData.append("imagen", file);
+
     const response = await api.post("/profile/photos/", formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
+      headers: { "Content-Type": "multipart/form-data" },
     });
+
     return response.data;
   },
   deletePhoto: async (photoId: number) => {
@@ -265,7 +289,9 @@ export const photoAPI = {
     return response.data;
   },
   setPrincipalPhoto: async (photoId: number) => {
-    const response = await api.patch(`/profile/photos/${photoId}/`, { es_principal: true });
+    const response = await api.patch(`/profile/photos/${photoId}/`, {
+      es_principal: true,
+    });
     return response.data;
   },
 };
