@@ -39,9 +39,9 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
   };
 
   const handleError = () => {
-    console.log('reCAPTCHA error');
-    setCaptchaError(true);
-    onError();
+    //console.log('reCAPTCHA error');
+    //setCaptchaError(true);
+    //onError();
   };
 
   const handleClose = () => {
