@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [react(), isDev && componentTagger()].filter(Boolean),
-    envDir: './config/env',
+    envDir: '.env',
     root: path.resolve(__dirname, ".."),
     css: {
       postcss: path.resolve(__dirname, "./postcss.config.cjs"),
