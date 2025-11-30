@@ -379,7 +379,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           <div className="h-full flex flex-col p-5">
             <div className="flex justify-center mb-4">
               <img
-                src="https://jeisonalexis.github.io/assetsCupido/logo-login.webp"
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
