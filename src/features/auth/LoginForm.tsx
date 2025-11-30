@@ -1,7 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
 import { useNavigate } from "react-router-dom";
+
+// Constantes para persistencia del flujo de registro (Feature: imageUpload)
+const REGISTRATION_STEP_KEY = "cupido_registration_step";
+const REGISTRATION_USER_ID_KEY = "current_user_id";
+
 import EmailField from "./components/forms/EmailField";
 import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
@@ -49,6 +54,69 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [registrationStep, setRegistrationStep] = useState<number>(0);
 
   const navigate = useNavigate();
+
+  // =========================================================================
+  // Feature: imageUpload - Persistencia del flujo de registro
+  // Efecto para restaurar el paso de registro si el usuario recarga la página
+  // Lógica: Si hay un token válido y un paso guardado, retomar donde estaba
+  // =========================================================================
+  useEffect(() => {
+    const restoreRegistrationState = async () => {
+      const savedStep = localStorage.getItem(REGISTRATION_STEP_KEY);
+      const savedUserId = localStorage.getItem(REGISTRATION_USER_ID_KEY);
+      const accessToken = localStorage.getItem("access_token");
+
+      // Solo restaurar si hay token y paso guardado
+      if (!accessToken || !savedStep) return;
+
+      const step = parseInt(savedStep, 10);
+      
+      // Validar que el paso sea válido (1-3)
+      if (isNaN(step) || step < 1 || step > 3) return;
+
+      console.log(`[LoginForm] Restaurando paso de registro: ${step}`);
+
+      try {
+        // Verificar que el token sigue siendo válido obteniendo el perfil
+        const userProfile = await authAPI.getUserProfile();
+        
+        if (userProfile?.user) {
+          setCurrentUserId(savedUserId || userProfile.user.usuario_id?.toString() || "");
+          setRegistrationStep(step);
+
+          // Restaurar el modal correspondiente según el paso
+          if (step === 1) {
+            setShowCompleteRegister(true);
+          } else if (step === 2) {
+            setShowPreferences(true);
+          } else if (step === 3) {
+            setShowPhotoUpload(true);
+          }
+
+          toast({
+            title: "Continuando registro",
+            description: "Retomando donde lo dejaste...",
+          });
+        }
+      } catch (error) {
+        // Token inválido o expirado, limpiar estado guardado
+        console.log("[LoginForm] Token inválido, limpiando estado de registro");
+        localStorage.removeItem(REGISTRATION_STEP_KEY);
+      }
+    };
+
+    restoreRegistrationState();
+  }, []); // Solo ejecutar al montar el componente
+
+  // =========================================================================
+  // Feature: imageUpload - Persistir el paso actual cuando cambia
+  // =========================================================================
+  useEffect(() => {
+    if (registrationStep > 0) {
+      localStorage.setItem(REGISTRATION_STEP_KEY, registrationStep.toString());
+    }
+  }, [registrationStep]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -540,6 +608,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                     descripcion: userProfile.user.descripcion,
                     estadocuenta: "0",
                   });
+
+                  // Feature: imageUpload - Limpiar estado de registro al completar
+                  localStorage.removeItem(REGISTRATION_STEP_KEY);
 
                   setShowPhotoUpload(false);
                   onClose();

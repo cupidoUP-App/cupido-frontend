@@ -85,19 +85,35 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
       if (errorData) {
         console.log("📋 Datos del error:", errorData);
 
+        // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
+        if (errorData.imagen && Array.isArray(errorData.imagen)) {
+          const moderationMessage = errorData.imagen[0];
+          
+          // Verificar si es un error de moderación por contenido inapropiado
+          if (moderationMessage.includes("no puede ser publicada") || 
+              moderationMessage.includes("contenido")) {
+            toast.error(moderationMessage, {
+              duration: 6000, // Mostrar más tiempo para que el usuario lea
+              icon: "🚫",
+            });
+            return;
+          }
+        }
+
+        // Otros errores de validación
         if (typeof errorData === "object") {
           const errorMessages = Object.entries(errorData)
             .map(
               ([key, value]) =>
-                `${key}: ${Array.isArray(value) ? value.join(", ") : value}`
+                Array.isArray(value) ? value.join(", ") : String(value)
             )
             .join("; ");
-          toast.error(`Error: ${errorMessages}`);
+          toast.error(errorMessages || "Error al subir la imagen");
         } else if (typeof errorData === "string") {
-          toast.error(`Error: ${errorData}`);
+          toast.error(errorData);
         } else {
           toast.error(
-            `Error al subir imagen: ${error.message || "Error desconocido"}`
+            error.message || "Error desconocido al subir imagen"
           );
         }
       } else {
@@ -296,14 +312,14 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
       setIsSaving(true);
 
       try {
-        console.log("🚀 Iniciando subida de", newFiles.length, "archivos");
+        console.log(" Iniciando subida de", newFiles.length, "archivos");
 
         // Subir nuevas imágenes
         for (let i = 0; i < newFiles.length; i++) {
           const fileData = newFiles[i];
           if (fileData.file) {
             console.log(
-              `📤 Subiendo archivo ${i + 1}/${newFiles.length}:`,
+              ` Subiendo archivo ${i + 1}/${newFiles.length}:`,
               fileData.name
             );
 
@@ -321,7 +337,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
         // Establecer imagen principal si hay una seleccionada
         if (principalNewFile) {
-          console.log("🎯 Buscando imagen principal...");
+          console.log(" Buscando imagen principal...");
 
           const updatedPhotosResponse = await queryClient.fetchQuery({
             queryKey: ["userPhotos"],
@@ -339,23 +355,32 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
             });
 
             if (principalServerPhoto) {
-              console.log("🎯 Estableciendo imagen principal:", principalServerPhoto);
+              console.log(" Estableciendo imagen principal:", principalServerPhoto);
               const photoId = principalServerPhoto.imagen_id || principalServerPhoto.id;
               await setPrincipalMutation.mutateAsync(photoId);
             } else if (updatedPhotos.length > 0) {
               // Fallback: establecer primera imagen como principal
               const firstPhoto = updatedPhotos[0];
               const photoId = firstPhoto.imagen_id || firstPhoto.id;
-              console.log("🔄 Estableciendo primera imagen como principal:", firstPhoto);
+              console.log(" Estableciendo primera imagen como principal:", firstPhoto);
               await setPrincipalMutation.mutateAsync(photoId);
             }
           }
         }
 
+        // Limpiar archivos nuevos después de subirlos exitosamente
+        // Liberar URLs de blobs para evitar memory leaks
+        newFiles.forEach((file) => {
+          if (file.preview.startsWith("blob:")) {
+            URL.revokeObjectURL(file.preview);
+          }
+        });
+        setNewFiles([]);
+
         toast.success("¡Todas las imágenes se guardaron exitosamente!");
         onSuccess?.();
       } catch (error) {
-        console.error("💥 Error durante la subida:", error);
+        console.error(" Error durante la subida:", error);
         toast.error("Error al guardar las imágenes");
       } finally {
         setIsSaving(false);
