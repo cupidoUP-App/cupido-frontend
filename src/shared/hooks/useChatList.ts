@@ -24,7 +24,7 @@ export interface ChatListItemReal {
     no_leidos: number; // Conteo de mensajes no leídos (desde el Backend)
 }
 
-const API_BASE_URL = 'http://localhost:8000/api/v1/chat/'; // Ruta principal del módulo de chat
+const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/chat/`;
 
 export const useChatList = () => {
     const [chatList, setChatList] = useState<ChatListItemReal[]>([]);

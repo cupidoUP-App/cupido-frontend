@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 
 // 🟢 ASUNCIÓN DE IMPORTS DE TIPOS
-import { Message } from '../../hooks/types'; 
+import { Message } from '@hooks/types'; 
 
 // 🟢 INTERFAZ COMPLETA DE PROPS (Soluciona el error de tipado)
 interface ChatViewProps {
