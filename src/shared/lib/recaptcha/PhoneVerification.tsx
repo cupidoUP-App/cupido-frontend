@@ -174,7 +174,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
             {/* Logo */}
             <div className="flex justify-center mb-4">
               <img 
-                src="src/assets/logo-login.webp" 
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp" 
                 alt="CUPIDO Logo" 
                 className="w-16 h-14"
               />
