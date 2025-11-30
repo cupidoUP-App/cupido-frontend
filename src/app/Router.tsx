@@ -6,21 +6,25 @@ import EditPreferencesPage from "@profile/components/EditPreferencesPage";
 import NotFound from "@pages/NotFound";
 import MatchPage from "@features/matching/MatchPage";
 import ChatGeneral from "@features/chat/ChatGeneral";
+import MainLayout from "@pages/MainLayout";
 
 export const AppRouter = () => {
-    return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/edit-profile" element={<EditProfilePage />} />
-            <Route path="/edit-preferences" element={<EditPreferencesPage />} />
-            <Route path="/match" element={<MatchPage />} />
-            <Route path="/test-chat" element={<ChatGeneral />} 
-          />
+  return (
+    <Routes>
+      {/* RUTAS SIN SIDEBAR */}
+      <Route path="/" element={<Home />} />
+      <Route path="/edit-profile" element={<EditProfilePage />} />
+      <Route path="/edit-preferences" element={<EditPreferencesPage />} />
 
-            {/* RUTAS CON SIDEBAR */}
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-        </Routes>
-    );
+      {/* RUTAS CON SIDEBAR */}
+      <Route element={<MainLayout />}>
+        <Route path="/match" element={<MatchPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/test-chat" element={<ChatGeneral />} />
+      </Route>
+
+      {/* CATCH ALL */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  );
 };

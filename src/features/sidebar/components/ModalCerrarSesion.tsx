@@ -1,6 +1,8 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import "./ModalCerrarSesion.css";
+import { useAppStore } from "@store/appStore";
+import { useNavigate } from "react-router-dom";
 
 interface ModalCerrarSesionProps {
   onCancel: () => void;
@@ -8,11 +10,19 @@ interface ModalCerrarSesionProps {
 
 export default function ModalCerrarSesion({ onCancel }: ModalCerrarSesionProps) {
   const modalRoot = document.getElementById("modal-root");
+  const { logout } = useAppStore();
+  const navigate = useNavigate(); 
 
   if (!modalRoot) {
     console.error("No se encontró el elemento #modal-root");
     return null;
   }
+
+  const handleLogout = () => {
+    logout();     
+    onCancel();   
+    navigate("/"); 
+  };
 
   return createPortal(
     <div className="modal-overlay">
@@ -27,7 +37,7 @@ export default function ModalCerrarSesion({ onCancel }: ModalCerrarSesionProps) 
             Cancelar
           </button>
 
-          <button className="btn-confirmar">
+          <button className="btn-confirmar" onClick={handleLogout}>
             Cerrar Sesión
           </button>
         </div>
