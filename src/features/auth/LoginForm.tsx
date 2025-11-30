@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
-import { useNavigate } from "react-router-dom";
 import EmailField from "./components/forms/EmailField";
 import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
@@ -12,6 +11,8 @@ import CompleteRegister, {
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
+import { useNavigate } from "react-router-dom";
+
 
 interface User {
   usuario_id: number;
@@ -47,8 +48,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const { openDashboard, login, setLoading } = useAppStore();
 
   const [registrationStep, setRegistrationStep] = useState<number>(0);
-
   const navigate = useNavigate();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -149,7 +150,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           });
         }
       } else if (estadocuenta === "0") {
-        console.log("Redirigiendo a Dashboard - Estado 0");
+        console.log("Redirigiendo a match - Estado 0");
         login(response.user);
         toast({
           title: "¡Bienvenido!",
@@ -378,7 +379,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           <div className="h-full flex flex-col p-5">
             <div className="flex justify-center mb-4">
               <img
-                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
+                src="src/assets/logo-login.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
@@ -543,7 +544,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
                   setShowPhotoUpload(false);
                   onClose();
-                  navigate("/match");
+                  navigate("/match"); 
 
                   toast({
                     title: "¡Felicidades!",
