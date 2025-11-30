@@ -7,10 +7,10 @@ import ChatListPanel from './ChatListPanel'; // Este componente debe recibir cha
 import ChatView from './ChatView'; 
 
 // 🟢 Importaciones de Hooks y Tipos REALES
-import { useChatSocket } from '../../hooks/useChatSocket';
-import { useChatList, ChatListItemReal } from '../../hooks/useChatList'; // Hook para la lista real
+
+import { useChatSocket } from "@hooks/useChatSocket";
+import { useChatList, ChatListItemReal } from "@hooks/useChatList"; // Hook para la lista real
 // Importamos Message y WsStatus si no están ya en useChatSocket (depende de tu estructura)
-// import { Message } from '../../hooks/types'; 
 
 const ChatGeneral: React.FC = () => {
     // Estado para guardar el ID del chat seleccionado. Inicializamos en null.

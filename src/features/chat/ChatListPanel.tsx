@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useChatList, ChatListItemReal } from '../../hooks/useChatList';
+import { useChatList, ChatListItemReal } from '@hooks/useChatList';
 import { getPresenceFromLastLogin } from './utils/presence';
 //import { MOCK_CHAT_LIST } from './mock-chat-data';
 
