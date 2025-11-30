@@ -39,8 +39,8 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
   );
 
   const carouselImages = [
-    "src/assets/ChicaGlobos.png",
-    "src/assets/ParejaCopas.png",
+    "https://i.postimg.cc/wBKGkKV5/Chica-Globos.png",
+    "https://i.postimg.cc/J0bNmgJZ/Pareja-Copas.png",
   ];
 
   // Cargar preferencias existentes
@@ -226,7 +226,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
         {/* HEADER */}
         <div className="bg-[#F2D6CD] py-6 px-4 text-center">
           <img
-            src="src/assets/Cupido-rojo.png"
+            src="https://i.postimg.cc/mkQDtWm2/Cupido-rojo.png"
             alt="Cupido Logo"
             className="h-16 w-auto mx-auto mb-4"
           />
@@ -386,7 +386,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
         <div className="flex-1 flex flex-col items-center justify-center p-8">
           <div className="absolute top-12 flex flex-col items-center justify-center w-full">
             <img
-              src="src/assets/Cupido-rojo.png"
+              src="https://i.postimg.cc/mkQDtWm2/Cupido-rojo.png"
               alt="Cupido Logo"
               className="h-16 w-auto mb-4"
             />
