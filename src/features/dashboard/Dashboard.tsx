@@ -73,7 +73,7 @@ const Dashboard: React.FC = () => {
           <div className="h-full flex flex-col p-8">
             <div className="flex justify-center mb-6">
               <img
-                src="/src/assets/logo-login.webp"
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />

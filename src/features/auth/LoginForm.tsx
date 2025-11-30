@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
+import { useNavigate } from "react-router-dom";
 import EmailField from "./components/forms/EmailField";
 import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
@@ -47,6 +48,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const [registrationStep, setRegistrationStep] = useState<number>(0);
 
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -154,7 +156,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           description: "Has iniciado sesión correctamente.",
         });
         onClose();
-        openDashboard();
+        navigate("/match");
       } else if (estadocuenta === "3") {
         toast({
           title: "Elige tus mejores fotos!",
@@ -376,7 +378,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           <div className="h-full flex flex-col p-5">
             <div className="flex justify-center mb-4">
               <img
-                src="src/assets/logo-login.webp"
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
@@ -541,7 +543,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
                   setShowPhotoUpload(false);
                   onClose();
-                  openDashboard();
+                  navigate("/match");
 
                   toast({
                     title: "¡Felicidades!",

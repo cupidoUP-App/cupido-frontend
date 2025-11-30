@@ -4,8 +4,8 @@ import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
 import EditPreferencesPage from "@profile/components/EditPreferencesPage";
 import NotFound from "@pages/NotFound";
-import MainLayout from "@pages/MainLayout";
 import MatchPage from "@features/matching/MatchPage";
+import ChatGeneral from "@features/chat/ChatGeneral";
 
 export const AppRouter = () => {
     return (
@@ -14,7 +14,9 @@ export const AppRouter = () => {
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/edit-profile" element={<EditProfilePage />} />
             <Route path="/edit-preferences" element={<EditPreferencesPage />} />
-            <Route path="/Match" element={<MatchPage />} />
+            <Route path="/match" element={<MatchPage />} />
+            <Route path="/test-chat" element={<ChatGeneral />} 
+          />
 
             {/* RUTAS CON SIDEBAR */}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
