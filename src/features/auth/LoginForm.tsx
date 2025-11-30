@@ -13,7 +13,6 @@ import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
 import { useNavigate } from "react-router-dom";
 
-
 interface User {
   usuario_id: number;
   email: string;
@@ -231,11 +230,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${userData.birthDate.year
-        }-${userData.birthDate.month.padStart(
-          2,
-          "0"
-        )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${
+        userData.birthDate.year
+      }-${userData.birthDate.month.padStart(
+        2,
+        "0"
+      )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,
@@ -379,7 +379,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           <div className="h-full flex flex-col p-5">
             <div className="flex justify-center mb-4">
               <img
-                src="src/assets/logo-login.webp"
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
                 className="w-[87px] h-[80px]"
               />
@@ -544,7 +544,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
                   setShowPhotoUpload(false);
                   onClose();
-                  navigate("/match"); 
+                  navigate("/match");
 
                   toast({
                     title: "¡Felicidades!",
