@@ -341,14 +341,42 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const handleBackFromPreferences = () => {
-    if (registrationStep === 2) {
-      setShowPreferences(false);
-      setRegistrationStep(1);
-      setShowCompleteRegister(true);
-    } else {
-      setShowPreferences(false);
-      onClose();
+  const handleBackFromPreferences = async () => {
+    try {
+      if (registrationStep === 2) {
+        // Mostrar carga mientras procesamos
+        setIsSubmitting(true);
+
+        // 1. Actualizar el estado en el backend a "1"
+        // Primero obtenemos los datos actuales para preservarlos
+        const userProfile = await authAPI.getUserProfile();
+
+        await authAPI.updateUserProfile({
+          nombres: userProfile.user.nombres,
+          apellidos: userProfile.user.apellidos,
+          genero_id: userProfile.user.genero_id,
+          fechanacimiento: userProfile.user.fechanacimiento,
+          descripcion: userProfile.user.descripcion,
+          estadocuenta: "1", // 🔥 REVERTIR ESTADO A 1
+        });
+
+        // 2. Actualizar UI para mostrar el paso anterior
+        setShowPreferences(false);
+        setRegistrationStep(1);
+        setShowCompleteRegister(true);
+      } else {
+        setShowPreferences(false);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error al regresar:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo regresar al paso anterior.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -520,6 +548,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         }}
         onComplete={() => {
           setShowCompleteRegister(false);
+          setRegistrationStep(2); // ✅ Actualizar el paso a 2
           setShowPreferences(true);
         }}
         isSubmitting={isSubmitting}
