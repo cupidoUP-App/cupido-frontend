@@ -57,9 +57,10 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
         {/* Botón para cerrar */}
         <button
           onClick={handleClose}
-          className="absolute top-6 right-6 text-gray-700 hover:text-gray-900 p-2 rounded-full hover:bg-rose-300 transition-colors z-10"
+          className="absolute top-6 right-6 text-gray-700 hover:text-gray-900 p-2 rounded-full hover:bg-rose-300 transition-colors z-[999]"
           aria-label="Cerrar verificación"
         >
+
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
