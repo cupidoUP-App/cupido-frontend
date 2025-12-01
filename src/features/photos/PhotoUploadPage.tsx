@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Star } from "lucide-react";
+import { Camera } from "@phosphor-icons/react"; // <--- NUEVO IMPORT
 import fondo from "@assets/fondoCargueImagenes.png";
 import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
@@ -85,19 +86,35 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
       if (errorData) {
         console.log("📋 Datos del error:", errorData);
 
+        // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
+        if (errorData.imagen && Array.isArray(errorData.imagen)) {
+          const moderationMessage = errorData.imagen[0];
+          
+          // Verificar si es un error de moderación por contenido inapropiado
+          if (moderationMessage.includes("no puede ser publicada") || 
+              moderationMessage.includes("contenido")) {
+            toast.error(moderationMessage, {
+              duration: 6000, // Mostrar más tiempo para que el usuario lea
+              icon: "🚫",
+            });
+            return;
+          }
+        }
+
+        // Otros errores de validación
         if (typeof errorData === "object") {
           const errorMessages = Object.entries(errorData)
             .map(
               ([key, value]) =>
-                `${key}: ${Array.isArray(value) ? value.join(", ") : value}`
+                Array.isArray(value) ? value.join(", ") : String(value)
             )
             .join("; ");
-          toast.error(`Error: ${errorMessages}`);
+          toast.error(errorMessages || "Error al subir la imagen");
         } else if (typeof errorData === "string") {
-          toast.error(`Error: ${errorData}`);
+          toast.error(errorData);
         } else {
           toast.error(
-            `Error al subir imagen: ${error.message || "Error desconocido"}`
+            error.message || "Error desconocido al subir imagen"
           );
         }
       } else {
@@ -296,14 +313,14 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
       setIsSaving(true);
 
       try {
-        console.log("🚀 Iniciando subida de", newFiles.length, "archivos");
+        console.log(" Iniciando subida de", newFiles.length, "archivos");
 
         // Subir nuevas imágenes
         for (let i = 0; i < newFiles.length; i++) {
           const fileData = newFiles[i];
           if (fileData.file) {
             console.log(
-              `📤 Subiendo archivo ${i + 1}/${newFiles.length}:`,
+              ` Subiendo archivo ${i + 1}/${newFiles.length}:`,
               fileData.name
             );
 
@@ -321,7 +338,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
         // Establecer imagen principal si hay una seleccionada
         if (principalNewFile) {
-          console.log("🎯 Buscando imagen principal...");
+          console.log(" Buscando imagen principal...");
 
           const updatedPhotosResponse = await queryClient.fetchQuery({
             queryKey: ["userPhotos"],
@@ -339,23 +356,32 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
             });
 
             if (principalServerPhoto) {
-              console.log("🎯 Estableciendo imagen principal:", principalServerPhoto);
+              console.log(" Estableciendo imagen principal:", principalServerPhoto);
               const photoId = principalServerPhoto.imagen_id || principalServerPhoto.id;
               await setPrincipalMutation.mutateAsync(photoId);
             } else if (updatedPhotos.length > 0) {
               // Fallback: establecer primera imagen como principal
               const firstPhoto = updatedPhotos[0];
               const photoId = firstPhoto.imagen_id || firstPhoto.id;
-              console.log("🔄 Estableciendo primera imagen como principal:", firstPhoto);
+              console.log(" Estableciendo primera imagen como principal:", firstPhoto);
               await setPrincipalMutation.mutateAsync(photoId);
             }
           }
         }
 
+        // Limpiar archivos nuevos después de subirlos exitosamente
+        // Liberar URLs de blobs para evitar memory leaks
+        newFiles.forEach((file) => {
+          if (file.preview.startsWith("blob:")) {
+            URL.revokeObjectURL(file.preview);
+          }
+        });
+        setNewFiles([]);
+
         toast.success("¡Todas las imágenes se guardaron exitosamente!");
         onSuccess?.();
       } catch (error) {
-        console.error("💥 Error durante la subida:", error);
+        console.error(" Error durante la subida:", error);
         toast.error("Error al guardar las imágenes");
       } finally {
         setIsSaving(false);
@@ -424,7 +450,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     return (
       <div>
         {photo ? (
-          <div className={`${width} ${height} rounded-3xl overflow-hidden shadow-2xl relative group`}>
+          <div className={`${width} ${height} rounded-3xl overflow-hidden shadow-xl relative group transition-transform duration-200 active:scale-[0.98]`}>
             <img
               src={photo.preview}
               alt={isLarge ? "Principal" : `Secundaria ${index}`}
@@ -455,17 +481,17 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               </button>
             </div>
             {photo.es_principal && (
-              <div className={`absolute ${isLarge ? 'top-4 left-4' : 'top-3 left-3'} bg-red-500 text-white ${isLarge ? 'px-3 py-1 text-sm' : 'px-2 py-1 text-xs'} rounded-full font-semibold`}>
+              <div className={`absolute ${isLarge ? 'top-4 left-4' : 'top-3 left-3'} bg-red-500/90 backdrop-blur-md text-white ${isLarge ? 'px-3 py-1 text-sm' : 'px-2 py-1 text-xs'} rounded-full font-semibold shadow-sm border border-white/20`}>
                 Principal
               </div>
             )}
           </div>
         ) : (
           <label 
-            className={`${width} ${height} rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all shadow-lg ${
+            className={`${width} ${height} rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all duration-200 shadow-lg active:scale-[0.98] ${
               draggingIndex === index 
-                ? "border-red-500 bg-red-50 border-4" 
-                : "border-gray-300 bg-white hover:border-gray-400 hover:bg-gray-50"
+                ? "border-red-500 bg-red-50 border-4 scale-[1.02]" 
+                : "border-gray-300 bg-white hover:border-red-400 hover:bg-red-50/30 hover:shadow-xl"
             }`}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragLeave={(e) => handleDragLeave(e, index)}
@@ -478,7 +504,17 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               className="hidden"
               onChange={(e) => handleFileInputChange(e, index)}
             />
-            <div className={`${isLarge ? 'text-6xl mb-3' : 'text-4xl mb-2'}`}>📷</div>
+            {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
+            <div className={`mb-3 ${isLarge ? 'mb-4' : 'mb-2'}`}>
+              <Camera 
+                size={isLarge ? 64 : 48} 
+                color="#C62828"  // Rojo oscuro elegante
+                weight="duotone" // Estilo semitransparente premium
+                className="opacity-80"
+              />
+            </div>
+            {/* --------------------------- */}
+
             <p className={`text-gray-500 ${isLarge ? 'text-base' : 'text-sm'} font-medium`}>
               {draggingIndex === index ? "Suelta las imágenes aquí" : "Subir foto"}
             </p>
@@ -494,7 +530,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="min-h-screen w-full flex relative bg-[#FFF0EC]">
+    <div className="h-[100dvh] w-full flex relative bg-[#FFF0EC] overflow-y-auto overflow-x-hidden">
       <div
         className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3"
         style={{
@@ -509,8 +545,8 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
         ←
       </button>
 
-      <div className="flex flex-1 w-full relative z-10">
-        <div className="w-1/2 flex flex-col items-center justify-center px-12 -mt-60">
+      <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-6 lg:px-12 mt-12 lg:-mt-60">
           <div className="max-w-md text-center">
             <div className="flex justify-center mb-6">
               <img src={logo} alt="Logo" className="w-24 h-24 object-contain" />
@@ -529,7 +565,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               disabled={
                 (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
               }
-              className="w-full px-10 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors text-lg shadow-lg"
+              className="w-full px-10 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 text-lg shadow-lg hover:shadow-xl"
             >
               {isSaving || uploadMutation.isPending
                 ? "Guardando..."
@@ -538,8 +574,8 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
           </div>
         </div>
 
-        <div className="w-1/2 flex flex-col items-center justify-center pr-12">
-          <div className="flex gap-6 mb-8">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-6 lg:pr-12 pt-12 pb-48 lg:py-0">
+          <div className="flex flex-col sm:flex-row gap-6 mb-8 items-center">
             {renderImageSlot(0)}
             
             <div className="flex flex-col gap-6">
@@ -554,7 +590,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               disabled={
                 newFiles.length === 0 || isSaving || uploadMutation.isPending
               }
-              className="px-12 py-3.5 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-lg text-base"
+              className="px-12 py-3.5 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
             >
               {isSaving || uploadMutation.isPending
                 ? "Guardando..."
@@ -564,7 +600,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
             <button
               onClick={handleDeleteAll}
               disabled={(serverFiles.length + newFiles.length) === 0}
-              className="px-12 py-3.5 bg-red-400 text-white rounded-xl font-semibold hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors shadow-lg text-base"
+              className="px-12 py-3.5 bg-red-400 text-white rounded-xl font-semibold hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
             >
               Eliminar
             </button>

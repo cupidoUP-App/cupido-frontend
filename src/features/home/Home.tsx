@@ -17,6 +17,9 @@ import SigUpForm from '@/features/auth/SigUpForm';
 import LoginForm from '@/features/auth/LoginForm';
 import Dashboard from '@/features/dashboard/Dashboard';
 
+// Constante para detectar registro pendiente (debe coincidir con LoginForm)
+const REGISTRATION_STEP_KEY = "cupido_registration_step";
+
 const Index = () => {
   const {
     showPreloader,
@@ -34,6 +37,23 @@ const Index = () => {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
+
+  // =========================================================================
+  // Efecto para detectar si hay un registro pendiente y abrir LoginForm
+  // Lógica: Si hay paso guardado + token, el usuario estaba en medio del registro
+  // =========================================================================
+  useEffect(() => {
+    const savedStep = localStorage.getItem(REGISTRATION_STEP_KEY);
+    const accessToken = localStorage.getItem("access_token");
+    
+    if (savedStep && accessToken && authModal === null) {
+      const step = parseInt(savedStep, 10);
+      if (step >= 1 && step <= 3) {
+        console.log("[Home] Detectado registro pendiente en paso:", step);
+        openLogin(); // Abrir LoginForm que restaurará el paso correcto
+      }
+    }
+  }, [authModal, openLogin]);
 
   const handleThemeChange = (newTheme: string) => {
     if (newTheme !== theme) {
