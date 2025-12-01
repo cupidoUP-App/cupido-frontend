@@ -7,7 +7,7 @@ import InterestsSelector from "./InterestsSelector";
 import { preferencesService } from "../services/preferencesService";
 import { ArrowLeft } from "lucide-react";
 import { useToast } from "@hooks/use-toast";
-import { authAPI } from "@lib/api"; // 🔥 IMPORTAR AUTHAPI
+import { authAPI } from "@lib/api";
 
 interface PreferencesPageProps {
   userId: string;
@@ -39,8 +39,8 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
   );
 
   const carouselImages = [
-    "src/assets/ChicaGlobos.png",
-    "src/assets/ParejaCopas.png",
+    "https://i.postimg.cc/wBKGkKV5/Chica-Globos.png",
+    "https://i.postimg.cc/J0bNmgJZ/Pareja-Copas.png",
   ];
 
   // Cargar preferencias existentes
@@ -167,7 +167,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
         }
       );
 
-      // 2. 🔥 ACTUALIZAR EL PERFIL CON LA FK DE PREFERENCIAS
+      // 2. ACTUALIZAR EL PERFIL CON LA FK DE PREFERENCIAS
       // Obtener el ID de las preferencias recién creadas
       const preferencesId =
         savedPreferences.id || savedPreferences.preference_id;
@@ -214,19 +214,16 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
 
   return (
     <>
-      {/* 🔙 Flecha de retroceso - CONECTADA */}
-      <button
-        onClick={handleBackClick} // 🔥 Usar la nueva función
-        className="absolute top-4 left-4 p-2 rounded-full bg-white shadow-md hover:bg-red-100 transition-all z-50"
-      >
-        <ArrowLeft className="w-6 h-6 text-gray-700" />
+      {/* Flecha de retroceso - CONECTADA */}
+      <button onClick={handleBackClick} className="absolute top-4 left-4 z-50">
+        <ArrowLeft className="w-6 h-6 text-black" />
       </button>
 
       <div className="lg:hidden bg-[#F2D6CD] h-screen overflow-y-scroll">
         {/* HEADER */}
         <div className="bg-[#F2D6CD] py-6 px-4 text-center">
           <img
-            src="src/assets/Cupido-rojo.png"
+            src="https://i.postimg.cc/mkQDtWm2/Cupido-rojo.png"
             alt="Cupido Logo"
             className="h-16 w-auto mx-auto mb-4"
           />
@@ -298,7 +295,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
                   onClick={() => setSelectedGenero(genero)}
                   className={`px-4 py-2 rounded-full border ${
                     selectedGenero === genero
-                      ? "bg-pink-500 text-white border-pink-500"
+                      ? "bg-[#E93923] text-white border-[#E93923]"
                       : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                   }`}
                 >
@@ -352,7 +349,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
                   onClick={() => setSelectedUbicacion(ubicacion)}
                   className={`px-4 py-2 rounded-full border ${
                     selectedUbicacion === ubicacion
-                      ? "bg-pink-500 text-white border-pink-500"
+                      ? "bg-[#E93923] text-white border-[#E93923]"
                       : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
                   }`}
                 >
@@ -386,7 +383,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
         <div className="flex-1 flex flex-col items-center justify-center p-8">
           <div className="absolute top-12 flex flex-col items-center justify-center w-full">
             <img
-              src="src/assets/Cupido-rojo.png"
+              src="https://i.postimg.cc/mkQDtWm2/Cupido-rojo.png"
               alt="Cupido Logo"
               className="h-16 w-auto mb-4"
             />
@@ -416,7 +413,7 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-8 mr-4">
           <div className="max-w-2xl mx-auto">
             <div className="h-px bg-[#e9ecef] my-8"></div>
 

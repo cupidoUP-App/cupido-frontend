@@ -17,6 +17,7 @@ import CompleteRegister, {
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   usuario_id: number;
@@ -52,7 +53,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const { openDashboard, login, setLoading } = useAppStore();
 
   const [registrationStep, setRegistrationStep] = useState<number>(0);
-
   const navigate = useNavigate();
 
   // =========================================================================
@@ -217,7 +217,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
           });
         }
       } else if (estadocuenta === "0") {
-        console.log("Redirigiendo a Dashboard - Estado 0");
+        console.log("Redirigiendo a match - Estado 0");
         login(response.user);
         toast({
           title: "¡Bienvenido!",
@@ -298,11 +298,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${userData.birthDate.year
-        }-${userData.birthDate.month.padStart(
-          2,
-          "0"
-        )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${
+        userData.birthDate.year
+      }-${userData.birthDate.month.padStart(
+        2,
+        "0"
+      )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,
@@ -408,14 +409,42 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
-  const handleBackFromPreferences = () => {
-    if (registrationStep === 2) {
-      setShowPreferences(false);
-      setRegistrationStep(1);
-      setShowCompleteRegister(true);
-    } else {
-      setShowPreferences(false);
-      onClose();
+  const handleBackFromPreferences = async () => {
+    try {
+      if (registrationStep === 2) {
+        // Mostrar carga mientras procesamos
+        setIsSubmitting(true);
+
+        // 1. Actualizar el estado en el backend a "1"
+        // Primero obtenemos los datos actuales para preservarlos
+        const userProfile = await authAPI.getUserProfile();
+
+        await authAPI.updateUserProfile({
+          nombres: userProfile.user.nombres,
+          apellidos: userProfile.user.apellidos,
+          genero_id: userProfile.user.genero_id,
+          fechanacimiento: userProfile.user.fechanacimiento,
+          descripcion: userProfile.user.descripcion,
+          estadocuenta: "1", // 🔥 REVERTIR ESTADO A 1
+        });
+
+        // 2. Actualizar UI para mostrar el paso anterior
+        setShowPreferences(false);
+        setRegistrationStep(1);
+        setShowCompleteRegister(true);
+      } else {
+        setShowPreferences(false);
+        onClose();
+      }
+    } catch (error) {
+      console.error("Error al regresar:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo regresar al paso anterior.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -587,6 +616,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
         }}
         onComplete={() => {
           setShowCompleteRegister(false);
+          setRegistrationStep(2); // ✅ Actualizar el paso a 2
           setShowPreferences(true);
         }}
         isSubmitting={isSubmitting}

@@ -3,14 +3,6 @@ import "./Sidebar.css";
 import { NavLink } from "react-router-dom";
 import Opciones from "./Opciones";
 
-// === IMPORTACIÓN DE IMÁGENES DESDE /assets ===
-import logoImg from "@assets/logo.png";
-import homeImg from "@assets/home.png";
-import chatImg from "@assets/chat.png";
-import notificacionesImg from "@assets/notificaciones.png";
-import perfilImg from "@assets/perfil.png";
-import opcionesImg from "@assets/opciones.png";
-
 interface SidebarProps {
   abrirModalCerrar: () => void;
 }
@@ -23,26 +15,56 @@ export default function Sidebar({ abrirModalCerrar }: SidebarProps) {
       
       {/* logo */}
       <div className="logo-area">
-        <img src={logoImg} alt="Cupido Logo" className="logo" />
+      <img 
+        src="https://i.postimg.cc/nVsfPBTk/Logo.png" 
+        alt="Cupido Logo" 
+        className="logo" 
+      />
       </div>
 
       {/* menu */}
       <nav className="menu">
 
         <NavLink to="/match" className="item">
-          <img src={homeImg} alt="Home" />
+        <img 
+        src="https://i.postimg.cc/7LDxvhhQ/home.png" 
+        alt="home (match)" 
+        className="item" 
+        />
         </NavLink>
 
-        <NavLink to="/chat" className="item">
-          <img src={chatImg} alt="Chat" />
+        <NavLink to="/test-chat" className="item">
+        <img 
+        src="https://i.postimg.cc/dQdw0GdL/chat.png" 
+        alt="chat" 
+        className="item" 
+        />
         </NavLink>
 
+        {/*
         <NavLink to="/notificaciones" className="item">
-          <img src={notificacionesImg} alt="Notificaciones" />
+        <img 
+        src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png" 
+        alt="Notificaciones" 
+        className="item" 
+        />
         </NavLink>
+        */}
+
+        <div className="item disabled" title="Próximamente">
+         <img 
+          src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png" 
+           alt="Notificaciones"
+           />
+        </div>
+
 
         <NavLink to="/profile" className="item">
-          <img src={perfilImg} alt="Perfil" />
+        <img 
+        src="https://i.postimg.cc/c1ckTHGB/perfil.png" 
+        alt="perfil" 
+        className="item" 
+        />
         </NavLink>
 
       </nav>
@@ -59,7 +81,11 @@ export default function Sidebar({ abrirModalCerrar }: SidebarProps) {
             cursor: "pointer",
           }}
         >
-          <img src={opcionesImg} alt="Opciones" />
+         <img 
+        src="https://i.postimg.cc/TwfqWVwN/opciones.png" 
+        alt="opciones" 
+        className="item" 
+        />
         </button>
       </div>
 
