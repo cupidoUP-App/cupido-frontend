@@ -32,7 +32,7 @@ const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange }) => {
           {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
-      
+
       <PasswordRequirements password={value} />
     </div>
   );

@@ -7,6 +7,7 @@ import NotFound from "@pages/NotFound";
 import MatchPage from "@features/matching/MatchPage";
 import ChatGeneral from "@features/chat/ChatGeneral";
 import MainLayout from "@pages/MainLayout";
+import ResetPasswordPage from "@features/auth/pages/resetPasswordPage";
 
 export const AppRouter = () => {
   return (
@@ -15,6 +16,7 @@ export const AppRouter = () => {
       <Route path="/" element={<Home />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/edit-preferences" element={<EditPreferencesPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* RUTAS CON SIDEBAR */}
       <Route element={<MainLayout />}>
