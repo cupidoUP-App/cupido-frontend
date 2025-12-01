@@ -624,8 +624,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       {/* Modal de Subida de Fotos */}
       {showPhotoUpload && (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full h-full bg-white">
+         <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
             <PhotoUploadPage
               onComplete={async () => {
                 try {
@@ -663,19 +662,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
               }}
             />
           </div>
-        </div>
+        
       )}
 
       {/* Modal de Preferences */}
       {showPreferences && (
-        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full h-full bg-white">
+        <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
+
             <PreferencesPage
               userId={currentUserId}
               onComplete={handlePreferencesComplete}
               onBack={handleBackFromPreferences}
             />
-          </div>
+         
         </div>
       )}
     </>
