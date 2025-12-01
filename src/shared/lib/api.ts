@@ -105,6 +105,7 @@ export const authAPI = {
     contrasena: string;
     recaptcha_token: string;
     tyc: boolean;
+    firma: string;
   }) => {
     const response = await api.post("/auth/register/", data);
     return response.data;

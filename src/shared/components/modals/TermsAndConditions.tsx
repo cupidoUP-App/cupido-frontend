@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface TermsAndConditionsProps {
   isOpen: boolean;
   onClose: () => void;
-  onAccept: () => void;
+  onAccept: (firma: string) => void;
   onReject: () => void;
 }
 
@@ -13,10 +13,12 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
   onAccept,
   onReject
 }) => {
+  const [inputValue, setInputValue] = useState('');
+
   if (!isOpen) return null;
 
   const handleAccept = () => {
-    onAccept();
+    onAccept(inputValue);
     onClose();
   };
 
@@ -123,20 +125,38 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
           </div>
         </div>
 
-        {/* Footer with Buttons */}
-        <div className="flex justify-end space-x-4 p-6 border-t border-gray-200 bg-gray-50">
-          <button
-            onClick={handleReject}
-            className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200 font-medium"
-          >
-            Rechazar
-          </button>
-          <button
-            onClick={handleAccept}
-            className="px-6 py-2 bg-[#E93923] text-white rounded-lg hover:bg-[#d1321f] transition duration-200 font-medium"
-          >
-            Aceptar
-          </button>
+        {/* Footer with Input and Buttons */}
+        <div className="p-6 border-t border-gray-200 bg-gray-50">
+          <div className="mb-4">
+            <label htmlFor="terms-input" className="block text-sm font-medium text-gray-700 mb-2">
+              Confirma tu aceptación (3-8 caracteres):
+            </label>
+            <input
+              id="terms-input"
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              minLength={3}
+              maxLength={8}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E93923] focus:border-transparent"
+              placeholder="Escribe aquí..."
+            />
+          </div>
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={handleReject}
+              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200 font-medium"
+            >
+              Rechazar
+            </button>
+            <button
+              onClick={handleAccept}
+              disabled={inputValue.length < 3 || inputValue.length > 8}
+              className="px-6 py-2 bg-[#E93923] text-white rounded-lg hover:bg-[#d1321f] transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Aceptar
+            </button>
+          </div>
         </div>
       </div>
     </div>

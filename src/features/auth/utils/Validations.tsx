@@ -4,6 +4,7 @@ export interface FormData {
   password: string;
   confirmPassword: string;
   acceptTerms: boolean;
+  firma: string;
 }
 
 export interface FormErrors {
@@ -57,6 +58,10 @@ export const validateForm = (formData: FormData): FormErrors => {
 
   if (!formData.acceptTerms) {
     errors.terms = 'Debes aceptar los términos y condiciones';
+  }
+
+  if (!formData.firma) {
+    errors.terms = 'Debes proporcionar tu firma en los términos y condiciones';
   }
 
   return errors;
