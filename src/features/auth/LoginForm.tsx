@@ -17,7 +17,7 @@ import CompleteRegister, {
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
-import { useNavigate } from "react-router-dom";
+
 
 interface User {
   usuario_id: number;
@@ -624,7 +624,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       {/* Modal de Subida de Fotos */}
       {showPhotoUpload && (
-         <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
+        
             <PhotoUploadPage
               onComplete={async () => {
                 try {
@@ -661,21 +661,18 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 }
               }}
             />
-          </div>
+        
         
       )}
 
       {/* Modal de Preferences */}
       {showPreferences && (
-        <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
-
             <PreferencesPage
               userId={currentUserId}
               onComplete={handlePreferencesComplete}
               onBack={handleBackFromPreferences}
             />
-         
-        </div>
+       
       )}
     </>
   );
