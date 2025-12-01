@@ -220,8 +220,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const handleForgotPasswordSuccess = () => {
     setShowForgotPassword(false);
     toast({
-      title: "Contraseña actualizada",
-      description: "Ahora puedes iniciar sesión con tu nueva contraseña.",
+      title: "All ready",
+      description: "Ahora puedes revisar tu correo electrónico.",
     });
   };
 
@@ -230,12 +230,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${
-        userData.birthDate.year
-      }-${userData.birthDate.month.padStart(
-        2,
-        "0"
-      )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${userData.birthDate.year
+        }-${userData.birthDate.month.padStart(
+          2,
+          "0"
+        )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,

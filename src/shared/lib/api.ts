@@ -183,7 +183,6 @@ export const authAPI = {
   },
 
   resetPasswordConfirm: async (data: {
-    email: string;
     token: string;
     nueva_contrasena: string;
   }) => {
