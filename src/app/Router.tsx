@@ -4,7 +4,7 @@ import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
 import EditPreferencesPage from "@profile/components/EditPreferencesPage";
 import NotFound from "@pages/NotFound";
-import MatchPage from "@features/matching/MatchPage";
+import MatchPage from "@features/matching/pages/MatchPage";
 import ChatGeneral from "@features/chat/ChatGeneral";
 import MainLayout from "@pages/MainLayout";
 
