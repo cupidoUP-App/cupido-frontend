@@ -76,15 +76,15 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   const uploadMutation = useMutation({
     mutationFn: photoAPI.uploadPhoto,
     onSuccess: (data) => {
-      console.log("✅ Subida exitosa:", data);
+      console.log(" Subida exitosa:", data);
       queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
     },
     onError: (error: any) => {
-      console.error("❌ Error en uploadPhoto:", error);
+      console.error(" Error en uploadPhoto:", error);
       const errorData = error.response?.data;
 
       if (errorData) {
-        console.log("📋 Datos del error:", errorData);
+        console.log(" Datos del error:", errorData);
 
         // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
         if (errorData.imagen && Array.isArray(errorData.imagen)) {

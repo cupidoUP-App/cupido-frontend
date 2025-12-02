@@ -1,6 +1,6 @@
 <!-- @format -->
 
-# 💘 cUPido 
+# cUPido 
 
 <p align="center">
   <img src="src/assets/logomasclight.webp" alt="cUPido Logo" width="170"/>
@@ -17,13 +17,13 @@
 
 ---
 
-## 🚀 Live Demo
+## Live Demo
 
 [Link to live demo](https://cupido-sandy.vercel.app)
 
 ---
 
-## ✨ Features
+## Features
 
 - **Framework Principal**: React 18 + Vite + TypeScript para un desarrollo rápido, moderno y seguro.
 - **Estilos**:
@@ -52,7 +52,7 @@
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -76,7 +76,7 @@
 
 ---
 
-## 📜 Available Scripts
+## Available Scripts
 
 In the project directory, you can run:
 
@@ -89,7 +89,7 @@ In the project directory, you can run:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
