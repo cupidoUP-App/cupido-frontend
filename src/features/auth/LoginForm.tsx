@@ -17,7 +17,6 @@ import CompleteRegister, {
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
-import { useNavigate } from "react-router-dom";
 
 interface User {
   usuario_id: number;
