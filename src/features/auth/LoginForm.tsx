@@ -128,11 +128,14 @@ const LoginForm: React.FC<LoginFormProps> = ({
         description: "Por favor completa todos los campos",
         variant: "destructive",
       });
-      setIsCaptchaVerified(false);
-      setRecaptchaToken('');
       return;
     }
 
+    if (isCaptchaVerified) {
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
+      }
+    
     if (!isCaptchaVerified) {
       setShowCaptcha(true);
       return;
