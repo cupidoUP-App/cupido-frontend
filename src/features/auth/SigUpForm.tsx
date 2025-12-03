@@ -298,7 +298,18 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
 
     // Validar campos básicos
     if (!validateBasicFields()) return;
-
+    if (formData.password !== formData.confirmPassword) {
+      toast({
+        title: "Error de Contraseña",
+        description: "Las contraseñas no coinciden. Por favor, verifica.",
+        variant: "destructive"
+      });
+      // Limpiamos el token de reCAPTCHA por seguridad, obligando al usuario a hacer la verificación 
+      // de nuevo si corrigen la contraseña y vuelven a hacer clic.
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
+      return; // <--- ¡ESTO DETIENE EL FLUJO ANTES DEL CAPTCHA!
+    }
     // DESACTIVADO PARA TESTING: PRIMER CLIC: Mostrar CAPTCHA si no está verificado
     if (!isCaptchaVerified) {
       setCurrentStep('captcha');
