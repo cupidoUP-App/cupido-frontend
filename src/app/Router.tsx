@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import Home from "@home/Home";
 import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
-import EditPreferencesPage from "@profile/components/EditPreferencesPage";
 import NotFound from "@pages/NotFound";
 import MatchPage from "@features/matching/pages/MatchPage";
 import ChatGeneral from "@features/chat/ChatGeneral";
@@ -15,7 +14,6 @@ export const AppRouter = () => {
       {/* RUTAS SIN SIDEBAR */}
       <Route path="/" element={<Home />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
-      <Route path="/edit-preferences" element={<EditPreferencesPage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
 
       {/* RUTAS CON SIDEBAR */}
