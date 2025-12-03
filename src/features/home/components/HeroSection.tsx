@@ -1,7 +1,7 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@ui/button';
 import heroPreloaderGif from '@/assets/hero-preloader.webp';
-import manGif from '@/assets/man.webp';
+//import manGif from '@/assets/man.webp';
 import { useAppStore } from '@store/appStore';
 import { useEffect } from 'react';
 import { ParticlesComponent } from './Particles';
@@ -14,11 +14,12 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection() {
-  const { theme, openSigUp, openLogin } = useAppStore();
-  const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
+  //theme,
+  const { openSigUp, openLogin } = useAppStore();
+  //const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
 
-  useEffect(() => { 
-    const preloadGifs = [manGif, heroPreloaderGif];
+  useEffect(() => {
+    const preloadGifs = [heroPreloaderGif];
     preloadGifs.forEach((gif) => {
       const img = new Image();
       img.src = gif;
@@ -26,8 +27,8 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section 
-      id="hero-section" 
+    <section
+      id="hero-section"
       className="relative min-h-screen flex items-center justify-center overflow-hidden"
       style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
@@ -35,7 +36,7 @@ export default function HeroSection() {
 
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
-          
+
           <div className="text-center lg:text-left space-y-8 animate-fade-in">
             <div className="space-y-6">
               <h1 className="font-display font-bold text-display-xl text-foreground leading-tight">
@@ -80,10 +81,10 @@ export default function HeroSection() {
           </div>
 
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
-          <div className="relative mx-auto max-w-lg lg:max-w-xl">  
+            <div className="relative mx-auto max-w-lg lg:max-w-xl">
               <div className="relative">
                 <img
-                  src={currentGif}
+                  src={heroPreloaderGif}
                   alt="cUPido animated visual"
                   className="relative w-full h-auto"
                 />

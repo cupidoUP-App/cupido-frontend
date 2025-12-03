@@ -7,7 +7,7 @@ import { loadSlim } from "@tsparticles/slim";
 import { loadHeartShape } from "@tsparticles/shape-heart";
 
 export const ParticlesComponent = (props: { id?: string }) => {
-  const { theme } = useAppStore();
+  //const { theme } = useAppStore();
   const [init, setInit] = useState(false);
 
   useEffect(() => {
@@ -59,10 +59,10 @@ export const ParticlesComponent = (props: { id?: string }) => {
       },
       particles: {
         color: {
-          value: theme === 'femenino' ? '#D9857E' : '#325048',
+          value: '#D9857E',
         },
         shape: {
-          type: theme === 'femenino' ? 'heart' : 'square',
+          type: 'heart',
         },
         number: {
           density: {
@@ -90,7 +90,7 @@ export const ParticlesComponent = (props: { id?: string }) => {
       },
       detectRetina: true,
     }),
-    [theme],
+    [],
   );
 
 

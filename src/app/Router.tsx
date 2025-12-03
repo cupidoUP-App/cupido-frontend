@@ -7,6 +7,8 @@ import MatchPage from "@features/matching/pages/MatchPage";
 import ChatGeneral from "@features/chat/ChatGeneral";
 import MainLayout from "@pages/MainLayout";
 import ResetPasswordPage from "@features/auth/pages/resetPasswordPage";
+import AboutPage from "@features/home/pages/AboutPage";
+import TeamPage from "@features/home/pages/TeamPage";
 
 export const AppRouter = () => {
   return (
@@ -15,6 +17,8 @@ export const AppRouter = () => {
       <Route path="/" element={<Home />} />
       <Route path="/edit-profile" element={<EditProfilePage />} />
       <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/team" element={<TeamPage />} />
 
       {/* RUTAS CON SIDEBAR */}
       <Route element={<MainLayout />}>
