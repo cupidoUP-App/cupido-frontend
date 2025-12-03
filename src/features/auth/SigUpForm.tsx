@@ -26,7 +26,8 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     email: '',
     password: '',
     confirmPassword: '',
-    acceptTerms: false
+    acceptTerms: false,
+    firma: ''
   });
 
   const [currentStep, setCurrentStep] = useState<FormStep>('initial');
@@ -49,10 +50,11 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     setShowTerms(true);
   };
 
-  const handleAcceptTerms = () => {
+  const handleAcceptTerms = (firma: string) => {
     setFormData(prev => ({
       ...prev,
-      acceptTerms: true
+      acceptTerms: true,
+      firma: firma
     }));
     setShowTerms(false);
     toast({
@@ -139,13 +141,15 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       console.log('Token CAPTCHA a enviar:', recaptchaToken);
       console.log('Longitud del token:', recaptchaToken.length);
       console.log('Términos aceptados:', formData.acceptTerms);
+      console.log('Firma:', formData.firma);
       console.log('====================================');
 
       const response = await authAPI.register({
         email: formData.email,
         contrasena: formData.password,
         recaptcha_token: recaptchaToken,
-        tyc: formData.acceptTerms
+        tyc: formData.acceptTerms,
+        firma: formData.firma
       });
 
       console.log('Registro exitoso:', response);
@@ -271,6 +275,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     if (!formData.password.trim()) emptyFields.push('contraseña');
     if (!formData.confirmPassword.trim()) emptyFields.push('confirmar contraseña');
     if (!formData.acceptTerms) emptyFields.push('términos y condiciones');
+    if (!formData.firma.trim()) emptyFields.push('firma');
 
     if (emptyFields.length > 0) {
       const fieldsText = emptyFields.join(', ');
