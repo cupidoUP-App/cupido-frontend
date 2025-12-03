@@ -274,6 +274,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
         variant: "destructive",
       });
     } finally {
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
       setIsSubmitting(false);
       setLoading(false);
     }
