@@ -227,7 +227,9 @@ export const authAPI = {
   },
 
   getDegrees: async () => {
-    const response = await api.get("/profile/profileManagement/degrees/");
+    const response = await api.get("/profile/profileManagement/degrees/",{
+      params: { limit : 500 }
+    });
     return response.data;
   },
 

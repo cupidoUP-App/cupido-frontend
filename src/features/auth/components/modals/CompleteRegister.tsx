@@ -353,7 +353,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         {/* Imagen decorativa - solo en desktop y posicionada a la derecha */}
         <div className="hidden lg:block absolute right-0 bottom-0 h-[85vh] max-w-[45vw] flex items-end z-10">
           <img
-            src="src\assets\flat-valentine-s-day-photocall-template-Photoroom 1.webp"
+            src="https://i.postimg.cc/VLnHbTmJ/flat-valentine-s-day-photocall-template-Photoroom-1.webp"
             alt="Decoración"
             className="h-full w-auto object-right-bottom object-contain"
           />
