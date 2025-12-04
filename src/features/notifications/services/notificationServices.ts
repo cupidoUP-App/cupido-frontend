@@ -36,7 +36,8 @@ const getUserIdFromToken = (): string | null => {
     return null;
 };
 
-const API_BASE_URL = '/api/v1/notificaciones/';
+const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL;  
+let API_BASE_URL = `${VITE_API_BASE}/api/v1/notificaciones/`;
 
 export const NotificationsServices = {
     async getNotifications(): Promise<AppNotification[]> {
