@@ -1,114 +1,301 @@
-/*const API_URL = 'https://localhost:5173/api/v1';
+// services/notificationServices.ts
+import { AppNotification } from "../types/notification.types";
 
-export const NotificationsServices =  {
-    async getNotifications(userId: string) {
-        const res = await fetch(`${API_URL}/notifications/${userId}`);
-    //return res.json();
+const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
     return {
-        notifications: [
-            {
-                id: '1',
-                title: 'Welcome',
-                message: 'Welcome to our service!',
-                read: false,
-                created_at: new Date(),
-            }
-        ]
-    };
-},
-
-async markAsRead(id: string) {
-    await fetch(`${API_URL}/notifications/read/${id}`, {
-        method: 'PUT',
-    });
-},
-};*/
-
-import { Notification, NotificationResponse } from "../types/notification.types";
-
-
-// Asumo que tu backend de Django se está ejecutando en http://localhost:8000
-const API_BASE_URL = 'http://localhost:8000/api/notifications/';
-const WEBSOCKET_URL = 'ws://localhost:8000/ws/notificaciones/';
-
-// Función auxiliar para mapear el objeto de Django al objeto de React/TS
-const mapDjangoToFrontend = (djangoNotif: any): Notification => {
-    return {
-        id: djangoNotif.id,
-        // Usamos 'tipo' del backend como 'title' en el frontend
+        id: djangoNotif.id.toString(),
         title: djangoNotif.tipo.charAt(0).toUpperCase() + djangoNotif.tipo.slice(1), 
-        message: djangoNotif.mensaje, // Usamos 'mensaje' del backend como 'message'
-        // Mapeamos 'estado' del backend a 'read' booleano en el frontend
+        message: djangoNotif.mensaje,
         read: djangoNotif.estado === 'leido', 
         created_at: new Date(djangoNotif.fecha_envio),
     };
 };
 
+const getAuthToken = (): string | null => {
+    return localStorage.getItem('access_token') || localStorage.getItem('token');
+};
+
+// Función auxiliar para obtener user_id del token (fuera del objeto)
+const getUserIdFromToken = (): string | null => {
+    const token = getAuthToken();
+    if (token) {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            
+            const payload = JSON.parse(jsonPayload);
+            return payload.user_id || payload.usuario_id || payload.id;
+        } catch (e) {
+            console.error('❌ Error decoding token:', e);
+            return null;
+        }
+    }
+    return null;
+};
+
+const API_BASE_URL = '/api/v1/notificaciones/';
+
 export const NotificationsServices = {
-    // 1. Obtener la lista de notificaciones (API REST)
-    async getNotifications(userId: string): Promise<Notification[]> {
-        // En el backend de DRF, el `get_queryset` de NotificacionViewSet ya filtra por el 
-        // usuario autenticado (request.user). El `userId` no es usado en la URL por seguridad.
-        // Asumimos que el usuario está autenticado mediante sesión/token en el frontend.
-        const res = await fetch(API_BASE_URL, {
-            // Es crucial incluir credenciales para que la sesión de Django funcione
-            credentials: 'include', 
-        });
-
-        if (!res.ok) {
-            console.error("Error fetching notifications:", res.statusText);
-            throw new Error(`Failed to fetch notifications: ${res.statusText}`);
-        }
-
-        // DRF devuelve un array de objetos
-        const djangoNotifications: any[] = await res.json();
+    async getNotifications(): Promise<AppNotification[]> {
+        const token = getAuthToken();
         
-        // Mapeamos cada objeto
-        const notifications = djangoNotifications.map(mapDjangoToFrontend);
-
-        // Devolvemos el array directamente (eliminando la necesidad de NotificationResponse.notifications)
-        return notifications; 
-    },
-
-    // 2. Marcar como leído (API REST - Acción personalizada)
-    async markAsRead(id: string) {
-        // El endpoint es /api/notifications/{id}/mark_read/
-        const res = await fetch(`${API_BASE_URL}${id}/mark_read/`, {
-            method: 'POST',
-            credentials: 'include',
-        });
-
-        if (!res.ok) {
-            console.error(`Error marking notification ${id} as read:`, res.statusText);
-            throw new Error(`Failed to mark notification as read: ${res.statusText}`);
+        if (!token) {
+            console.error('❌ No authentication token found');
+            throw new Error('No authentication token found. Please log in.');
         }
-        // No necesitamos el cuerpo, solo confirmamos el éxito (res.ok)
-    },
 
-    // 3. Conexión WebSocket
-    connectWebSocket(
-        onNewNotification: (notification: Notification) => void, 
-        onError: (error: Event) => void
-    ): WebSocket {
-        const socket = new WebSocket(WEBSOCKET_URL);
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
 
-        socket.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                // El payload del backend ya es un objeto de notificación con 'tipo', 'mensaje', etc.
-                const newNotification = mapDjangoToFrontend(data);
-                onNewNotification(newNotification);
-            } catch (e) {
-                console.error("Error parsing WebSocket message:", e);
+        try {
+            console.log('📡 Fetching notifications from:', API_BASE_URL);
+            
+            const res = await fetch(API_BASE_URL, {
+                credentials: 'include',
+                headers,
+            });
+
+            console.log('📊 Response status:', res.status, res.statusText);
+            
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error('❌ Error response:', errorText);
+                throw new Error(`Failed to fetch notifications: ${res.status} ${res.statusText}`);
             }
-        };
 
-        socket.onerror = (error) => {
-            onError(error);
-        };
+            const responseData = await res.json();
+            console.log('📦 Raw API response:', responseData);
+            
+            // DRF con paginación devuelve { count, next, previous, results }
+            let notificationsArray: any[] = [];
+            
+            if (responseData.results && Array.isArray(responseData.results)) {
+                // Caso con paginación
+                notificationsArray = responseData.results;
+                console.log(`📄 Paginated response: ${responseData.count} total notifications`);
+                console.log(`📄 Current page: ${notificationsArray.length} notifications`);
+            } else if (Array.isArray(responseData)) {
+                // Caso sin paginación (array directo)
+                notificationsArray = responseData;
+                console.log(`📄 Direct array: ${notificationsArray.length} notifications`);
+            } else {
+                console.error('❌ Unexpected response format:', responseData);
+                throw new Error('Unexpected response format from server');
+            }
+            
+            console.log(`✅ Parsed ${notificationsArray.length} notifications`);
+            
+            if (notificationsArray.length > 0) {
+                console.log('📋 First notification:', notificationsArray[0]);
+            } else {
+                console.log('📭 No notifications found');
+            }
+            
+            return notificationsArray.map(mapDjangoToFrontend);
+        } catch (error) {
+            console.error("❌ Network/API error:", error);
+            throw error;
+        }
+    },
+
+    async markAsRead(id: string) {
+        const token = getAuthToken();
         
-        // No necesitamos manejar onopen o onclose aquí, pero es buena práctica.
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
 
-        return socket;
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try {
+            const markReadUrl = `${API_BASE_URL}${id}/mark_read/`;
+            console.log('📝 Marking as read:', markReadUrl);
+            
+            const res = await fetch(markReadUrl, {
+                method: 'POST',
+                credentials: 'include',
+                headers,
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`❌ Error marking notification ${id} as read:`, res.status, errorText);
+                throw new Error(`Failed to mark notification as read: ${res.status}`);
+            }
+            
+            const result = await res.json();
+            console.log('✅ Marked as read:', result);
+            return result;
+        } catch (error) {
+            console.error('❌ Error in markAsRead:', error);
+            throw error;
+        }
+    },
+
+    // Obtener conteo de no leídas
+    async getUnreadCount(): Promise<number> {
+        try {
+            const notifications = await this.getNotifications();
+            const unreadCount = notifications.filter(notif => !notif.read).length;
+            console.log(`📊 Unread count: ${unreadCount}`);
+            return unreadCount;
+        } catch (error) {
+            console.error('❌ Error getting unread count:', error);
+            return 0;
+        }
+    },
+
+    // Función para crear una notificación de prueba
+    async createTestNotification(): Promise<boolean> {
+        const token = getAuthToken();
+        
+        if (!token) {
+            console.error('❌ No token for test');
+            return false;
+        }
+
+        const userId = getUserIdFromToken(); // Usar la función auxiliar
+        if (!userId) {
+            console.error('❌ No user ID for test');
+            return false;
+        }
+
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try {
+            const testNotification = {
+                tipo: 'test',
+                mensaje: 'Esta es una notificación de prueba creada desde el frontend',
+                usuario_destino: userId,
+                estado: 'enviado'
+            };
+
+            console.log('🧪 Creating test notification:', testNotification);
+            
+            const res = await fetch(API_BASE_URL, {
+                method: 'POST',
+                credentials: 'include',
+                headers,
+                body: JSON.stringify(testNotification)
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                console.log('✅ Test notification created:', result);
+                return true;
+            } else {
+                const errorText = await res.text();
+                console.error('❌ Failed to create test notification:', res.status, errorText);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Error creating test notification:', error);
+            return false;
+        }
+    },
+
+    async sendTestNotification(): Promise<boolean> {
+        const token = getAuthToken();
+        
+        if (!token) {
+            console.error('❌ No token for test');
+            return false;
+        }
+
+        const userId = getUserIdFromToken();
+        if (!userId) {
+            console.error('❌ No user ID for test');
+            return false;
+        }
+
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try {
+            const testNotification = {
+                tipo: 'test',
+                mensaje: 'Esta es una notificación de prueba creada desde el frontend',
+                usuario_destino: userId,
+                estado: 'enviado'
+            };
+
+            console.log('🧪 Sending test notification:', testNotification);
+            
+            const res = await fetch(API_BASE_URL, {
+                method: 'POST',
+                credentials: 'include',
+                headers,
+                body: JSON.stringify(testNotification)
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                console.log('✅ Test notification sent:', result);
+                return true;
+            } else {
+                const errorText = await res.text();
+                console.error('❌ Failed to send test notification:', res.status, errorText);
+                return false;
+            }
+        } catch (error) {
+            console.error('❌ Error sending test notification:', error);
+            return false;
+        }
+    },
+
+    // Función para probar la API manualmente
+    testApi(): Promise<any> {
+        return new Promise(async (resolve) => {
+            try {
+                const token = getAuthToken();
+                
+                if (!token) {
+                    console.error('❌ No token found');
+                    resolve({ error: 'No token' });
+                    return;
+                }
+
+                console.log('🧪 Testing API...');
+                console.log('🔗 URL:', API_BASE_URL);
+                console.log('🔑 Token (first 30 chars):', token.substring(0, 30) + '...');
+                
+                const res = await fetch(API_BASE_URL, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    }
+                });
+
+                console.log('📊 Response status:', res.status, res.statusText);
+                
+                const data = await res.json();
+                console.log('📦 Response data:', data);
+                
+                if (res.ok) {
+                    console.log('✅ API test successful!');
+                    console.log(`📊 Total notifications in DB: ${data.count}`);
+                    console.log(`📋 Notifications in this page: ${data.results?.length || 0}`);
+                } else {
+                    console.error('❌ API test failed');
+                }
+                
+                resolve(data);
+            } catch (error) {
+                console.error('❌ API test error:', error);
+                resolve({ error: error.message });
+            }
+        });
     }
 };

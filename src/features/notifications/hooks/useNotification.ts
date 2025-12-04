@@ -1,126 +1,122 @@
-/*import { useEffect, useState } from "react";
-import { Notification } from "../types/notification.types";
-import { NotificationsServices } from "../services/notificationServices";
+// hooks/useNotifications.ts - Con flag mejorado
+import { useEffect, useState, useCallback, useRef } from 'react';
+import { AppNotification } from '../types/notification.types';
+import { NotificationsServices } from '../services/notificationServices';
+import { websocketManager } from '../services/websocketManager';
 
-export const useNotification = (userId: string) => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [showList, setShowList] = useState(false);
-    const [popup, setPopup] = useState<Notification | null>(null);
+export const useNotification = (autoConnect = true) => {
+    const [notifications, setNotifications] = useState<AppNotification[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [connected, setConnected] = useState(false);
+    const componentMounted = useRef(true);
 
-    const loadNotifications = async () => {
-        const data = await NotificationsServices.getNotifications(userId);
-        setNotifications(data.notifications);
-    };
-*/
-   /* useEffect(() => {
-        const intervals = setInterval(async () => {
-            const data = await NotificationsServices.getNotifications(userId);
-            const latestNotification = data.notifications[0];
-            const previousNotification = notifications[0];
-                
-            if (latestNotification && (!previousNotification || latestNotification.id !== previousNotification.id)) {
-                setPopup(latestNotification);
-                setTimeout(() => setPopup(null), 4000);
-            }
-
-            setNotifications(data.notifications);
-        }, 5000);
-        return () => clearInterval(intervals);
-    }, [notifications]);
-*/
-/*
-useEffect(( ) =>{
-    const  demo = {
-        id:"1",
-        title: 'Welcome',
-        message: 'Welcome to our service!',
-        read:false,
-        created_at: new Date(),
-    };
-    setNotifications([demo]);
-    setPopup(demo);
-    setTimeout(() => setPopup(null), 60000);
-}, []);
-    return {notifications, showList, popup, togglelist: () => setShowList(!showList)}; 
-};
-*/
-
-import { useEffect, useState, useCallback } from "react";
-import { Notification } from "../types/notification.types";
-import { NotificationsServices } from "../services/notificationServices";
-
-export const useNotification = (userId: string) => {
-    const [notifications, setNotifications] = useState<Notification[]>([]);
-    const [showList, setShowList] = useState(false);
-    const [popup, setPopup] = useState<Notification | null>(null);
-    const [socket, setSocket] = useState<WebSocket | null>(null);
-
-    // Función para cargar las notificaciones de la API REST
-    const loadNotifications = useCallback(async () => {
-        try {
-            // El userId se ignora por seguridad en el service, pero se mantiene aquí
-            // para cumplir con la interfaz del componente padre.
-            const data = await NotificationsServices.getNotifications(userId);
-            setNotifications(data);
-        } catch (error) {
-            console.error("Failed to load notifications:", error);
-        }
-    }, [userId]); // Depende de userId
-
-    // Función para manejar nuevas notificaciones del WebSocket
-    const handleNewNotification = useCallback((newNotification: Notification) => {
-        // 1. Mostrar como popup
-        setPopup(newNotification);
-        setTimeout(() => setPopup(null), 4000); // Popup desaparece después de 4 segundos
-        
-        // 2. Insertar en la lista (al inicio)
-        setNotifications(prev => [newNotification, ...prev]);
-
+    useEffect(() => {
+        componentMounted.current = true;
+        return () => {
+            componentMounted.current = false;
+        };
     }, []);
 
-    // Conexión inicial (y recarga) de la lista de notificaciones
+    const loadNotifications = useCallback(async () => {
+        try {
+            setLoading(true);
+            setError(null);
+            const data = await NotificationsServices.getNotifications();
+            
+            if (componentMounted.current) {
+                setNotifications(data);
+            }
+        } catch (err) {
+            if (componentMounted.current) {
+                setError(err instanceof Error ? err.message : 'Error loading notifications');
+            }
+        } finally {
+            if (componentMounted.current) {
+                setLoading(false);
+            }
+        }
+    }, []);
+
+    const markAsRead = useCallback(async (id: string) => {
+        try {
+            await NotificationsServices.markAsRead(id);
+            setNotifications(prev =>
+                prev.map(notif =>
+                    notif.id === id ? { ...notif, read: true } : notif
+                )
+            );
+        } catch (err) {
+            console.error('Error marking as read:', err);
+            throw err;
+        }
+    }, []);
+
+    // Setup WebSocket listeners
     useEffect(() => {
-        loadNotifications();
-        
-        // Establecer la conexión WebSocket
-        const ws = NotificationsServices.connectWebSocket(
-            handleNewNotification,
-            (error) => console.error("WebSocket error:", error)
-        );
-        setSocket(ws);
+        if (!autoConnect) return;
 
-        // Limpiar la conexión al desmontar
-        return () => {
-            ws.close();
+        const handleNewNotification = (notification: AppNotification) => {
+            if (componentMounted.current) {
+                setNotifications(prev => [notification, ...prev]);
+            }
         };
-    }, [loadNotifications, handleNewNotification]);
 
-    // Función para alternar la visibilidad de la lista y marcar como leídas
-    const togglelist = () => {
-        setShowList(prev => {
-            const nextShowList = !prev;
-            if (nextShowList === true) {
-                // Lógica de marcar como leídas las notificaciones no leídas
-                const unreadNotifications = notifications.filter(n => !n.read);
-                if (unreadNotifications.length > 0) {
-                    // Para simplificar, asumimos que al abrir la lista, el usuario "lee" las primeras
-                    // 10 notificaciones no leídas. Podrías marcar solo al hacer click.
-                    unreadNotifications.slice(0, 10).forEach(async (notif) => {
-                         try {
-                            await NotificationsServices.markAsRead(notif.id);
-                         } catch (error) {
-                             // Manejar error
-                         }
-                    });
-                    // Recargar la lista para reflejar el estado 'leído'
-                    loadNotifications(); 
+        const handleError = (error: Event | string) => {
+            if (componentMounted.current) {
+                setError(typeof error === 'string' ? error : 'WebSocket connection error');
+            }
+        };
+
+        const handleConnection = (isConnected: boolean) => {
+            if (componentMounted.current) {
+                setConnected(isConnected);
+                if (isConnected) {
+                    setError(null);
                 }
             }
-            return nextShowList;
-        });
+        };
+
+        websocketManager.addNotificationListener(handleNewNotification);
+        websocketManager.addErrorListener(handleError);
+        websocketManager.addConnectionListener(handleConnection);
+
+        websocketManager.connect();
+
+        return () => {
+            websocketManager.removeNotificationListener(handleNewNotification);
+            websocketManager.removeErrorListener(handleError);
+            websocketManager.removeConnectionListener(handleConnection);
+        };
+    }, [autoConnect]);
+
+    // Cargar notificaciones iniciales
+    useEffect(() => {
+        if (autoConnect) {
+            loadNotifications();
+        }
+    }, [autoConnect, loadNotifications]);
+
+    const refresh = useCallback(async () => {
+        await loadNotifications();
+    }, [loadNotifications]);
+
+    const connectWebSocket = useCallback(() => {
+        websocketManager.connect();
+    }, []);
+
+    const disconnectWebSocket = useCallback(() => {
+        websocketManager.disconnect();
+    }, []);
+
+    return {
+        notifications,
+        loading,
+        error,
+        connected,
+        refresh,
+        markAsRead,
+        connectWebSocket,
+        disconnectWebSocket,
     };
-
-    // Exportamos la función de recarga en caso de que un componente la necesite.
-    return { notifications, showList, popup, togglelist, loadNotifications }; 
 };
-
