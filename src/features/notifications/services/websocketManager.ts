@@ -79,8 +79,8 @@ class WebSocketManager {
         }
 
         // Construir URL
-        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-        let wsUrl = `${protocol}://${window.location.host}/ws/notificaciones/${userId}/`;
+        const baseWsUrl = import.meta.env.VITE_WSNOTI_BASE_URL;  
+        let wsUrl = `${baseWsUrl}/${userId}/`;
         
         if (token) {
             wsUrl += `?token=${encodeURIComponent(token)}`;
