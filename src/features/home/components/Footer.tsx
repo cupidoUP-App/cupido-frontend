@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
 //import { useAppStore } from '@store/appStore';
-import TyC from '@components/modals/TyC';
+import TyC from '@modals/TyC';
 import logofemlight from '@/assets/logofemlight.webp';
 //import logomasclight from '@/assets/logomasclight.webp';
 

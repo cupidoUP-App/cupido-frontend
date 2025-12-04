@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import Sidebar from "@features/sidebar/components/Sidebar";
-import ModalCerrarSesion from "@features/sidebar/components/ModalCerrarSesion";
+import Sidebar from "@sidebar/components/Sidebar";
+import ModalCerrarSesion from "@sidebar/components/ModalCerrarSesion";
 
 
 const MainLayout = () => {

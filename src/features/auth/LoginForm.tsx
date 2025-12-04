@@ -16,7 +16,7 @@ import CompleteRegister, {
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
-import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
+import PhotoUploadPage from "@photos/PhotoUploadPage";
 
 interface User {
   usuario_id: number;
@@ -69,7 +69,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       if (!accessToken || !savedStep) return;
 
       const step = parseInt(savedStep, 10);
-      
+
       // Validar que el paso sea válido (1-3)
       if (isNaN(step) || step < 1 || step > 3) return;
 
@@ -78,7 +78,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       try {
         // Verificar que el token sigue siendo válido obteniendo el perfil
         const userProfile = await authAPI.getUserProfile();
-        
+
         if (userProfile?.user) {
           setCurrentUserId(savedUserId || userProfile.user.usuario_id?.toString() || "");
           setRegistrationStep(step);
@@ -134,8 +134,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
     if (isCaptchaVerified) {
       setIsCaptchaVerified(false);
       setRecaptchaToken('');
-      }
-    
+    }
+
     if (!isCaptchaVerified) {
       setShowCaptcha(true);
       return;

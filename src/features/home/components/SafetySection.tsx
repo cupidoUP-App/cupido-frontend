@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Shield, UserX, BookOpen, Eye } from 'lucide-react';
 import { Button } from '@ui/button';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
-import TermsAndConditions from '@components/modals/TermsAndConditions';
 
 export default function SafetySection() {
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -109,14 +108,6 @@ export default function SafetySection() {
           </div>
         </div>
       </div>
-
-      {/* Modal de Términos y Condiciones */}
-      <TermsAndConditions
-        isOpen={isTermsModalOpen}
-        onClose={() => setIsTermsModalOpen(false)}
-        onAccept={(firma) => setIsTermsModalOpen(false)}
-        onReject={() => setIsTermsModalOpen(false)}
-      />
     </section>
   );
 }

@@ -30,26 +30,34 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "../src"),
+        "@assets": path.resolve(__dirname, "../src/assets"),
+        //Shared
+        "@layout": path.resolve(__dirname, "../src/shared/components/layout"),
+        "@modals": path.resolve(__dirname, "../src/shared/components/modals"),
         "@ui": path.resolve(__dirname, "../src/shared/components/ui"),
-        "@store": path.resolve(__dirname, "../src/shared/store"),
         "@hooks": path.resolve(__dirname, "../src/shared/hooks"),
         "@lib": path.resolve(__dirname, "../src/shared/lib"),
-        "@types": path.resolve(__dirname, "../src/shared/types"),
-        "@home": path.resolve(__dirname, "../src/features/home"),
         "@pages": path.resolve(__dirname, "../src/shared/pages"),
-        "@profile": path.resolve(__dirname, "../src/features/profile"),
+        "@store": path.resolve(__dirname, "../src/shared/store"),
+        //Features
+        "@admin": path.resolve(__dirname, "../src/features/admin"),
+        "@auth": path.resolve(__dirname, "../src/features/auth"),
+        "@chat": path.resolve(__dirname, "../src/features/chat"),
+        "@dashboard": path.resolve(__dirname, "../src/features/dashboard"),
         "@filters": path.resolve(__dirname, "../src/features/filters"),
+        "@home": path.resolve(__dirname, "../src/features/home"),
+        "@matching": path.resolve(__dirname, "../src/features/matching"),
+        "@notifications": path.resolve(__dirname, "../src/features/notifications"),
+        "@photos": path.resolve(__dirname, "../src/features/photos"),
         "@preferences": path.resolve(__dirname, "../src/features/preferences"),
-        "@assets": path.resolve(__dirname, "../src/assets"),
-        "@test": path.resolve(__dirname, "../src/shared/test"),
-        "@features": path.resolve(__dirname, "../src/features"),
-        "@components": path.resolve(__dirname, "../src/shared/components"),
+        "@profile": path.resolve(__dirname, "../src/features/profile"),
+        "@sidebar": path.resolve(__dirname, "../src/features/sidebar"),
       },
     },
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: '../src/shared/test/setup.ts',
+      setupFiles: '../src/shared/lib/test/setup.ts',
     },
   };
 });

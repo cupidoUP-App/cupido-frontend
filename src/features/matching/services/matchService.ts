@@ -1,6 +1,6 @@
-import MatchPlaceholder1 from "@/assets/MatchPlaceholder1.jpeg";
-import MatchPlaceholder2 from "@/assets/MatchPlaceholder2.webp";
-import MatchPlaceholder3 from "@/assets/MatchPlaceholder3.jpg";
+import MatchPlaceholder1 from "@assets/MatchPlaceholder1.jpeg";
+import MatchPlaceholder2 from "@assets/MatchPlaceholder2.webp";
+import MatchPlaceholder3 from "@assets/MatchPlaceholder3.jpg";
 import { MatchData } from "../types";
 
 export const mockMatchDataList: MatchData[] = [
