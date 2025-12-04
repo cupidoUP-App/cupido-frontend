@@ -24,7 +24,7 @@ async markAsRead(id: string) {
 },
 };*/
 
-import { Notification, NotificationResponse } from "../types/notification.types.ts";
+import { Notification, NotificationResponse } from "../types/notification.types";
 
 
 // Asumo que tu backend de Django se está ejecutando en http://localhost:8000
