@@ -1,5 +1,8 @@
 // services/websocketManager.ts
 import { AppNotification } from "../types/notification.types";
+import { buildWsUrl } from "../../../shared/utils/ws";
+
+const WS_NOTI_BASE_URL = import.meta.env.VITE_WSNOTI_BASE_URL;
 
 class WebSocketManager {
     private static instance: WebSocketManager;
@@ -79,12 +82,12 @@ class WebSocketManager {
         }
 
         // Construir URL
-        const baseWsUrl = import.meta.env.VITE_WSNOTI_BASE_URL;  
-        let wsUrl = `${baseWsUrl}/${userId}/`;
-
-        if (token) {
-            wsUrl += `?token=${encodeURIComponent(token)}`;
-        }
+        const wsUrl = buildWsUrl({
+            baseUrl: WS_NOTI_BASE_URL,
+            fallbackPath: '/ws/notificaciones',
+            pathSegments: [userId],
+            query: { token },
+        });
 
         console.log('🌐 Connecting WebSocket:', wsUrl);
 
