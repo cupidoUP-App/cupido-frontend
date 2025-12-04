@@ -79,12 +79,8 @@ class WebSocketManager {
         }
 
         // Construir URL
-        const baseWsUrl = import.meta.env.VITE_WSNOTI_BASE_URL;
-        if (!baseWsUrl) {
-            console.error("VITE_WSNOTI_BASE_URL no está definida");
-        }
-        
-        const wsUrl = `${baseWsUrl}/${userId}/?token=${token}`;
+        const baseWsUrl = import.meta.env.VITE_WSNOTI_BASE_URL;  
+        let wsUrl = `${baseWsUrl}/${userId}/`;
 
         
         if (token) {
