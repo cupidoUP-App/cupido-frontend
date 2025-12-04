@@ -114,7 +114,7 @@ export default function SafetySection() {
       <TermsAndConditions
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => setIsTermsModalOpen(false)}
+        onAccept={(firma) => setIsTermsModalOpen(false)}
         onReject={() => setIsTermsModalOpen(false)}
       />
     </section>

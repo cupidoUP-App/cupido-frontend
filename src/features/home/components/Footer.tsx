@@ -100,11 +100,6 @@ export default function Footer() {
               <div className="text-background/60 text-sm">
                 © 2025 cUPido — Proyecto académico. Todos los derechos reservados.
               </div>
-
-              <div className="flex items-center space-x-6 text-sm text-background/60">
-                <span>Ingeniería de Software II</span>
-                <span>•</span>
-              </div>
             </div>
           </div>
         </div>
@@ -114,7 +109,7 @@ export default function Footer() {
       <TermsAndConditions
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => setIsTermsModalOpen(false)}
+        onAccept={(firma) => setIsTermsModalOpen(false)}
         onReject={() => setIsTermsModalOpen(false)}
       />
     </>

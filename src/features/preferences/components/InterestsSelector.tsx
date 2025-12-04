@@ -13,10 +13,36 @@ const InterestsSelector: React.FC<InterestsSelectorProps> = ({
 }) => {
   // Lista de 16 intereses
   const interests = [
-    'Deportes', 'Música', 'Arte', 'Tecnología', 
-    'Viajes', 'Lectura', 'Cine', 'Gastronomía',
-    'Fotografía', 'Moda', 'Videojuegos', 'Naturaleza',
-    'Animales', 'Cocina', 'Baile', 'Yoga'
+    'Deportes',
+    'Música',
+    'Viajes',
+    'Cine',
+    'Lectura',
+    'Cocina',
+    'Arte',
+    'Tecnología',
+    'Naturaleza',
+    'Fotografía',
+    'Baile',
+    'Videojuegos',
+    'Yoga',
+    'Meditación',
+    'Idiomas',
+    'Voluntariado',
+    'Animales',
+    'Moda',
+    'Historia',
+    'Ciencia',
+    'Política',
+    'Religión',
+    'Aventura',
+    'Relax',
+    'Fiestas',
+    'Familia',
+    'Amigos',
+    'Carrera',
+    'Educación',
+    'Finanzas',
   ];
 
   const toggleInterest = (interest: string) => {

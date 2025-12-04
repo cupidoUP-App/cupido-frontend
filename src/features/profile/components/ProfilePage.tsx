@@ -199,13 +199,6 @@ const ProfilePage = () => {
                 >
                   Editar Perfil
                 </button>
-                <button
-                  onClick={handleEditPreferences}
-                  className="bg-white text-[#E74C3C] px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 border-2 border-[#E74C3C]/30 hover:bg-[#E74C3C]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base font-semibold"
-                  aria-label="Abrir preferencias"
-                >
-                  Preferencias
-                </button>
               </div>
             </div>
           </div>
