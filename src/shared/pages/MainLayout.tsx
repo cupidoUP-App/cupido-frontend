@@ -10,7 +10,7 @@ const MainLayout = () => {
   return (
     <div style={{ display: "flex" }}>
       {/* Sidebar solo se muestra aquí */}
-      <Sidebar abrirModalCerrar={() => setModalCerrar(true)} />
+      <Sidebar abrirModalCerrar={() => setModalCerrar(true)} userId="ID_DEL_USUARIO" />
 
       {/* Contenido principal */}
       <div style={{ flex: 1 }}>

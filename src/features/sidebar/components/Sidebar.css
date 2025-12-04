@@ -125,3 +125,74 @@
     align-items: center;
   }
 }
+
+
+.overlay-notifs {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: flex-start; /* Cambiado de center a flex-start */
+  align-items: flex-start; /* Cambiado de flex-start a flex-start */
+  padding-top: 0; 
+  z-index: 9999;
+}
+
+/* Caja de notificaciones - ahora a la izquierda */
+.notifs-wrapper {
+  position: relative;
+  width: 420px;
+  background: transparent;
+  margin-left: 85px; 
+  margin-top: 0;
+  padding-top: 50px;
+  height: 100vh;
+}
+
+/* Botón de cerrar - ahora posicionado dentro del panel */
+.close-notifs {
+  position: absolute;
+  top: 25px;
+  right: 25px; 
+  background: white;
+  border: none;
+  font-size: 20px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  z-index: 10000;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #FF4757;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #FFF0EC;
+  z-index: 10;
+}
+
+/* Para móviles */
+@media (max-width: 900px) {
+  .notification-badge {
+    top: -5px;
+    right: -5px;
+    min-width: 16px;
+    height: 16px;
+    font-size: 0.6rem;
+    border-width: 1.5px;
+  }
+}
