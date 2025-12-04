@@ -32,7 +32,8 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
       <div className="w-full max-w-4xl h-[80vh] bg-white rounded-lg shadow-xl flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">Términos y Condiciones</h2>
+          <h2 className="text-2xl font-bold text-gray-900">ADVERTENCIA Y AUTORIZACIÓN DE TRATAMIENTO DE
+            DATOS PERSONALES – CUPIDO</h2>
           <button
             onClick={onClose}
             className="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-100 transition-colors"
@@ -47,115 +48,124 @@ const TermsAndConditions: React.FC<TermsAndConditionsProps> = ({
         {/* Content - Scrollable */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="prose prose-lg max-w-none">
-            <h3 className="text-xl font-semibold mb-4">1. Aceptación de los Términos</h3>
+            {/*<h3 className="text-xl font-semibold mb-4">1. Aceptación de los Términos</h3>*/}
             <p className="mb-4">
-              Al registrarte en CUPIDO, aceptas cumplir y estar sujeto a estos términos y condiciones. 
-              Si no estás de acuerdo con alguna parte de estos términos, no podrás utilizar nuestros servicios.
+              El software CUPIDO, en cumplimiento de la Ley 1581 de 2012, el Decreto 1377 de 2013,
+              la Ley 2300 de 2023, la Circular Externa 002 de 2024 de la Superintendencia de Industria y
+              Comercio (SIC) y la  <a className='font-bold' href="https://drive.google.com/file/d/1HJxuJaxnaDsad_JhiaZdMC6oUl_vgfwD/view?usp=drive_link">Política de Tratamiento, Autorización y Protección de Datos
+                Personales del software CUPIDO,</a>informa que los datos personales que usted suministre
+              serán recolectados, almacenados, usados y tratados exclusivamente para las siguientes
+              finalidades: permitir su registro, autenticación y participación en la plataforma; facilitar la
+              interacción social y académica dentro de un entorno universitario seguro; promover el uso
+              ético y responsable de la información digital; generar estadísticas y estudios académicos de
+              forma anónima y confidencial; y fortalecer las estrategias de bienestar, convivencia y salud
+              emocional de la comunidad universitaria.
+            </p>
+            <p className="mb-4">
+              Las siguientes acciones están estrictamente prohibidas dentro del uso del software
+              CUPIDO:
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">2. Uso del Servicio</h3>
+            <ol className="list-decimal list-inside mb-4 ml-4">
+              <li>Compartir, solicitar o divulgar información sensible, íntima, privada o que
+                comprometa la seguridad propia o de terceros.</li>
+              <li>Utilizar la plataforma para acosar, amenazar, discriminar, suplantar identidad o
+                realizar conductas inapropiadas, ofensivas o contrarias a la ley o a los principios
+                institucionales.</li>
+              <li>Recoger, almacenar, copiar o difundir datos personales de otros usuarios sin
+                autorización expresa, así como usar la información con fines comerciales,
+                publicitarios o ajenos al propósito académico del proyecto.</li>
+            </ol>
+
+
             <p className="mb-4">
-              CUPIDO es una plataforma diseñada exclusivamente para la comunidad universitaria de la 
-              Universidad de Pamplona. El uso del servicio está restringido a estudiantes, profesores 
-              y personal administrativo con correo institucional @unipamplona.edu.co.
+              En ningún caso <b>CUPIDO</b> venderá, transferirá o compartirá sus datos personales con fines
+              comerciales o publicitarios. La plataforma garantiza la confidencialidad y protección de su
+              información mediante medidas técnicas, humanas y administrativas adecuadas.
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">3. Cuenta de Usuario</h3>
+            <h2 className="text-xl font-bold text-gray-800">ADVERTENCIA PREVIA SOBRE EL USO DEL CHAT Y RESPONSABILIDAD
+              COMPARTIDA</h2>
             <p className="mb-4">
-              Debes proporcionar información precisa y completa durante el registro. Eres responsable 
-              de mantener la confidencialidad de tu contraseña y de todas las actividades que ocurran 
-              bajo tu cuenta.
+              Antes de continuar, CUPIDO advierte expresamente que para el uso del chat en el Software
+              se recomienda precaución, sentido común, autocuidado y evaluación consciente del tipo de
+              información que se comparte. CUPIDO no se hace responsable por la información privada,
+              contenidos íntimos, datos sensibles o detalles personales que los usuarios decidan compartir
+              voluntariamente con otros usuarios dentro de la plataforma. Dicha divulgación constituye
+              un acto autónomo del titular, y como tal excede el control técnico y jurídico de CUPIDO.
+              Esta advertencia se fundamenta en el principio de autonomía de la voluntad, la
+              corresponsabilidad digital y la doctrina del control individual de los datos personales.
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">4. Conducta del Usuario</h3>
             <p className="mb-4">
-              Te comprometes a utilizar el servicio de manera respetuosa y ética. No está permitido:
-            </p>
-            <ul className="list-disc list-inside mb-4 ml-4">
-              <li>Publicar contenido ofensivo, discriminatorio o inapropiado</li>
-              <li>Suplantar la identidad de otras personas</li>
-              <li>Realizar acoso o comportamiento inapropiado</li>
-              <li>Compartir información personal de otros usuarios sin consentimiento</li>
-            </ul>
-
-            <h3 className="text-xl font-semibold mb-4">5. Privacidad y Datos</h3>
-            <p className="mb-4">
-              Respetamos tu privacidad y protegemos tus datos personales. Tu información será utilizada 
-              únicamente para los fines del servicio y no será compartida con terceros sin tu 
-              consentimiento, excepto cuando sea requerido por ley.
+              Usted tiene derecho a conocer, actualizar, rectificar o eliminar sus datos personales, así
+              como a revocar esta autorización en cualquier momento, conforme a los procedimientos
+              establecidos en la <a className='font-bold' href="https://drive.google.com/file/d/1HJxuJaxnaDsad_JhiaZdMC6oUl_vgfwD/view?usp=drive_link">Política de Tratamiento, Autorización y Protección de Datos
+                Personales del software CUPIDO.</a>
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">6. Propiedad Intelectual</h3>
             <p className="mb-4">
-              Todo el contenido de CUPIDO, incluyendo logotipos, diseño y software, es propiedad de 
-              la plataforma y está protegido por las leyes de propiedad intelectual.
+              Para ejercer sus derechos, puede comunicarse con Protección de Datos Personales de
+              CUPIDO al correo: <a className='font-bold text-blue-500' href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=habeasdata@cupidocol.com">habeasdata@cupidocol.com</a>
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">7. Limitación de Responsabilidad</h3>
             <p className="mb-4">
-              CUPIDO no se hace responsable por las interacciones entre usuarios. Es tu responsabilidad 
-              ejercer criterio y precaución al interactuar con otros miembros de la comunidad.
+              ∆ Al hacer clic en <b>"ACEPTO"</b>, usted declara que ha leído y comprendido esta advertencia y
+              autoriza de manera libre, previa, expresa e informada el tratamiento de sus datos personales
+              para las finalidades aquí señaladas junto con la Política de Tratamiento, Autorización y
+              Protección de Datos Personales del software CUPIDO.
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">8. Modificaciones</h3>
             <p className="mb-4">
-              Nos reservamos el derecho de modificar estos términos en cualquier momento. Las 
-              modificaciones serán notificadas a los usuarios y el uso continuado del servicio 
-              constituye la aceptación de los nuevos términos.
+              ∆ Si selecciona <b>"RECHAZO"</b>, la plataforma no podrá registrar ni procesar su información
+              personal, lo cual impedirá su participación activa en CUPIDO.
             </p>
 
-            <h3 className="text-xl font-semibold mb-4">9. Terminación</h3>
-            <p className="mb-4">
-              Podemos suspender o terminar tu acceso al servicio si violas estos términos y condiciones 
-              o realizas actividades que consideremos inapropiadas.
-            </p>
-
-            <h3 className="text-xl font-semibold mb-4">10. Ley Aplicable</h3>
-            <p className="mb-4">
-              Estos términos se rigen por las leyes de Colombia. Cualquier disputa será resuelta en 
-              los tribunales competentes de la ciudad de Pamplona.
-            </p>
-
-            <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6">
-              <p className="text-yellow-800 text-sm">
-                <strong>Nota importante:</strong> Al hacer clic en "Aceptar", confirmas que has leído, 
-                comprendido y aceptas todos los términos y condiciones mencionados anteriormente.
+            <div className='bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-6'>
+              <p className="text-yellow-800 text-sm font-semibold">
+                Asegúrate de leer la <a className='text-blue-500' href="https://drive.google.com/file/d/1HJxuJaxnaDsad_JhiaZdMC6oUl_vgfwD/view?usp=drive_link">Política de Tratamiento, Autorización y Protección de Datos Personales del software CUPIDO.</a> antes de continuar.
               </p>
             </div>
+
+            <div className="mb-4 mt-6">
+              <label htmlFor="terms-input" className="flex justify-center items-center block text-sm font-medium text-gray-700 mb-6">
+                Si estas de acuerdo, escribe tu firma (3-8 caracteres):
+              </label>
+              <input
+                id="terms-input"
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                minLength={3}
+                maxLength={8}
+                className="w-full px-3 py-2 flex border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E93923] focus:border-transparent"
+                placeholder="Firma"
+              />
+            </div>
+
           </div>
         </div>
 
         {/* Footer with Input and Buttons */}
-        <div className="p-6 border-t border-gray-200 bg-gray-50">
-          <div className="mb-4">
-            <label htmlFor="terms-input" className="block text-sm font-medium text-gray-700 mb-2">
-              Confirma tu aceptación (3-8 caracteres):
-            </label>
-            <input
-              id="terms-input"
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              minLength={3}
-              maxLength={8}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#E93923] focus:border-transparent"
-              placeholder="Escribe aquí..."
-            />
-          </div>
-          <div className="flex justify-end space-x-4">
-            <button
-              onClick={handleReject}
-              className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200 font-medium"
-            >
-              Rechazar
-            </button>
-            <button
-              onClick={handleAccept}
-              disabled={inputValue.length < 3 || inputValue.length > 8}
-              className="px-6 py-2 bg-[#E93923] text-white rounded-lg hover:bg-[#d1321f] transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              Aceptar
-            </button>
+        <div className="p-6 border-t border-gray-200 bg-gray-50 ">
+          <div className="flex justify-between">
+            <div className="flex justify-initial space-x-4">
+              <button
+                onClick={handleReject}
+                className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition duration-200 font-medium"
+              >
+                Rechazo
+              </button>
+            </div>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleAccept}
+                disabled={inputValue.length < 3 || inputValue.length > 8}
+                className="px-6 py-2 bg-[#E93923] text-white rounded-lg hover:bg-[#d1321f] transition duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Acepto
+              </button>
+            </div>
           </div>
         </div>
       </div>

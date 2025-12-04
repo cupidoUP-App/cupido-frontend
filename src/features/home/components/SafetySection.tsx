@@ -73,8 +73,8 @@ export default function SafetySection() {
               })}
             </div>
 
-            <Button className="btn-outline" onClick={() => setIsTermsModalOpen(true)}>
-              Conoce nuestras prácticas
+            <Button className="btn-outline">
+              <a href="https://drive.google.com/file/d/1mYLWA-KEx1WMhFpsEw2T740d8plZhQEG/view?usp=sharing" target="_blank">Conoce nuestras prácticas</a>
             </Button>
           </div>
 

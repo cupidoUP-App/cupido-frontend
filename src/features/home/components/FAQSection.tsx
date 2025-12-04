@@ -93,7 +93,7 @@ export default function FAQSection() {
               ¿No encuentras la respuesta que buscas?
             </p>
             <button className="text-primary hover:text-accent transition-colors font-medium">
-              <a target="_blank" href="https://github.com/cupidoUP-App">Contáctanos para más ayuda</a>
+              <a target="_blank" href="https://mail.google.com/mail/u/0/?view=cm&fs=1&to=admin@cupidocol.com">Contáctanos para más ayuda</a>
             </button>
           </div>
         </div>

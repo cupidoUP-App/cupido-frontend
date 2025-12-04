@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from '@ui/button';
-import ThemeToggle from './ThemeToggle';
+//import ThemeToggle from './ThemeToggle';
 import { useAppStore } from '@store/appStore';
 import logofemdark from '@/assets/logofemdark.webp';
-import logomascdark from '@/assets/logomascdark.webp';
+//import logomascdark from '@/assets/logomascdark.webp';
 
 const useScroll = (threshold = 10) => {
   const [scrolled, setScrolled] = useState(false);
@@ -26,14 +26,15 @@ const useScroll = (threshold = 10) => {
 };
 
 interface HeaderProps {
-  onThemeChange: (theme: string) => void;
+  //onThemeChange: (theme: string) => void;
   onOpenSignup?: () => void;
   openLogin?: () => void;
 }
 
-export function Header({ onThemeChange }: HeaderProps) {
+export function Header({ /*onThemeChange*/ }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { theme, openSigUp, openLogin, isAuthenticated, user, logout } = useAppStore();
+  //theme
+  const { openSigUp, openLogin, isAuthenticated, user, logout } = useAppStore();
   const scrolled = useScroll();
 
   // Función para scroll suave al inicio de la página
@@ -60,7 +61,7 @@ export function Header({ onThemeChange }: HeaderProps) {
     { label: 'Contacto', onClick: scrollToFooter },
   ];
 
-  const logo = theme === 'femenino' ? logofemdark : logomascdark;
+  const logo = logofemdark;
 
   return (
     <>
@@ -101,7 +102,7 @@ export function Header({ onThemeChange }: HeaderProps) {
               ))}
             </nav>
             <div className="hidden lg:flex items-center space-x-4">
-              <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
+              {/* <ThemeToggle theme={theme} onThemeChange={onThemeChange} /> */}
               {isAuthenticated ? (
                 <>
                   <div className="flex items-center space-x-2 text-foreground">
@@ -169,7 +170,7 @@ export function Header({ onThemeChange }: HeaderProps) {
                 ))}
                 <div className="flex flex-col space-y-3 pt-4 border-t border-gray-200">
                   <div className="flex justify-center pb-2">
-                    <ThemeToggle theme={theme} onThemeChange={onThemeChange} />
+                    {/* <ThemeToggle theme={theme} onThemeChange={onThemeChange} /> */}
                   </div>
                   {isAuthenticated ? (
                     <>
