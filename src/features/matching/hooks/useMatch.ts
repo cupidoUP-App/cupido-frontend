@@ -4,8 +4,8 @@ import MatchLike from "@assets/MatchLike.png";
 import { MatchData } from "../types";
 import { getMatches } from "../services/matchService";
 
-export const useMatch = (initialMatchData?: MatchData) => {
-  const [matchList] = useState<MatchData[]>(getMatches());
+export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) => {
+  const [matchList] = useState<MatchData[]>(matches || getMatches());
   const [currentIndex, setCurrentIndex] = useState(() =>
     Math.floor(Math.random() * matchList.length)
   );
