@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import MatchDislike from "@/assets/MatchDislike.png";
-import MatchLike from "@/assets/MatchLike.png";
+import MatchDislike from "@assets/MatchDislike.png";
+import MatchLike from "@assets/MatchLike.png";
 import { MatchData } from "../types";
 import { getMatches } from "../services/matchService";
 
@@ -164,7 +164,7 @@ export const useMatch = (initialMatchData?: MatchData) => {
   // Swipe handler
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isAnimating || likesRemaining <= 0) return;
-    
+
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
     if (cardRef.current) {
@@ -177,19 +177,19 @@ export const useMatch = (initialMatchData?: MatchData) => {
 
     let deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
-    
+
     // Dynamic threshold based on screen width
     // Use 25% of screen width or 100px, whichever is smaller
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
     const maxHorizontalMove = Math.min(100, screenThreshold);
-    
+
     const clampedDeltaX = Math.max(-maxHorizontalMove, Math.min(maxHorizontalMove, deltaX));
-    
+
     // No permitir movimiento vertical hacia arriba, solo hacia abajo con límite
     const verticalMove = deltaY > 0 ? Math.min(deltaY, 20) : 0;
-    
+
     setDragOffset({ x: clampedDeltaX, y: verticalMove });
-    
+
     // Calculate rotation based on horizontal drag
     const maxRotation = 15;
     const rotationValue = (clampedDeltaX / maxHorizontalMove) * maxRotation;
@@ -209,7 +209,7 @@ export const useMatch = (initialMatchData?: MatchData) => {
       setIsDragging(false);
       setDragOffset({ x: 0, y: 0 });
       setSwipeRotation(0);
-      
+
       if (deltaX > 0) {
         handleLike();
       } else {
@@ -223,7 +223,7 @@ export const useMatch = (initialMatchData?: MatchData) => {
 
     setIsDragging(false);
     const deltaX = e.clientX - dragStart.x;
-    
+
     // Threshold for swipe action (won't be reached due to auto-trigger, but kept for safety)
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
     const threshold = Math.min(100, screenThreshold);
@@ -256,7 +256,7 @@ export const useMatch = (initialMatchData?: MatchData) => {
     setDragOffset({ x: 0, y: 0 });
     setSwipeRotation(0);
     setShowOverlay(false);
-    
+
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.3s ease-out';
     }

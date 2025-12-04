@@ -27,14 +27,17 @@
       "@/*": [
         "../../src/*"
       ],
+      "@assets/*": [
+        "../../src/assets/*"
+      ],
+      "@layout/*": [
+        "../../src/shared/components/layout/*"
+      ],
+      "@modals/*": [
+        "../../src/shared/components/modals/*"
+      ],
       "@ui/*": [
         "../../src/shared/components/ui/*"
-      ],
-      "@components/*": [
-        "../../src/shared/components/*"
-      ],
-      "@store/*": [
-        "../../src/shared/store/*"
       ],
       "@hooks/*": [
         "../../src/shared/hooks/*"
@@ -42,33 +45,48 @@
       "@lib/*": [
         "../../src/shared/lib/*"
       ],
-      "@types/*": [
-        "../../src/shared/types/*"
-      ],
-      "@home/*": [
-        "../../src/features/home/*"
-      ],
       "@pages/*": [
         "../../src/shared/pages/*"
       ],
-      "@profile/*": [
-        "../../src/features/profile/*"
+      "@store/*": [
+        "../../src/shared/store/*"
+      ],
+      "@admin/*": [
+        "../../src/features/admin/*"
+      ],
+      "@auth/*": [
+        "../../src/features/auth/*"
+      ],
+      "@chat/*": [
+        "../../src/features/chat/*"
+      ],
+      "@dashboard/*": [
+        "../../src/features/dashboard/*"
       ],
       "@filters/*": [
         "../../src/features/filters/*"
       ],
+      "@home/*": [
+        "../../src/features/home/*"
+      ],
+      "@matching/*": [
+        "../../src/features/matching/*"
+      ],
+      "@notifications/*": [
+        "../../src/features/notifications/*"
+      ],
+      "@photos/*": [
+        "../../src/features/photos/*"
+      ],
       "@preferences/*": [
         "../../src/features/preferences/*"
       ],
-      "@assets/*": [
-        "../../src/assets/*"
+      "@profile/*": [
+        "../../src/features/profile/*"
       ],
-      "@test/*": [
-        "../../src/shared/test/*"
+      "@sidebar/*": [
+        "../../src/features/sidebar/*"
       ],
-      "@features/*": [
-        "../../src/features/*"
-      ]
     },
     "skipLibCheck": true
   },

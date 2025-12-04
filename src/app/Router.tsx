@@ -3,12 +3,12 @@ import Home from "@home/Home";
 import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
 import NotFound from "@pages/NotFound";
-import MatchPage from "@features/matching/pages/MatchPage";
-import ChatGeneral from "@features/chat/ChatGeneral";
+import MatchPage from "@matching/pages/MatchPage";
+import ChatGeneral from "@chat/ChatGeneral";
 import MainLayout from "@pages/MainLayout";
-import ResetPasswordPage from "@features/auth/pages/resetPasswordPage";
-import AboutPage from "@features/home/pages/AboutPage";
-import TeamPage from "@features/home/pages/TeamPage";
+import ResetPasswordPage from "@auth/pages/resetPasswordPage";
+import AboutPage from "@home/pages/AboutPage";
+import TeamPage from "@home/pages/TeamPage";
 
 export const AppRouter = () => {
   return (

@@ -26,7 +26,7 @@ export default function AboutPage() {
 
 
     return (
-        <div className="min-h-screen bg-background overflow-x-hidden flex flex-col relative">
+        <div className="min-h-screen bg-gradient-to-b from-[#F5F5F5] to-[#E7D8D8] overflow-x-hidden flex flex-col relative">
             {/* Background Pattern */}
             <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
                 <div className="absolute top-0 -left-4 w-72 h-72 bg-primary/20 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
@@ -46,7 +46,7 @@ export default function AboutPage() {
                     >
                         <motion.div variants={itemVariants} className="text-center space-y-4">
                             <span className="inline-block py-1 px-3 rounded-full bg-primary/10 text-primary text-sm font-medium tracking-wide">
-                                Nuestra Historia
+                                Nosotros
                             </span>
                             <h1 className="font-display font-bold text-4xl md:text-6xl text-foreground">
                                 ¿Quiénes somos?
@@ -54,13 +54,10 @@ export default function AboutPage() {
                             <div className="h-1 w-20 bg-primary mx-auto rounded-full"></div>
                         </motion.div>
 
-                        <motion.div variants={itemVariants} className="space-y-8 text-lg text-muted-foreground leading-relaxed text-justify md:text-left">
-                            <p className="first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:mr-3 float-left">
-                                CUPIDO
-                            </p>
-                            <p>
-                                es un proyecto universitario creado en la Universidad de Pamplona
-                                por estudiantes y docentes de Ingeniería en Sistemas y Derecho. Nuestro
+                        <motion.div variants={itemVariants} className="space-y-8 text-lg">
+                            <p className="first-letter:text-5xl first-letter:font-bold first-letter:text-primary first-letter:mr-3">
+                                CUPIDO, es un proyecto de curso universitario creado en la Universidad de Pamplona con el apoyo
+                                de estudiantes y docentes de Ingeniería en Sistemas y Derecho. Nuestro
                                 objetivo es ofrecer un espacio digital seguro y ético que fortalezca la
                                 interacción social entre estudiantes.
                             </p>
@@ -74,15 +71,19 @@ export default function AboutPage() {
                             </div>
 
                             <p>
-                                CUPIDO no tiene fines de lucro: es una iniciativa académica y social que
+                                CUPIDO no tiene fines de lucro: es una iniciativa académica y social, que
                                 integra tecnología, derecho y ética digital para proteger tu privacidad y
                                 bienestar emocional.
                             </p>
 
                             <p>
-                                Confiar en nosotros significa contar con un equipo comprometido con la
-                                seguridad de tus datos y el cumplimiento de las normas nacionales e
-                                internacionales de protección de la información.
+                                Confiar en nosotros significa contar con un equipo de tu mismo campus, comprometido con la
+                                seguridad de tus datos y el cumplimiento de las normas de protección de la información internacionales,
+                                nacionales e institucionales.
+                            </p>
+
+                            <p>
+                                Agradecemos tu confianza y esperamos que CUPIDO sea un espacio seguro y saludable para ti.
                             </p>
                         </motion.div>
                     </motion.div>

@@ -4,7 +4,7 @@ import EmailField from './components/forms/EmailField';
 import PasswordField from './components/forms/PasswordField';
 import ConfirmPasswordField from './components/forms/ConfirmPasswordField';
 import TermsCheckbox from '@lib/recaptcha/TermsCheckbox';
-import TermsAndConditions from '@components/modals/TermsAndConditions';
+import TermsAndConditions from '@modals/TermsAndConditions';
 import ReCaptchaModal from './components/modals/ReCaptchaModal';
 import EmailVerificationModal from './components/modals/EmailVerificationModal';
 import { FormData, FormErrors, validateForm } from './utils/Validations';

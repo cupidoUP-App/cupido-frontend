@@ -83,15 +83,14 @@ In the project directory, you can run:
 -   `npm run dev`: Inicia el servidor de desarrollo.
 -   `npm run build`: Compila la aplicación para producción.
 -   `npm run build:dev` Compila para desarrollo.
--   `npm run lint`: Ejecuta el linter para analizar el código.
+-   `npm run lint`: Ejecuta el linter para analizar el código. En desuso.
 -   `npm run preview`: Sirve la build de producción localmente.
--   `npm test`: Ejecuta la suite de pruebas con Vitest.
-
+-   `npm test`: Ejecuta la suite de pruebas con Vitest. En desuso actualmente.
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to submit a Pull Request, but before that please check the ARCHITECHTURE.md file to see the current architecture and the proposed architecture, too read the README.md file of each feature to see the implementation details.
 
 ---
 

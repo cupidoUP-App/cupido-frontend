@@ -3,7 +3,7 @@ import {
   Dialog,
   DialogContent,
   DialogClose,
-} from "@/shared/components/ui/dialog";
+} from "@ui/dialog";
 
 interface MatchLimitDialogProps {
   open: boolean;

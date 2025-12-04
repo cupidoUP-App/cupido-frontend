@@ -1,3 +1,5 @@
+//This file is not used, it is only for the typescript-eslint configuration
+//Deprecated
 import js from "@eslint/js";
 import globals from "globals";
 import reactHooks from "eslint-plugin-react-hooks";

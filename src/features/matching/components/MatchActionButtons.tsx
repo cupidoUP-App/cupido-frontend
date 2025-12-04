@@ -1,6 +1,6 @@
 import React from "react";
-import MatchDislike from "@/assets/MatchDislike.png";
-import MatchLike from "@/assets/MatchLike.png";
+import MatchDislike from "@assets/MatchDislike.png";
+import MatchLike from "@assets/MatchLike.png";
 
 interface MatchActionButtonsProps {
   handleLike: () => void;
@@ -25,18 +25,15 @@ const MatchActionButtons: React.FC<MatchActionButtonsProps> = ({
           bottom: isAtTop ? "30px" : "10px",
           transform: "translateX(-50%)",
         }}
-        className={`absolute pointer-events-auto ${
-          isAtTop ? "w-20 h-20" : "w-10 h-10"
-        } rounded-full bg-white shadow-lg shadow-black/30 flex items-center justify-center ${
-          isAtTop ? "hover:scale-110" : "hover:scale-150"
-        } transition-all duration-300 hover:bg-blue-500 group disabled:opacity-50 disabled:cursor-not-allowed`}
+        className={`absolute pointer-events-auto ${isAtTop ? "w-20 h-20" : "w-10 h-10"
+          } rounded-full bg-white shadow-lg shadow-black/30 flex items-center justify-center ${isAtTop ? "hover:scale-110" : "hover:scale-150"
+          } transition-all duration-300 hover:bg-blue-500 group disabled:opacity-50 disabled:cursor-not-allowed`}
       >
         <img
           src={MatchDislike}
           alt="Dislike"
-          className={`${
-            isAtTop ? "w-10 h-10" : "w-8 h-8"
-          } transition-all duration-300 group-hover:invert group-hover:brightness-200`}
+          className={`${isAtTop ? "w-10 h-10" : "w-8 h-8"
+            } transition-all duration-300 group-hover:invert group-hover:brightness-200`}
         />
       </button>
       <button
@@ -47,18 +44,15 @@ const MatchActionButtons: React.FC<MatchActionButtonsProps> = ({
           bottom: isAtTop ? "30px" : "10px",
           transform: "translateX(-50%)",
         }}
-        className={`absolute pointer-events-auto ${
-          isAtTop ? "w-20 h-20" : "w-10 h-10"
-        } rounded-full bg-white shadow-lg shadow-black/30 flex items-center justify-center ${
-          isAtTop ? "hover:scale-110" : "hover:scale-150"
-        } transition-all duration-300 hover:bg-red-500 group disabled:opacity-50 disabled:cursor-not-allowed`}
+        className={`absolute pointer-events-auto ${isAtTop ? "w-20 h-20" : "w-10 h-10"
+          } rounded-full bg-white shadow-lg shadow-black/30 flex items-center justify-center ${isAtTop ? "hover:scale-110" : "hover:scale-150"
+          } transition-all duration-300 hover:bg-red-500 group disabled:opacity-50 disabled:cursor-not-allowed`}
       >
         <img
           src={MatchLike}
           alt="Like"
-          className={`${
-            isAtTop ? "w-10 h-10" : "w-8 h-8"
-          } transition-all duration-300 group-hover:invert group-hover:brightness-200`}
+          className={`${isAtTop ? "w-10 h-10" : "w-8 h-8"
+            } transition-all duration-300 group-hover:invert group-hover:brightness-200`}
         />
       </button>
     </div>

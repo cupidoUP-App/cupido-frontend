@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import "./Sidebar.css";
 import { NavLink } from "react-router-dom";
 import Opciones from "./Opciones";
-import NotificationsPage from "../../notifications/components/notificationsPage"; 
-import { useNotification } from "../../notifications/hooks/useNotification";
+import NotificationsPage from "@notifications/components/notificationsPage";
+import { useNotification } from "@notifications/hooks/useNotification";
 
 
 interface SidebarProps {
@@ -19,33 +19,33 @@ export default function Sidebar({ abrirModalCerrar, userId }: SidebarProps) {
 
   return (
     <div className="sidebar">
-      
+
       {/* logo */}
       <div className="logo-area">
-      <img 
-        src="https://i.postimg.cc/nVsfPBTk/Logo.png" 
-        alt="Cupido Logo" 
-        className="logo" 
-      />
+        <img
+          src="https://i.postimg.cc/nVsfPBTk/Logo.png"
+          alt="Cupido Logo"
+          className="logo"
+        />
       </div>
 
       {/* menu */}
       <nav className="menu">
 
         <NavLink to="/match" className="item">
-        <img 
-        src="https://i.postimg.cc/7LDxvhhQ/home.png" 
-        alt="home (match)" 
-        className="item" 
-        />
+          <img
+            src="https://i.postimg.cc/7LDxvhhQ/home.png"
+            alt="home (match)"
+            className="item"
+          />
         </NavLink>
 
         <NavLink to="/test-chat" className="item">
-        <img 
-        src="https://i.postimg.cc/dQdw0GdL/chat.png" 
-        alt="chat" 
-        className="item" 
-        />
+          <img
+            src="https://i.postimg.cc/dQdw0GdL/chat.png"
+            alt="chat"
+            className="item"
+          />
         </NavLink>
 
         {/*
@@ -67,30 +67,30 @@ export default function Sidebar({ abrirModalCerrar, userId }: SidebarProps) {
         */}
 
         <button
-        className="item"
-        onClick={() => setOpenNotificaciones(true)}
-        style={{ background: "none", border: "none", padding: 0, position: "relative" }}
+          className="item"
+          onClick={() => setOpenNotificaciones(true)}
+          style={{ background: "none", border: "none", padding: 0, position: "relative" }}
         >
-          <img 
-          src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png" 
-          alt="Notificaciones" 
-          className="item" 
-        />
-        
-        {unreadCount > 0 && (
-          <span className="notification-badge">
-            {unreadCount > 99 ? '99+' : unreadCount}
-          </span>
-        )}
+          <img
+            src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png"
+            alt="Notificaciones"
+            className="item"
+          />
+
+          {unreadCount > 0 && (
+            <span className="notification-badge">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </span>
+          )}
         </button>
 
 
         <NavLink to="/profile" className="item">
-        <img 
-        src="https://i.postimg.cc/c1ckTHGB/perfil.png" 
-        alt="perfil" 
-        className="item" 
-        />
+          <img
+            src="https://i.postimg.cc/c1ckTHGB/perfil.png"
+            alt="perfil"
+            className="item"
+          />
         </NavLink>
 
       </nav>
@@ -107,11 +107,11 @@ export default function Sidebar({ abrirModalCerrar, userId }: SidebarProps) {
             cursor: "pointer",
           }}
         >
-         <img 
-        src="https://i.postimg.cc/TwfqWVwN/opciones.png" 
-        alt="opciones" 
-        className="item" 
-        />
+          <img
+            src="https://i.postimg.cc/TwfqWVwN/opciones.png"
+            alt="opciones"
+            className="item"
+          />
         </button>
       </div>
 
@@ -124,16 +124,16 @@ export default function Sidebar({ abrirModalCerrar, userId }: SidebarProps) {
       )}
 
       {openNotificaciones && (
-      <div className="overlay-notifs">
-        <div className="notifs-wrapper">
-          <NotificationsPage 
-            userId={userId}
-            onClose={() => setOpenNotificaciones(false)} // Añadimos prop para cerrar
-          />
+        <div className="overlay-notifs">
+          <div className="notifs-wrapper">
+            <NotificationsPage
+              userId={userId}
+              onClose={() => setOpenNotificaciones(false)} // Añadimos prop para cerrar
+            />
+          </div>
+
         </div>
-    
-  </div>
-)}
+      )}
 
     </div>
   );

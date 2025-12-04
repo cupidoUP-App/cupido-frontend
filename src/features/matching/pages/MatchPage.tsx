@@ -1,5 +1,5 @@
 import React from "react";
-import MatchBG from "@/assets/background_verification.webp";
+import MatchBG from "@assets/background_verification.webp";
 import { MatchPageProps } from "../types";
 import { useMatch } from "../hooks/useMatch";
 import MatchCard from "../components/MatchCard";
@@ -69,8 +69,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
             likesRemaining <= 0
               ? "not-allowed"
               : isDragging
-              ? "grabbing"
-              : "grab",
+                ? "grabbing"
+                : "grab",
         }}
         isAtTop={isAtTop}
         setShowOptions={setShowOptions}

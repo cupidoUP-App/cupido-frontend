@@ -3,7 +3,7 @@ import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from '@ui/button';
 //import ThemeToggle from './ThemeToggle';
 import { useAppStore } from '@store/appStore';
-import logofemdark from '@/assets/logofemdark.webp';
+import logofemdark from '@assets/logofemdark.webp';
 //import logomascdark from '@/assets/logomascdark.webp';
 
 const useScroll = (threshold = 10) => {

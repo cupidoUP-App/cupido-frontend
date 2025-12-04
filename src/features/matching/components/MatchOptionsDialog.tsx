@@ -1,5 +1,5 @@
 import React from "react";
-import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
+import { Dialog, DialogContent } from "@ui/dialog";
 
 interface MatchOptionsDialogProps {
   open: boolean;

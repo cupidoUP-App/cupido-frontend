@@ -13,9 +13,9 @@ import Footer from './components/Footer';
 //import ThemeTransitionOverlay from '@ui/ThemeTransitionOverlay';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import { useAppStore } from '@store/appStore';
-import SigUpForm from '@/features/auth/SigUpForm';
-import LoginForm from '@/features/auth/LoginForm';
-import Dashboard from '@/features/dashboard/Dashboard';
+import SigUpForm from '@auth/SigUpForm';
+import LoginForm from '@auth/LoginForm';
+import Dashboard from '@dashboard/Dashboard';
 
 // Constante para detectar registro pendiente (debe coincidir con LoginForm)
 const REGISTRATION_STEP_KEY = "cupido_registration_step";

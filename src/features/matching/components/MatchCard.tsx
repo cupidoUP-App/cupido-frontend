@@ -1,9 +1,9 @@
 import React from "react";
-import { Card } from "@/shared/components/ui/card";
-import { ScrollArea } from "@/shared/components/ui/scroll-area";
-import OptionDots from "@/assets/OptionDots.png";
-import CupidWhite from "@/assets/cupid-white.png";
-import MatchLike from "@/assets/MatchLike.png";
+import { Card } from "@ui/card";
+import { ScrollArea } from "@ui/scroll-area";
+import OptionDots from "@assets/OptionDots.png";
+import CupidWhite from "@assets/cupid-white.png";
+import MatchLike from "@assets/MatchLike.png";
 import { MatchData } from "../types";
 import MatchInfo from "./MatchInfo";
 import MatchActionButtons from "./MatchActionButtons";
@@ -60,26 +60,23 @@ const MatchCard: React.FC<MatchCardProps> = ({
       >
         {/* Name/age bar - Static overlay */}
         <div
-          className={`absolute top-0 left-0 w-full px-4 py-3 flex flex-col gap-2 z-20 pointer-events-none transition-colors duration-300 ${
-            isAtTop
+          className={`absolute top-0 left-0 w-full px-4 py-3 flex flex-col gap-2 z-20 pointer-events-none transition-colors duration-300 ${isAtTop
               ? "bg-gradient-to-b from-black/50 via-black/20 to-transparent shadow-transparent"
               : "bg-white shadow-lg"
-          }`}
+            }`}
         >
           <div className="flex items-center justify-between pointer-events-auto">
             <div
-              className={`text-[24px] md:text-[30px] font-['Poppins'] transition-colors duration-300 ${
-                isAtTop ? "text-white" : "text-black"
-              }`}
+              className={`text-[24px] md:text-[30px] font-['Poppins'] transition-colors duration-300 ${isAtTop ? "text-white" : "text-black"
+                }`}
             >
               {data?.info?.title || "Nombre"}
               {data?.info?.edad && `, ${data.info.edad}`}
             </div>
             <button
               onClick={() => setShowOptions(true)}
-              className={`bg-transparent border-0 p-2 transition-opacity cursor-pointer hover:opacity-70 hover:scale-110 ${
-                isAtTop ? "invert" : ""
-              }`}
+              className={`bg-transparent border-0 p-2 transition-opacity cursor-pointer hover:opacity-70 hover:scale-110 ${isAtTop ? "invert" : ""
+                }`}
             >
               <img
                 src={OptionDots}
@@ -103,15 +100,13 @@ const MatchCard: React.FC<MatchCardProps> = ({
         <ScrollArea className="flex-1 w-full [&>div[data-orientation='vertical']]:hidden relative touch-pan-y overflow-x-hidden">
           {/* Overlay */}
           <div
-            className={`absolute inset-0 z-50 flex flex-col items-center justify-center transition-opacity duration-200 ${
-              showOverlay ? "opacity-100" : "opacity-0 pointer-events-none"
-            } ${
-              likesRemaining === 0
+            className={`absolute inset-0 z-50 flex flex-col items-center justify-center transition-opacity duration-200 ${showOverlay ? "opacity-100" : "opacity-0 pointer-events-none"
+              } ${likesRemaining === 0
                 ? "bg-red-300"
                 : overlayIcon === MatchLike
-                ? "bg-red-500"
-                : "bg-blue-500"
-            }`}
+                  ? "bg-red-500"
+                  : "bg-blue-500"
+              }`}
           >
             <img
               src={likesRemaining === 0 ? CupidWhite : overlayIcon}

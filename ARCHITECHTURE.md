@@ -10,19 +10,20 @@ Cupido is a modern dating application frontend built with React, TypeScript, and
 
 ```
 cupido-frontend/
-├── package.json                 # Project dependencies and scripts
-├── index.html                   # Main HTML entry point
-├── README.md                    # Project documentation
+├── package.json y package-lock.json    # Project dependencies and scripts |0|
+├── index.html                   # Main HTML entry point |1| with meta tags
+├── README.md                    # Project presentation and setup instructions
+|-- tsconfig.json                # Entry point for TypeScript configuration redirects to tsconfig.app.json |0|
 ├── LICENSE                      # Project license
-├── config/                      # Configuration directory
-|   |--env/                     # Enviroment Configuration
+├── config/                      # Configuration directory |0|
+|   |--env/                     # Enviroment Configuration and the env.example file
 │   ├── vite.config.ts          # Vite bundler configuration
-│   ├── tsconfig/               # TypeScript configurations
-│   │   ├── tsconfig.app.json   # Application TS config
+│   ├── tsconfig/               # TypeScript configurations for app and node
+│   │   ├── tsconfig.app.json   # Application TS config and aliases
 │   │   └── tsconfig.node.json  # Node/ tooling TS config
-│   ├── eslint.config.ts        # ESLint configuration
+│   ├── eslint.config.ts        # ESLint configuration, actually it is not used
 │   ├── tailwind.config.ts      # Tailwind CSS configuration
-│   └── postcss.config.cjs      # PostCSS configuration
+│   └── postcss.config.cjs      # PostCSS configuration entry point for tailwindcss
 ├── deploy/                      # Deployment configuration
 │   ├── Dockerfile              # Docker deployment
 │   └── nginx.conf              # Nginx configuration
@@ -30,6 +31,8 @@ cupido-frontend/
     ├── placeholder.svg         # Placeholder image
     └── robots.txt              # SEO robots file
 ```
+
+Actually in production the .env file is in the root directory, for this reason the vite.config.ts file in the config directory is using path.resolve(__dirname, 'env'), to load the .env file. In development the .env file is in the config directory.
 
 #### Key Configuration Files Analysis
 
@@ -47,8 +50,36 @@ cupido-frontend/
 - **Development**: ESLint, TypeScript, PostCSS
 
 **vite.config.ts**: Advanced Vite configuration with:
-- **Path Aliases**: Comprehensive alias setup for features, shared components, and utilities
-- **Proxy Configuration**: API proxy to backend (FastAPI) via `VITE_API_BASE_URL`
+- **Path Aliases**: Comprehensive alias setup for features, shared components, and others. This is used to import components and features from other directories. In the same directory we don't need to use the alias, we used ./
+
+The actual aliases are: 
+        "@"  this point to src
+        "@assets" this point to src/assets
+
+        //Shared
+        "@layout"
+        "@modals"
+        "@ui"
+        "@hooks"
+        "@lib"
+        "@pages"
+        "@store"
+
+        //Features
+        "@admin"
+        "@auth"
+        "@chat"
+        "@dashboard"
+        "@filters"
+        "@home"
+        "@matching"
+        "@notifications"
+        "@photos"
+        "@preferences"
+        "@profile"
+        "@sidebar"
+
+- **Proxy Configuration**: API proxy to backend (Django Rest Framework) via `VITE_API_BASE_URL`
 - **Development Server**: Configured for development and production environments
 - **PostCSS Integration**: Tailwind CSS processing
 - **Development Tools**: Lovable tagger for component tracking in dev mode
@@ -69,42 +100,72 @@ src/
 │   └── index.css             # Global styles
 │   ├── router.tsx             # Route configuration
 │   ├── providers.tsx          # Context providers
+|   |-- vite-env.d.ts          # Vite environment declarations
 ├── assets/                    # Static assets
 ├── features/                  # Feature-based modules
+|   ├── admin/                 # Admin system
 │   ├── auth/                 # Authentication system
-│   │   ├── components/       # Auth-specific components
-│   │   │   ├── forms/        # Form components
-│   │   │   ├── modals/       # Modal components
-│   │   │   └── ProtectedRoute.tsx
-│   │   ├── hooks/            # Auth-specific hooks
-│   │   ├── types/            # Auth type definitions
-│   │   ├── utils/            # Auth utilities
-│   │   ├── LoginForm.tsx     # Login component
-│   │   ├── SigUpForm.tsx     # Signup component
-│   │   └── AuthModal.tsx     # Auth modal component
-│   ├── home/                 # Landing page
-│   │   └── components/       # Homepage components
+|   ├── chat/                 # Chat system
 │   ├── dashboard/            # User dashboard
-│   ├── profile/              # User profile management
-│   ├── preferences/          # User preferences
 │   ├── filters/              # Search filters
-│   ├── photos/               # Photo management
-│   ├── chat/                 # Chat system
+|   ├── home/                 # Landing page
 │   ├── matching/             # Matching algorithm
-│   └── notifications/        # Notification system                   # Page-level components
-├── shared/
-|   ├── pages/                      # Shared utilities and components
+|   |-- notifications/        # Notification system
+|   ├── photos/               # Photo management
+│   ├── preferences/          # User preferences
+│   ├── profile/              # User profile management
+|   |-- sidebar/              # Sidebar management
+├── shared/  # Shared utilities and components                    
 │   ├── components/           # Reusable components
-│   │   └── ui/               # shadcn/ui components
 │   ├── hooks/                # Global hooks
 │   ├── lib/                  # Utility libraries
-│   │   └── recaptcha/        # reCAPTCHA implementation
+|   ├── pages/                # Page-level components
 │   ├── store/                # Zustand stores
-│   └── types/                # Global type definitions
-└── ARCHITECHTURE.md          # This file
+└── 
 ```
+At the moment all before this message is implemented, but is necessary to implement the feature-based architecture to make the code more maintainable and scalable.By the way please check the README.md file of each feature to see the implementation details.
+
+End of ARCHITECHTURE.md file
+
+######
+#####
+####
+###
+##
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Proposed Enhanced Architecture
+
+THIS IS ONLY A PROPOSAL, IT IS NOT IMPLEMENTED YET
 
 ### Feature-Based Architecture Principles
 
@@ -205,7 +266,7 @@ src/
 │   ├── providers.tsx            # Context providers
 |   |-- index.css
 ├── features/                    # Feature modules
-│   ├── auth/                    # Authentication
+│   ├── feature/                # Feature 1
 │   │   ├── components/
 │   │   │   ├── forms/
 │   │   │   ├── layout/
@@ -217,58 +278,6 @@ src/
 │   │   ├── utils/
 │   │   ├── constants/
 │   │   └── index.ts             # Feature exports
-│   ├── home/                    # Landing page
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   └── index.ts
-│   ├── profile/                 # User profiles
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── constants/
-│   │   └── index.ts
-│   ├── matching/                # Matching system
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── constants/
-│   │   └── index.ts
-│   ├── chat/                    # Messaging system
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── constants/
-│   │   └── index.ts
-│   ├── preferences/             # User preferences
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   ├── services/
-│   │   ├── types/
-│   │   ├── utils/
-│   │   ├── constants/
-│   │   └── index.ts
-│   └── notifications/           # Notification system
-│       ├── components/
-│       ├── pages/
-│       ├── hooks/
-│       ├── services/
-│       ├── types/
-│       ├── utils/
-│       ├── constants/
-│       └── index.ts
 ├── shared/                      # Shared resources
 │   ├── components/              # Reusable components
 │   │   ├── ui/                  # Base UI components (shadcn)
@@ -335,8 +344,8 @@ src/
 #### 1. **Import Patterns**
 ```typescript
 // Feature-specific imports
-import { useAuth } from '@/features/auth'
-import { Button } from '@/shared/components/ui'
+import { useAuth } from '@auth'
+import { Button } from '@ui'
 
 // Avoid cross-feature imports
 // ❌ import { UserProfile } from '@/features/profile' (in auth feature)
