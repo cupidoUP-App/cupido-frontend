@@ -9,6 +9,7 @@ export interface ContactoData {
     apellidos: string;
     email: string;
     last_login?: string; // Para mostrar "última vez en línea"
+    foto_url?: string;   // ← AGREGAR ESTE CAMPO
 }
 
 export interface MensajeData {
@@ -22,6 +23,7 @@ export interface ChatListItemReal {
     contacto: ContactoData;
     ultimo_mensaje: MensajeData | null;
     no_leidos: number; // Conteo de mensajes no leídos (desde el Backend)
+    bloqueado_por_id: number | null; // ID del usuario que bloqueó el chat (null si no está bloqueado)
 }
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/chat/`;
