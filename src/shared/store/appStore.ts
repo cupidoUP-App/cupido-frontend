@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 type AuthModalState = 'closed' | 'openSigUp' | 'openLogin' | 'dashboard';
-type Theme = 'femenino' | 'masculino';
+//type Theme = 'femenino' | 'masculino';
 
 interface User {
   usuario_id: number;
@@ -28,10 +28,10 @@ interface AppState {
   logout: () => void;
   setLoading: (loading: boolean) => void;
 
-  theme: Theme;
-  setTheme: (newTheme: Theme) => void;
-  isTransitioning: boolean;
-  setIsTransitioning: (isTransitioning: boolean) => void;
+  /*   theme: Theme;
+    setTheme: (newTheme: Theme) => void;
+    isTransitioning: boolean;
+    setIsTransitioning: (isTransitioning: boolean) => void; */
 
   showPreloader: boolean;
   hidePreloader: () => void;
@@ -70,10 +70,10 @@ export const useAppStore = create<AppState>()(
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
       // Theme State
-      theme: 'femenino', // Default theme
+      /* theme: 'femenino', // Default theme
       setTheme: (newTheme) => set({ theme: newTheme }),
       isTransitioning: false,
-      setIsTransitioning: (isTransitioning) => set({ isTransitioning }),
+      setIsTransitioning: (isTransitioning) => set({ isTransitioning }), */
 
       // Preloader State
       showPreloader: true,
@@ -83,7 +83,7 @@ export const useAppStore = create<AppState>()(
       name: 'app-storage',
       storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
-        theme: state.theme,
+        //theme: state.theme,
         isAuthenticated: state.isAuthenticated,
         user: state.user
       }),

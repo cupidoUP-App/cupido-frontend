@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { useState } from "react";
-import Sidebar from "@features/sidebar/components/Sidebar";
-import ModalCerrarSesion from "@features/sidebar/components/ModalCerrarSesion";
+import Sidebar from "@sidebar/components/Sidebar";
+import ModalCerrarSesion from "@sidebar/components/ModalCerrarSesion";
 
 
 const MainLayout = () => {
@@ -10,7 +10,7 @@ const MainLayout = () => {
   return (
     <div style={{ display: "flex" }}>
       {/* Sidebar solo se muestra aquí */}
-      <Sidebar abrirModalCerrar={() => setModalCerrar(true)} />
+      <Sidebar abrirModalCerrar={() => setModalCerrar(true)} userId="ID_DEL_USUARIO" />
 
       {/* Contenido principal */}
       <div style={{ flex: 1 }}>

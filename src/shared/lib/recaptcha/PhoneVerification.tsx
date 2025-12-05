@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ParticlesComponent } from '../../home/components/Particles';
+import { ParticlesComponent } from '@home/components/Particles';
 
 interface PhoneVerificationProps {
   isOpen: boolean;
@@ -59,16 +59,16 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text');
     const numbers = pastedData.replace(/\D/g, '').split('').slice(0, 4);
-    
+
     const newCode = [...code];
     numbers.forEach((num, index) => {
       if (index < 4) {
         newCode[index] = num;
       }
     });
-    
+
     setCode(newCode);
-    
+
     // Enfocar el último input con datos o el último input
     const lastFilledIndex = numbers.length - 1;
     const focusIndex = Math.min(lastFilledIndex, 3);
@@ -97,7 +97,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
   const handlePhoneSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validatePhone()) {
       // Simular envío de código
       setShowCodeInput(true);
@@ -108,7 +108,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
 
   const handleCodeSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (validateCode()) {
       const verificationCode = code.join('');
       onSubmit(verificationCode);
@@ -121,12 +121,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       <div className="absolute inset-0 z-0">
         <ParticlesComponent id="phone-verification-particles" />
       </div>
-      
+
       {/* Imagen más grande */}
-      <div className="absolute right-0 bottom-0 h-[85vh] max-w-[45vw] flex items-end z-10"> 
-        <img 
-          src="src\assets\flat-valentine-s-day-photocall-template-Photoroom 1.webp" 
-          alt="Decoración" 
+      <div className="absolute right-0 bottom-0 h-[85vh] max-w-[45vw] flex items-end z-10">
+        <img
+          src="src\assets\flat-valentine-s-day-photocall-template-Photoroom 1.webp"
+          alt="Decoración"
           className="h-full w-auto object-right-bottom object-contain"
         />
       </div>
@@ -139,7 +139,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     <div className="fixed inset-0 z-[70] bg-black/50 backdrop-blur-sm">
       {/* Contenedor principal */}
       <div className="w-full h-full bg-[#F2D6CD] relative">
-        
+
         {/* Componente de mitad derecha con partículas */}
         <RightSideWithParticles />
 
@@ -170,12 +170,12 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
         {/* Contenedor del formulario */}
         <div className="h-full flex items-center justify-start pl-10 lg:pl-20 xl:pl-28 z-20">
           <div className="w-full max-w-md">
-            
+
             {/* Logo */}
             <div className="flex justify-center mb-4">
-              <img 
-                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp" 
-                alt="CUPIDO Logo" 
+              <img
+                src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
+                alt="CUPIDO Logo"
                 className="w-16 h-14"
               />
             </div>
@@ -189,7 +189,7 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                 {showCodeInput ? 'Ingresa el código' : 'Ingresa tu número'}
               </div>
               <p className="text-gray-700 text-xs mt-1 font-['Poppins'] max-w-md leading-relaxed text-center mx-auto">
-                {showCodeInput 
+                {showCodeInput
                   ? 'Ingresa el código que enviamos a tu teléfono para verificar tu identidad.'
                   : 'Ingresa tu número de teléfono para enviarte un código de verificación.'
                 }
@@ -210,9 +210,8 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                       setPhone(e.target.value);
                       if (error) setError('');
                     }}
-                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${
-                      error ? 'border-red-500' : 'border-gray-300'
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-xs ${error ? 'border-red-500' : 'border-gray-300'
+                      }`}
                     placeholder="Ingresa tu número de teléfono"
                     disabled={isSubmitting}
                   />
@@ -262,9 +261,8 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                         onChange={(e) => handleCodeChange(index, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(index, e)}
                         onPaste={index === 0 ? handlePaste : undefined}
-                        className={`w-12 h-12 text-center border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-lg font-semibold ${
-                          error ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                        className={`w-12 h-12 text-center border rounded-md focus:ring-2 focus:ring-[#E93923] focus:border-transparent bg-white font-['Poppins'] text-lg font-semibold ${error ? 'border-red-500' : 'border-gray-300'
+                          }`}
                         disabled={isSubmitting}
                       />
                     ))}

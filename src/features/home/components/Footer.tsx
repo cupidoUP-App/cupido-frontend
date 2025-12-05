@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
-import { useAppStore } from '@store/appStore';
-import TermsAndConditions from '@components/modals/TermsAndConditions';
+//import { useAppStore } from '@store/appStore';
+import TyC from '@modals/TyC';
 import logofemlight from '@/assets/logofemlight.webp';
-import logomasclight from '@/assets/logomasclight.webp';
+//import logomasclight from '@/assets/logomasclight.webp';
 
 export default function Footer() {
-  const { theme } = useAppStore();
+  //const { theme } = useAppStore();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
   const handleLegalLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href?: string) => {
@@ -21,30 +21,30 @@ export default function Footer() {
     {
       title: 'cUPido',
       links: [
-        { label: 'Acerca de', target: '_blank', href: 'https://github.com/cupidoUP-App' },
-        { label: 'Equipo', target: '_blank', href: 'https://github.com/orgs/cupidoUP-App/people' },
-        { label: 'Blog (futuro)', disabled: true }
+        { label: 'Acerca de', href: '/about' },
+        { label: 'Equipo', href: '/team' },
+        { label: 'Blog', target: '_blank', href: 'http://instagram.com/cupidocol' }
       ]
     },
     {
       title: 'Legal',
       links: [
         { label: 'Términos', href: '#terms' },
-        { label: 'Privacidad', href: '#privacy' },
-        { label: 'Cookies', href: '#cookies' }
+        { label: 'Privacidad', target: '_blank', href: 'https://drive.google.com/file/d/1HJxuJaxnaDsad_JhiaZdMC6oUl_vgfwD/view?usp=drive_link' },
+        { label: 'Disclaimer', target: '_blank', href: 'https://drive.google.com/file/d/1mYLWA-KEx1WMhFpsEw2T740d8plZhQEG/view?usp=sharing' }
       ]
     },
     {
       title: 'Soporte',
       links: [
         { label: 'Ayuda', href: '#faq' },
-        { label: 'Contacto', target: '_blank', href: 'https://github.com/cupidoUP-App' },
+        { label: 'Contacto', target: '_blank', href: 'https://mail.google.com/mail/u/0/?view=cm&fs=1&to=admin@cupidocol.com' },
         { label: 'Reportar (Futuro)', disabled: true }
       ]
     }
   ];
 
-  const logo = theme === 'femenino' ? logofemlight : logomasclight;
+  const logo = logofemlight;
 
   return (
     <>
@@ -100,22 +100,15 @@ export default function Footer() {
               <div className="text-background/60 text-sm">
                 © 2025 cUPido — Proyecto académico. Todos los derechos reservados.
               </div>
-
-              <div className="flex items-center space-x-6 text-sm text-background/60">
-                <span>Ingeniería de Software II</span>
-                <span>•</span>
-              </div>
             </div>
           </div>
         </div>
       </footer>
 
       {/* Modal de Términos y Condiciones */}
-      <TermsAndConditions
+      <TyC
         isOpen={isTermsModalOpen}
         onClose={() => setIsTermsModalOpen(false)}
-        onAccept={() => setIsTermsModalOpen(false)}
-        onReject={() => setIsTermsModalOpen(false)}
       />
     </>
   );

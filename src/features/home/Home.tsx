@@ -10,12 +10,12 @@ import TestimonialsSection from './components/TestimonialsSection';
 import FAQSection from './components/FAQSection';
 import CTAFinalSection from './components/CTAFinalSection';
 import Footer from './components/Footer';
-import ThemeTransitionOverlay from '@ui/ThemeTransitionOverlay';
+//import ThemeTransitionOverlay from '@ui/ThemeTransitionOverlay';
 import ScrollToTopButton from './components/ScrollToTopButton';
 import { useAppStore } from '@store/appStore';
-import SigUpForm from '@/features/auth/SigUpForm';
-import LoginForm from '@/features/auth/LoginForm';
-import Dashboard from '@/features/dashboard/Dashboard';
+import SigUpForm from '@auth/SigUpForm';
+import LoginForm from '@auth/LoginForm';
+import Dashboard from '@dashboard/Dashboard';
 
 // Constante para detectar registro pendiente (debe coincidir con LoginForm)
 const REGISTRATION_STEP_KEY = "cupido_registration_step";
@@ -24,19 +24,19 @@ const Index = () => {
   const {
     showPreloader,
     hidePreloader,
-    theme,
-    setTheme,
-    isTransitioning,
-    setIsTransitioning,
+    //theme,
+    //setTheme,
+    //isTransitioning,
+    //setIsTransitioning,
     openLogin,
     openSigUp,
     authModal,
     closeModals,
   } = useAppStore();
 
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
+  //useEffect(() => {
+  //  document.documentElement.setAttribute('data-theme', 'femenino');
+  //}, ['femenino']);
 
   // =========================================================================
   // Efecto para detectar si hay un registro pendiente y abrir LoginForm
@@ -45,7 +45,7 @@ const Index = () => {
   useEffect(() => {
     const savedStep = localStorage.getItem(REGISTRATION_STEP_KEY);
     const accessToken = localStorage.getItem("access_token");
-    
+
     if (savedStep && accessToken && authModal === null) {
       const step = parseInt(savedStep, 10);
       if (step >= 1 && step <= 3) {
@@ -54,19 +54,19 @@ const Index = () => {
       }
     }
   }, [authModal, openLogin]);
-
-  const handleThemeChange = (newTheme: string) => {
-    if (newTheme !== theme) {
-      setIsTransitioning(true);
-      setTimeout(() => {
-        setTheme(newTheme as 'femenino' | 'masculino');
+  /* 
+    const handleThemeChange = (newTheme: string) => {
+      if (newTheme !== theme) {
+        setIsTransitioning(true);
         setTimeout(() => {
-          setIsTransitioning(false);
+          setTheme(newTheme as 'main' | 'about');
+          setTimeout(() => {
+            setIsTransitioning(false);
+          }, 300);
         }, 300);
-      }, 300);
-    }
-  };
- 
+      }
+    }; */
+
   const handleCloseAuthModal = () => {
     closeModals();
   };
@@ -81,20 +81,22 @@ const Index = () => {
     openLogin();
   };
 
-  const handleOpenDashboard = () => {
-    closeModals();
-    // El dashboard se abre automáticamente cuando authModal es 'dashboard'
-  };
+  /*   const handleOpenDashboard = () => {
+      closeModals();
+      // El dashboard se abre automáticamente cuando authModal es 'dashboard'
+    }; */
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       {showPreloader && <Preloader onComplete={hidePreloader} />}
-      {isTransitioning && <ThemeTransitionOverlay theme={theme} />}
+      {/* {isTransitioning && <ThemeTransitionOverlay theme={theme} />}
+      Header onThemeChange={handleThemeChange}
+      || isTransitioning ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'} */}
 
-      <div className={showPreloader || isTransitioning ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
-        <Header onThemeChange={handleThemeChange} />
+      <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
+        <Header />
         <main>
-          <HeroSection/>
+          <HeroSection />
           <FeaturesSection />
           <HowItWorksSection />
           <SafetySection />
@@ -107,8 +109,8 @@ const Index = () => {
 
       {/* ✅ Mostrar LoginForm cuando authModal es 'openLogin' */}
       {authModal === 'openLogin' && (
-        <LoginForm 
-          onClose={handleCloseAuthModal} 
+        <LoginForm
+          onClose={handleCloseAuthModal}
           onSwitchToRegister={handleSwitchToRegister}
         />
       )}

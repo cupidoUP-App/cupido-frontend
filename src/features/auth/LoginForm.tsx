@@ -16,8 +16,7 @@ import CompleteRegister, {
 } from "./components/modals/CompleteRegister";
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
-import PhotoUploadPage from "@/features/photos/PhotoUploadPage";
-import { useNavigate } from "react-router-dom";
+import PhotoUploadPage from "@photos/PhotoUploadPage";
 
 interface User {
   usuario_id: number;
@@ -70,7 +69,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       if (!accessToken || !savedStep) return;
 
       const step = parseInt(savedStep, 10);
-      
+
       // Validar que el paso sea válido (1-3)
       if (isNaN(step) || step < 1 || step > 3) return;
 
@@ -79,7 +78,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
       try {
         // Verificar que el token sigue siendo válido obteniendo el perfil
         const userProfile = await authAPI.getUserProfile();
-        
+
         if (userProfile?.user) {
           setCurrentUserId(savedUserId || userProfile.user.usuario_id?.toString() || "");
           setRegistrationStep(step);
@@ -130,6 +129,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
         variant: "destructive",
       });
       return;
+    }
+
+    if (isCaptchaVerified) {
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
     }
 
     if (!isCaptchaVerified) {
@@ -270,6 +274,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
         variant: "destructive",
       });
     } finally {
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
       setIsSubmitting(false);
       setLoading(false);
     }
@@ -288,8 +294,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const handleForgotPasswordSuccess = () => {
     setShowForgotPassword(false);
     toast({
-      title: "Contraseña actualizada",
-      description: "Ahora puedes iniciar sesión con tu nueva contraseña.",
+      title: "All ready",
+      description: "Ahora puedes revisar tu correo electrónico.",
     });
   };
 
@@ -298,12 +304,11 @@ const LoginForm: React.FC<LoginFormProps> = ({
     setLoading(true);
 
     try {
-      const birthDate = `${
-        userData.birthDate.year
-      }-${userData.birthDate.month.padStart(
-        2,
-        "0"
-      )}-${userData.birthDate.day.padStart(2, "0")}`;
+      const birthDate = `${userData.birthDate.year
+        }-${userData.birthDate.month.padStart(
+          2,
+          "0"
+        )}-${userData.birthDate.day.padStart(2, "0")}`;
 
       const genderMapping: { [key: string]: number } = {
         male: 1,
@@ -624,7 +629,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
       {/* Modal de Subida de Fotos */}
       {showPhotoUpload && (
-         <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full h-full bg-white">
             <PhotoUploadPage
               onComplete={async () => {
                 try {
@@ -662,19 +668,19 @@ const LoginForm: React.FC<LoginFormProps> = ({
               }}
             />
           </div>
-        
+        </div>
       )}
 
       {/* Modal de Preferences */}
       {showPreferences && (
-        <div className="fixed inset-0 z-[1] w-screen h-screen overflow-y-auto">
-
+        <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full h-full bg-white">
             <PreferencesPage
               userId={currentUserId}
               onComplete={handlePreferencesComplete}
               onBack={handleBackFromPreferences}
             />
-         
+          </div>
         </div>
       )}
     </>

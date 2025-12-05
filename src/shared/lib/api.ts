@@ -105,6 +105,7 @@ export const authAPI = {
     contrasena: string;
     recaptcha_token: string;
     tyc: boolean;
+    firma: string;
   }) => {
     const response = await api.post("/auth/register/", data);
     return response.data;
@@ -183,7 +184,6 @@ export const authAPI = {
   },
 
   resetPasswordConfirm: async (data: {
-    email: string;
     token: string;
     nueva_contrasena: string;
   }) => {
@@ -227,7 +227,9 @@ export const authAPI = {
   },
 
   getDegrees: async () => {
-    const response = await api.get("/profile/profileManagement/degrees/");
+    const response = await api.get("/profile/profileManagement/degrees/",{
+      params: { limit : 500 }
+    });
     return response.data;
   },
 

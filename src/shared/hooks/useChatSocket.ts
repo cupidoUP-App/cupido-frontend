@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Message } from './types'; // Importa la interfaz Message
+import { buildWsUrl } from '../utils/ws';
 // Define tu endpoint base de WS
 const WS_BASE_URL = import.meta.env.VITE_WS_BASE_URL;
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/chat/`;
@@ -147,7 +148,12 @@ export const useChatSocket = (chatId: number | null) => {
         
         // 2. Iniciar conexión WS
         setWsStatus('connecting');
-        const wsUrl = `${WS_BASE_URL}${chatId}/?token=${token}`;
+        const wsUrl = buildWsUrl({
+            baseUrl: WS_BASE_URL,
+            fallbackPath: '/ws/chat',
+            pathSegments: [chatId],
+            query: { token },
+        });
         const socket = new WebSocket(wsUrl);
         socketRef.current = socket;
 
