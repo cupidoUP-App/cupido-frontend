@@ -148,8 +148,8 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
-        title: "¡Registro completado!",
-        description: "Tu cuenta ha sido creada exitosamente.",
+        title: "Registro completado",
+        description: "Tu cuenta ha sido creada exitosamente. Ahora puedes ingresar a Cupido.",
       });
       
       setCurrentStep('completed');
