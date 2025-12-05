@@ -16,28 +16,7 @@ export const mockMatchDataList: MatchData[] = [
     },
     secondaryImages: [MatchPlaceholder2, MatchPlaceholder3]
   },
-  {
-    mainImage: MatchPlaceholder2,
-    info: {
-      title: "Ana Maria",
-      description: "consectetur adipisicing elit. Quisquam, quos. lorem ipsum dolor sit amet que? lorem ipsum dolor sit amet consectetur adipisicing elit",
-      edad: 25,
-      ubicación: "Medellín, Colombia",
-      intereses: "Otorrinolaringologia, Arte, Lectura, Cine"
-    },
-    secondaryImages: [MatchPlaceholder3, MatchPlaceholder1]
-  },
-  {
-    mainImage: MatchPlaceholder3,
-    info: {
-      title: "Jimena Gomez",
-      description: "consectetur adipisicing elit Quisquam, quos lorem ipsum dolor sit amet que?",
-      edad: 30,
-      ubicación: "Cali, Colombia",
-      intereses: "Gastronomía, Fotografía, Naturaleza, Deportes, Música"
-    },
-    secondaryImages: [MatchPlaceholder1, MatchPlaceholder2]
-  }
+  // ... otros datos mock
 ];
 
 export const fetchMatches = async (): Promise<MatchData[]> => {
@@ -58,19 +37,23 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
     console.log(`✅ Se encontraron ${results.length} matches`);
 
     return results.map((item: any, index: number) => {
-      // 🔍 DEBUG: Ver cada item individual
-      console.log(`\n🔍 ITEM ${index + 1}:`, item);
-      console.log(`  - nombre: "${item.nombre}"`);
-      console.log(`  - apellido: "${item.apellido}"`);
-      console.log(`  - descripcion: "${item.descripcion}"`);
-      console.log(`  - estado: "${item.estado}"`);
-      console.log(`  - hobbies: "${item.hobbies}"`);
-      console.log(`  - ubicacion: "${item.ubicacion}"`);
-      console.log(`  - estatura: ${item.estatura}`);
-      console.log(`  - edad: ${item.edad}`);
-      console.log(`  - main_image: "${item.main_image}"`);
-      console.log(`  - secondary_images:`, item.secondary_images);
+      // 🔍 DEBUG: Ver CADA PROPIEDAD del item
+      console.log(`\n🔍 ITEM ${index + 1}:`);
+      console.log("  Todas las propiedades:", Object.keys(item));
       
+      // Mostrar TODAS las propiedades para ver qué hay disponible
+      Object.keys(item).forEach(key => {
+        console.log(`  - ${key}:`, item[key]);
+      });
+
+      // IMPORTANTE: Buscar el usuario_id - podría tener diferentes nombres
+      const usuarioId = item.usuario_id || item.usuarioId || item.user_id || item.userId || item.id;
+      console.log(`  🔑 usuario_id encontrado: ${usuarioId} (tipo: ${typeof usuarioId})`);
+      
+      if (!usuarioId) {
+        console.error(`  ⚠️ ADVERTENCIA: Item ${index + 1} no tiene usuario_id identificable`);
+      }
+
       // Construir URLs de imágenes (mismo patrón que profile)
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
       
@@ -108,7 +91,16 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         ? `${item.estatura}m` 
         : null;
 
+      // 🔥 IMPORTANTE: Ahora incluir el usuario_id en el objeto matchData
       const matchData = {
+        // 🔥 AQUÍ ESTÁ EL CAMBIO: Agregar usuario_id en el nivel superior
+        usuario_id: usuarioId, // Esto es CRÍTICO para el like
+        // También puedes incluir otras propiedades del backend si son necesarias
+        perfil_id: item.perfil_id || item.profile_id,
+        nombre: item.nombre,
+        apellido: item.apellido,
+        
+        // Los datos que ya tenías
         mainImage,
         info: {
           title: nombreCompleto,
@@ -125,6 +117,7 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
 
       // 🔍 DEBUG: Ver el objeto final mapeado
       console.log(`✅ MATCH DATA MAPEADO ${index + 1}:`, matchData);
+      console.log(`✅ usuario_id incluido: ${matchData.usuario_id}`);
 
       return matchData;
     });

@@ -3,6 +3,7 @@ import MatchDislike from "@assets/MatchDislike.png";
 import MatchLike from "@assets/MatchLike.png";
 import { MatchData } from "../types";
 import { getMatches } from "../services/matchService";
+import { likeAPI } from "../../../shared/lib/api"; 
 
 export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) => {
   const [matchList, setMatchList] = useState<MatchData[]>(matches || getMatches());
@@ -24,6 +25,10 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const [swipeRotation, setSwipeRotation] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // 🔥 NUEVO: Variables para controlar llamadas duplicadas
+  const likeInProgress = useRef(false);
+  const dislikeInProgress = useRef(false);
+
   // ⭐ Actualizar matchList cuando lleguen los datos reales (matches cambia)
   useEffect(() => {
     if (matches && matches.length > 0) {
@@ -38,6 +43,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   // 🔍 DEBUG: Ver qué datos está mostrando
   useEffect(() => {
     console.log("📊 useMatch displayData:", displayData);
+    console.log("📊 displayData.usuario_id:", displayData?.usuario_id);
     console.log("📊 matchList tiene", matchList.length, "items");
     console.log("📊 currentIndex:", currentIndex);
   }, [displayData, matchList, currentIndex]);
@@ -87,28 +93,101 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     };
   }, []);
 
-  const handleLike = () => {
-    if (isAnimating || likesRemaining <= 0) {
-      setShowLimitOverlay(true);
+  // ✅ MODIFICADA: handleLike con protección contra múltiples llamadas
+  const handleLike = async () => {
+    // 🔥 NUEVO: Verificar si ya hay una operación en progreso
+    if (likeInProgress.current || isAnimating || likesRemaining <= 0) {
+      console.log("⏸️ Like en progreso o ya animando, ignorando...");
+      if (likesRemaining <= 0) {
+        setShowLimitOverlay(true);
+      }
       return;
     }
-    setIsAnimating(true);
-    setLikesRemaining(prev => {
-      const newValue = prev - 1;
-      if (newValue === 0) {
-        setTimeout(() => {
-          setShowLimitOverlay(true);
-        }, 0);
+
+    likeInProgress.current = true;
+    
+    const currentUserId = displayData?.usuario_id;
+    
+    if (!currentUserId) {
+      console.error("❌ No hay usuario_id en displayData");
+      console.error("displayData completo:", displayData);
+      
+      // Buscar en otras posibles ubicaciones
+      const possibleId = displayData?.id || displayData?.userId || displayData?.user_id;
+      if (possibleId) {
+        console.log("⚠️  Encontrado en otra propiedad:", possibleId);
+      } else {
+        alert("Error: No se puede identificar el perfil");
+        likeInProgress.current = false; // 🔥 Liberar bloqueo
+        return;
       }
-      return newValue;
-    });
+    }
+    
+    console.log("🔄 Preparando LIKE para usuario:", currentUserId);
+    
+    setIsAnimating(true);
+    
+    // Calcular el nuevo valor de likesRemaining
+    const newLikesRemaining = likesRemaining - 1;
+    setLikesRemaining(newLikesRemaining);
+    
+    if (newLikesRemaining === 0) {
+      setTimeout(() => {
+        setShowLimitOverlay(true);
+      }, 0);
+    }
+    
     setOverlayIcon(MatchLike);
 
+    try {
+      // Llamar a la API de like
+      console.log("📤 Enviando LIKE a la API para usuario:", currentUserId);
+      
+      // Asegurar que el ID sea string
+      const userIdToSend = String(currentUserId);
+      const response = await likeAPI.sendLike(userIdToSend);
+      console.log("✅ Respuesta API (like):", response);
+      
+      if (response.match_found) {
+        console.log("🎯 ¡MATCH ENCONTRADO!");
+        alert(`¡Match! ${response.message}`);
+      }
+      
+      console.log("✅ Like guardado en base de datos");
+      
+    } catch (error: any) {
+      console.error("❌ Error al enviar like a la API:", error);
+      console.error("Error completo:", error.response?.data || error.message);
+      
+      // Si hay error, revertir el conteo de likes
+      setLikesRemaining(likesRemaining);
+      
+      let errorMessage = "Error al enviar el like";
+      if (error.response?.status === 400) {
+        errorMessage = error.response.data?.message || "Ya has interactuado con este perfil";
+      } else if (error.response?.status === 401) {
+        errorMessage = "Tu sesión ha expirado. Por favor, inicia sesión nuevamente.";
+      } else if (error.response?.status === 404) {
+        errorMessage = "Endpoint no encontrado. Verifica la URL.";
+      } else if (error.response?.status === 500) {
+        errorMessage = "Error interno del servidor. Intenta más tarde.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(`Error: ${errorMessage}`);
+      setIsAnimating(false);
+      likeInProgress.current = false; // 🔥 Liberar bloqueo
+      return;
+    }
+
+    // Continuar con la animación normal (solo si la API fue exitosa)
     setTimeout(() => {
       setRotation(135);
 
       setTimeout(() => {
-        if (likesRemaining > 1) {
+        // Usar newLikesRemaining en lugar de likesRemaining
+        if (newLikesRemaining > 0) {
           setCurrentIndex((prev) => (prev + 1) % matchList.length);
         }
         setRotation(-20);
@@ -121,38 +200,95 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
         setTimeout(() => {
           setRotation(0);
           setIsAnimating(false);
-          if (likesRemaining > 1) {
+          if (newLikesRemaining > 0) {
             setTimeout(() => {
               setShowOverlay(false);
             }, 200);
           }
+          likeInProgress.current = false; 
         }, 500);
       }, 250);
     }, 0);
   };
 
-  const handleDislike = () => {
-    if (isAnimating || likesRemaining <= 0) {
-      setShowLimitOverlay(true);
+  const handleDislike = async () => {
+    // 🔥 NUEVO: Verificar si ya hay una operación en progreso
+    if (dislikeInProgress.current || isAnimating || likesRemaining <= 0) {
+      console.log("⏸️ Dislike en progreso o ya animando, ignorando...");
+      if (likesRemaining <= 0) {
+        setShowLimitOverlay(true);
+      }
       return;
     }
-    setIsAnimating(true);
-    setLikesRemaining(prev => {
-      const newValue = prev - 1;
-      if (newValue === 0) {
-        setTimeout(() => {
-          setShowLimitOverlay(true);
-        }, 0);
+
+    dislikeInProgress.current = true;
+    
+    const currentUserId = displayData?.usuario_id;
+    
+    if (!currentUserId) {
+      console.error("❌ No hay usuario_id en displayData");
+      console.error("displayData completo:", displayData);
+      
+      const possibleId = displayData?.id || displayData?.userId || displayData?.user_id;
+      if (possibleId) {
+        console.log("⚠️  Encontrado en otra propiedad:", possibleId);
+      } else {
+        alert("Error: No se puede identificar el perfil");
+        dislikeInProgress.current = false; 
+        return;
       }
-      return newValue;
-    });
+    }
+    
+    console.log("🔄 Preparando DISLIKE para usuario:", currentUserId);
+    
+    setIsAnimating(true);
+    
+    const newLikesRemaining = likesRemaining - 1;
+    setLikesRemaining(newLikesRemaining);
+    
+    if (newLikesRemaining === 0) {
+      setTimeout(() => {
+        setShowLimitOverlay(true);
+      }, 0);
+    }
+    
     setOverlayIcon(MatchDislike);
+
+    try {
+      console.log("📤 Enviando DISLIKE a la API para usuario:", currentUserId);
+      
+      const userIdToSend = String(currentUserId);
+      const response = await likeAPI.sendDislike(userIdToSend);
+      console.log("✅ Respuesta API (dislike):", response);
+      
+      console.log("✅ Dislike guardado en base de datos");
+      
+    } catch (error: any) {
+      console.error("❌ Error al enviar dislike a la API:", error);
+      console.error("Error completo:", error.response?.data || error.message);
+      
+      setLikesRemaining(likesRemaining);
+      
+      let errorMessage = "Error al enviar el dislike";
+      if (error.response?.status === 400) {
+        errorMessage = error.response.data?.message || "Ya has interactuado con este perfil";
+      } else if (error.response?.status === 500) {
+        errorMessage = "Error interno del servidor. Intenta más tarde.";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(`Error: ${errorMessage}`);
+      setIsAnimating(false);
+      dislikeInProgress.current = false; 
+      return;
+    }
 
     setTimeout(() => {
       setRotation(-135);
 
       setTimeout(() => {
-        if (likesRemaining > 1) {
+        if (newLikesRemaining > 0) {
           setCurrentIndex((prev) => (prev + 1) % matchList.length);
         }
         setRotation(20);
@@ -165,19 +301,20 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
         setTimeout(() => {
           setRotation(0);
           setIsAnimating(false);
-          if (likesRemaining > 1) {
+          if (newLikesRemaining > 0) {
             setTimeout(() => {
               setShowOverlay(false);
             }, 200);
           }
+          dislikeInProgress.current = false; 
         }, 500);
       }, 250);
     }, 0);
   };
 
-  // Swipe handler
+  // Swipe handler - MEJORADO con protección
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (isAnimating || likesRemaining <= 0) return;
+    if (isAnimating || likesRemaining <= 0 || likeInProgress.current || dislikeInProgress.current) return;
 
     setIsDragging(true);
     setDragStart({ x: e.clientX, y: e.clientY });
@@ -187,29 +324,24 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || likesRemaining <= 0) return;
+    if (!isDragging || likesRemaining <= 0 || likeInProgress.current || dislikeInProgress.current) return;
 
     let deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
 
-    // Dynamic threshold based on screen width
-    // Use 25% of screen width or 100px, whichever is smaller
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
     const maxHorizontalMove = Math.min(100, screenThreshold);
 
     const clampedDeltaX = Math.max(-maxHorizontalMove, Math.min(maxHorizontalMove, deltaX));
 
-    // No permitir movimiento vertical hacia arriba, solo hacia abajo con límite
     const verticalMove = deltaY > 0 ? Math.min(deltaY, 20) : 0;
 
     setDragOffset({ x: clampedDeltaX, y: verticalMove });
 
-    // Calculate rotation based on horizontal drag
     const maxRotation = 15;
     const rotationValue = (clampedDeltaX / maxHorizontalMove) * maxRotation;
     setSwipeRotation(rotationValue);
 
-    // Show preview overlay
     if (Math.abs(clampedDeltaX) > (maxHorizontalMove * 0.5)) {
       setShowOverlay(true);
       setOverlayIcon(clampedDeltaX > 0 ? MatchLike : MatchDislike);
@@ -217,12 +349,15 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       setShowOverlay(false);
     }
 
-    // Auto-trigger action when reaching the limit
     if (Math.abs(deltaX) >= maxHorizontalMove) {
-      // Trigger the action immediately
+      if ((deltaX > 0 && likeInProgress.current) || (deltaX < 0 && dislikeInProgress.current)) {
+        return;
+      }
+      
       setIsDragging(false);
       setDragOffset({ x: 0, y: 0 });
       setSwipeRotation(0);
+      setShowOverlay(false);
 
       if (deltaX > 0) {
         handleLike();
@@ -238,7 +373,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     setIsDragging(false);
     const deltaX = e.clientX - dragStart.x;
 
-    // Threshold for swipe action (won't be reached due to auto-trigger, but kept for safety)
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
     const threshold = Math.min(100, screenThreshold);
 
@@ -246,21 +380,16 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       cardRef.current.style.transition = 'transform 0.3s ease-out';
     }
 
-    if (Math.abs(deltaX) >= threshold) {
-      // Swipe detected
+    if (Math.abs(deltaX) >= threshold && !likeInProgress.current && !dislikeInProgress.current) {
       if (deltaX > 0) {
-        // Swipe right - Like
         handleLike();
       } else {
-        // Swipe left - Dislike
         handleDislike();
       }
     } else {
-      // Reset to original position
       setShowOverlay(false);
     }
 
-    // Reset drag states
     setDragOffset({ x: 0, y: 0 });
     setSwipeRotation(0);
   };

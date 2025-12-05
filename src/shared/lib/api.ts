@@ -440,4 +440,37 @@ export const photoAPI = {
   },
 };
 
+export const likeAPI = {
+  /**
+   * Enviar un like a un usuario
+   * @param receptorId - ID del usuario receptor
+   */
+  sendLike: async (receptorId: string): Promise<{
+    match_found: boolean;
+    message: string;
+    usuario_match?: string;
+  }> => {
+    const response = await api.post("/like/interaction/", {
+      receptor_id: receptorId,
+      accion: "LIKE",
+    });
+    return response.data;
+  },
+
+  /**
+   * Enviar un dislike a un usuario
+   * @param receptorId - ID del usuario receptor
+   */
+  sendDislike: async (receptorId: string): Promise<{
+    message: string;
+  }> => {
+    const response = await api.post("/like/interaction/", {
+      receptor_id: receptorId,
+      accion: "DISLIKE",
+    });
+    return response.data;
+  },
+};
+
+
 export default api;
