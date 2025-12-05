@@ -220,11 +220,16 @@ const OtherUserProfilePage: React.FC = () => {
           interests: sanitizedInterests,
           programa_academico: sanitizedPrograma,
           estatura: sanitizedEstatura,
-          images: [
-            "/images/profile1.jpg",
-            "/images/profile2.jpg",
-            "/images/profile3.jpg",
-          ],
+          images: (profile.images && Array.isArray(profile.images) && profile.images.length > 0)
+            ? profile.images.map((img: any) => {
+                const imageUrl = img.imagen;
+                if (imageUrl.startsWith('http')) return imageUrl;
+                const baseUrl = import.meta.env.VITE_API_BASE_URL;
+                return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+              })
+            : [
+                "https://ui-avatars.com/api/?name=" + encodeURIComponent(sanitizedName) + "&background=random&size=400",
+              ],
         };
 
         console.log("Datos del perfil preparados:", preparedProfileData);
