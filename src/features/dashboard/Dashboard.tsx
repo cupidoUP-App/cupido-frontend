@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@store/appStore";
 import { useToast } from "@hooks/use-toast";
 import { authAPI } from "@lib/api";
+import { ChatCircle, HeartStraight, UserCircle } from "@phosphor-icons/react";
 import FiltersPage from "@filters/components/FiltersPage";
 
 const Dashboard: React.FC = () => {
@@ -110,19 +111,25 @@ const Dashboard: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-2xl">
                 <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm">
-                  <div className="text-2xl mb-2">💬</div>
+                  <div className="flex justify-center mb-2">
+                    <ChatCircle size={32} weight="duotone" className="text-primary" />
+                  </div>
                   <h3 className="font-semibold text-gray-800">Chat</h3>
                   <p className="text-sm text-gray-600">Próximamente</p>
                 </div>
 
                 <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm">
-                  <div className="text-2xl mb-2">❤️</div>
+                  <div className="flex justify-center mb-2">
+                    <HeartStraight size={32} weight="duotone" className="text-primary" />
+                  </div>
                   <h3 className="font-semibold text-gray-800">Matches</h3>
                   <p className="text-sm text-gray-600">Próximamente</p>
                 </div>
 
                 <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm cursor-pointer hover:bg-white/90 transition-colors" onClick={handleProfileClick}>
-                  <div className="text-2xl mb-2">👤</div>
+                  <div className="flex justify-center mb-2">
+                    <UserCircle size={32} weight="duotone" className="text-primary" />
+                  </div>
                   <h3 className="font-semibold text-gray-800">Perfil</h3>
                   <p className="text-sm text-gray-600">Editar perfil</p>
                 </div>

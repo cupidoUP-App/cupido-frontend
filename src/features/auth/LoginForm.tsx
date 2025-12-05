@@ -632,6 +632,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
         <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full h-full bg-white">
             <PhotoUploadPage
+              onBack={() => {
+                // Volver a preferencias
+                setShowPhotoUpload(false);
+                setRegistrationStep(2);
+                setShowPreferences(true);
+              }}
               onComplete={async () => {
                 try {
                   const userProfile = await authAPI.getUserProfile();

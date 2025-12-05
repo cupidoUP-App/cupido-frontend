@@ -66,8 +66,11 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 border-b-2 h-[50px] transition-all duration-300 ease-in-out ${scrolled ? 'bg-white/80 backdrop-blur-lg shadow-md' : 'bg-white'
-          }`}
+        className={`fixed top-0 left-0 right-0 z-40 h-[50px] transition-all duration-300 ease-in-out ${
+          scrolled 
+            ? 'bg-white/95 backdrop-blur-lg border-b-[3px] black/40 shadow-[0_4px_0px_0px_hsl(var(--primary)/0.12)]' 
+            : 'bg-white border-b-[3px] blac/25'
+        }`}
       >
         <div className="container mx-auto px-6 lg:px-8 h-full">
           <div className="flex items-center justify-between h-full">

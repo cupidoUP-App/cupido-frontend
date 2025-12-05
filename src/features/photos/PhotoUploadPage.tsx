@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Star } from "lucide-react";
-import { Camera } from "@phosphor-icons/react"; // <--- NUEVO IMPORT
+import { Camera, ArrowLeft } from "@phosphor-icons/react";
 import fondo from "@assets/fondoCargueImagenes.png";
 import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
@@ -18,9 +18,10 @@ interface PhotoFile {
 
 interface PhotoUploadPageProps {
   onComplete: () => void;
+  onBack?: () => void;
 }
 
-const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
+const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack }) => {
   const queryClient = useQueryClient();
   const [serverFiles, setServerFiles] = useState<PhotoFile[]>([]);
   const [newFiles, setNewFiles] = useState<PhotoFile[]>([]);
@@ -541,9 +542,23 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
         }}
       />
 
-      <button className="absolute top-8 left-8 text-gray-600 hover:text-gray-800 text-2xl z-20">
-        ←
-      </button>
+      {/* Botón de regreso con diseño mejorado */}
+      {onBack && (
+        <button 
+          onClick={onBack}
+          className="absolute top-6 left-6 z-20 flex items-center gap-2 px-4 py-2.5 bg-white/90 backdrop-blur-sm rounded-xl shadow-md hover:shadow-lg hover:bg-white transition-all duration-200 group"
+          aria-label="Volver al paso anterior"
+        >
+          <ArrowLeft 
+            size={22} 
+            weight="bold" 
+            className="text-gray-700 group-hover:text-primary group-hover:-translate-x-0.5 transition-all duration-200" 
+          />
+          <span className="text-sm font-medium text-gray-700 group-hover:text-primary hidden sm:inline">
+            Volver
+          </span>
+        </button>
+      )}
 
       <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10">
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-6 lg:px-12 mt-12 lg:-mt-60">
@@ -552,11 +567,11 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               <img src={logo} alt="Logo" className="w-24 h-24 object-contain" />
             </div>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            <h1 className="font-display text-4xl font-semibold text-gray-900 mb-4">
               Sube tus mejores fotos
             </h1>
 
-            <p className="text-gray-700 text-lg mb-8">
+            <p className="font-sans text-gray-600 text-lg mb-8 leading-relaxed">
               Puedes subir entre 1 y 3 imágenes para tu perfil.
             </p>
 
@@ -565,7 +580,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               disabled={
                 (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
               }
-              className="w-full px-10 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 text-lg shadow-lg hover:shadow-xl"
+              className="w-full px-10 py-4 bg-primary text-white rounded-xl font-sans font-semibold hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 text-lg shadow-lg hover:shadow-xl"
             >
               {isSaving || uploadMutation.isPending
                 ? "Guardando..."
@@ -590,7 +605,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               disabled={
                 newFiles.length === 0 || isSaving || uploadMutation.isPending
               }
-              className="px-12 py-3.5 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
+              className="px-12 py-3.5 bg-primary text-white rounded-xl font-sans font-semibold hover:bg-primary/90 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
             >
               {isSaving || uploadMutation.isPending
                 ? "Guardando..."
@@ -600,7 +615,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
             <button
               onClick={handleDeleteAll}
               disabled={(serverFiles.length + newFiles.length) === 0}
-              className="px-12 py-3.5 bg-red-400 text-white rounded-xl font-semibold hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
+              className="px-12 py-3.5 bg-gray-400 text-white rounded-xl font-sans font-semibold hover:bg-gray-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
             >
               Eliminar
             </button>

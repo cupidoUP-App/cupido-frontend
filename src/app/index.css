@@ -139,36 +139,43 @@
   body {
     height: 100%;
     overflow-y: auto;
+    overflow-x: hidden; /* Prevenir scroll horizontal no deseado */
   }
   body {
     @apply bg-background text-foreground font-sans antialiased cursor-default;
     font-feature-settings: "cv03", "cv04", "cv11";
+    /* Asegurar que el contenido no se recorte */
+    min-width: 320px;
   }
   html {
     scroll-behavior: smooth;
+    /* Soporte para viewport dinámico en móviles */
+    min-height: 100dvh;
   }
   button, a {
     @apply cursor-pointer;
   }
+  
+  /* Safe area para dispositivos con notch */
+  @supports (padding: env(safe-area-inset-bottom)) {
+    body {
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+  }
 }
 
 @layer components {
-  /* Hero button with gradient shine effect */
+  /* Hero button - estilo sólido con borde pronunciado */
   .btn-hero {
     @apply relative overflow-hidden text-primary-foreground font-semibold;
-    @apply px-8 py-4 rounded-2xl shadow-lg transition-all duration-300;
-    @apply hover:scale-105 hover:shadow-glow focus:scale-105 focus:shadow-glow;
-    background: var(--gradient-primary);
-  }
-  
-  .btn-hero::before {
-    content: '';
-    @apply absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent;
-    @apply translate-x-[-100%] skew-x-12 transition-transform duration-700;
-  }
-  
-  .btn-hero:hover::before {
-    @apply translate-x-[100%];
+    @apply px-8 py-4 rounded-2xl transition-all duration-300;
+    @apply bg-primary border-2 border-primary/80;
+    @apply shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)];
+    @apply hover:translate-x-[-2px] hover:translate-y-[-2px];
+    @apply hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)];
+    @apply active:translate-x-[2px] active:translate-y-[2px];
+    @apply active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)];
   }
 
   .btn-hero svg {
@@ -176,47 +183,45 @@
   }
 
   .btn-hero:hover svg {
-    @apply scale-110;
+    @apply scale-110 rotate-6;
   }
 
-  .btn-hero::after {
-    content: '';
-    @apply absolute inset-0 rounded-2xl;
-    @apply bg-white/30 opacity-0 scale-0 transition-all duration-300 ease-out;
-  }
-
-  .btn-hero:active::after {
-    @apply scale-100 opacity-100;
-  }
-
-  /* Secondary outline button */
+  /* Secondary outline button - borde pronunciado */
   .btn-outline {
-    @apply border-primary/20 text-primary hover:bg-primary hover:text-primary-foreground;
+    @apply border-2 border-primary text-primary bg-white/80 backdrop-blur-sm;
+    @apply shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.3)];
+    @apply hover:bg-primary hover:text-primary-foreground;
+    @apply hover:translate-x-[-2px] hover:translate-y-[-2px];
+    @apply hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.3)];
+    @apply active:translate-x-[1px] active:translate-y-[1px];
+    @apply active:shadow-[1px_1px_0px_0px_hsl(var(--primary)/0.3)];
+    @apply transition-all duration-200;
   }
 
   .text-gradient-primary {
-    background-image: var(--gradient-primary);
-    background-clip: text;
-    -webkit-background-clip: text;
+    @apply text-primary;
     color: transparent;
   }
 
-  /* Floating card with gradient background */
+  /* Floating card con borde pronunciado - estilo divertido */
   .card-floating {
-    @apply relative bg-white/80 backdrop-blur-md border-transparent rounded-[var(--card-border-radius)];
-    @apply shadow-card transition-all duration-300;
-    @apply hover:shadow-glow hover:-translate-y-1;
-  }
-
-  .card-floating::before {
-    content: '';
-    @apply absolute -inset-px rounded-[var(--card-border-radius)] -z-10;
-    @apply bg-gradient-to-br from-white/50 to-white/20;
+    @apply relative bg-white/90 backdrop-blur-md rounded-[var(--card-border-radius)];
+    @apply border-2 border-foreground/10;
+    @apply shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.15)];
+    @apply transition-all duration-300;
+    @apply hover:shadow-[6px_6px_0px_0px_hsl(var(--primary)/0.2)];
+    @apply hover:-translate-y-1 hover:-translate-x-0.5;
   }
   
-  /* Feature card with hover effects */
+  /* Feature card con hover divertido - RESPONSIVE */
   .feature-card {
-    @apply card-floating p-8 text-center cursor-pointer;
+    @apply relative bg-white/90 backdrop-blur-md p-4 sm:p-6 lg:p-8 text-center cursor-pointer;
+    @apply border-2 border-foreground/10 rounded-2xl;
+    @apply shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.12)] sm:shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.12)];
+    @apply transition-all duration-300;
+    @apply hover:border-primary/30;
+    @apply hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.2)] sm:hover:shadow-[6px_6px_0px_0px_hsl(var(--primary)/0.2)];
+    @apply hover:-translate-y-1 sm:hover:-translate-y-2 hover:-translate-x-0.5 sm:hover:-translate-x-1;
   }
 
   @layer components {

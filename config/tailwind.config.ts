@@ -71,6 +71,9 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      borderWidth: {
+        '3': '3px',
+      },
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -119,14 +122,21 @@ export default {
       },
 
       fontFamily: {
-        sans: ['Poppins', 'system-ui', 'sans-serif'], // Para texto general
-        display: ['Poppins', 'system-ui', 'sans-serif'], // Para títulos
+        // Bricolage Grotesque: Cuerpo de texto, botones, labels
+        sans: ['Bricolage Grotesque', 'system-ui', 'sans-serif'],
+        // Lora: Títulos, logos, leyendas (serif elegante)
+        display: ['Lora', 'Georgia', 'serif'],
+        // Alias adicional para consistencia
+        serif: ['Lora', 'Georgia', 'serif'],
+        // Libre Baskerville: Citas y textos destacados (serif clásico)
+        quote: ['Libre Baskerville', 'Times New Roman', 'serif'],
       },
 
       fontSize: {
-        'display-xl': ['clamp(3rem, 5vw, 4rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
-        'display-lg': ['clamp(2.5rem, 4vw, 3rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
-        'display-md': ['clamp(2rem, 3vw, 2.5rem)', { lineHeight: '1.2', letterSpacing: '-0.01em' }],
+        // Títulos más grandes y con más protagonismo
+        'display-xl': ['clamp(3.5rem, 6vw, 5rem)', { lineHeight: '1.05', letterSpacing: '-0.025em' }],
+        'display-lg': ['clamp(2.75rem, 5vw, 3.75rem)', { lineHeight: '1.1', letterSpacing: '-0.02em' }],
+        'display-md': ['clamp(2.25rem, 4vw, 3rem)', { lineHeight: '1.15', letterSpacing: '-0.015em' }],
       },
       boxShadow: {
         'soft': 'var(--shadow-soft)',
