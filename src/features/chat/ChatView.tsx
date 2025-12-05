@@ -1,5 +1,7 @@
 // ChatView.tsx
+
 import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // 🟢 ASUNCIÓN DE IMPORTS DE TIPOS
 import { Message } from '@hooks/types'; 
@@ -18,6 +20,7 @@ interface ChatViewProps {
     onTogglePanel?: () => void;          // Mostrar/ocultar lista de chats
     onCloseChat?: () => void;
     onClearHistory?: () => void;
+    contactId: number;
 }
 
 const MessageStatusIcon: React.FC<{ leido: boolean }> = ({ leido }) => {

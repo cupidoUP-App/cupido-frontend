@@ -9,6 +9,7 @@ export interface ContactoData {
     apellidos: string;
     email: string;
     last_login?: string; // Para mostrar "última vez en línea"
+    imagen_principal?: string | null; // URL presignada de la imagen principal del contacto
 }
 
 export interface MensajeData {

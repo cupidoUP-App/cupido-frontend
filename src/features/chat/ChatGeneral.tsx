@@ -211,13 +211,18 @@ const ChatGeneral: React.FC = () => {
   // Asumimos que esta es la URL del usuario logueado. Podría ser un hook de autenticación.
   //const myPhotoUrl = "https://randomuser.me/api/portraits/women/90.jpg";
 
-  // URL Ficticia para la foto del contacto. DEBES obtener esto del Backend.
-  // Por ahora, usamos el ID del contacto como fallback si el backend no lo da.
+  // Obtener URL de la foto del contacto (Real o Fallback)
   const getContactPhotoUrl = (chat: ChatListItemReal) => {
-    // ⚠️ Nota: Reemplaza esto con la URL real que obtengas del backend.
-    return `https://randomuser.me/api/portraits/${
-      chat.contacto.id % 2 === 0 ? "women" : "men"
-    }/${chat.contacto.id}.jpg`;
+    // 1. Usar imagen real del backend si existe
+    if (chat.contacto.imagen_principal) {
+      return chat.contacto.imagen_principal;
+    }
+    
+    // 2. Fallback: Generar avatar con iniciales usando ui-avatars
+    // Esto es mejor que randomuser.me porque no muestra fotos de personas aleatorias
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+      `${chat.contacto.nombres} ${chat.contacto.apellidos}`
+    )}&background=ec4899&color=fff&size=200`;
   };
 
   return (
@@ -265,6 +270,7 @@ const ChatGeneral: React.FC = () => {
               sendMessage={sendMessage}
               wsStatus={wsStatus}
               isInputDisabled={isInputDisabled}
+              contactId={selectedChat?.contacto.id || 0}
               onCloseChat={() => {
                 setUserClosedChat(true);
                 // Al cerrar conversación desde el header del chat, mostrar la lista
