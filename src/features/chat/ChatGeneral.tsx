@@ -204,12 +204,15 @@ const ChatGeneral: React.FC = () => {
   const isInputDisabled =
     !!wsError &&
     (wsError.includes("No tienes permiso") || wsError.includes("sesión"));
-  const panelClasses = `transition-all duration-300 ease-in-out ${
-    isPanelOpen ? "w-80 opacity-100" : "w-0 opacity-0 overflow-hidden"
-  }`;
-
-  // Asumimos que esta es la URL del usuario logueado. Podría ser un hook de autenticación.
-  //const myPhotoUrl = "https://randomuser.me/api/portraits/women/90.jpg";
+  // Clases para el panel izquierdo (Lista de Chats)
+  // Móvil: w-full, oculto si hay chat seleccionado
+  // Desktop (md): w-80, siempre visible (o controlado por isPanelOpen)
+  const leftPanelClasses = `
+    transition-all duration-300 ease-in-out
+    ${isPanelOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-0 md:opacity-0 md:overflow-hidden'}
+    ${selectedChatId ? 'hidden md:block' : 'w-full'} 
+    md:w-80 md:relative absolute inset-0 z-20 bg-white
+  `;
 
   // Obtener URL de la foto del contacto (Real o Fallback)
   const getContactPhotoUrl = (chat: ChatListItemReal) => {
@@ -219,16 +222,15 @@ const ChatGeneral: React.FC = () => {
     }
     
     // 2. Fallback: Generar avatar con iniciales usando ui-avatars
-    // Esto es mejor que randomuser.me porque no muestra fotos de personas aleatorias
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       `${chat.contacto.nombres} ${chat.contacto.apellidos}`
     )}&background=ec4899&color=fff&size=200`;
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-pink-50 via-white to-pink-50">
+    <div className="flex h-screen bg-gradient-to-br from-pink-50 via-white to-pink-50 relative overflow-hidden">
       {/* ⬅️ Panel de la izquierda (Lista de Chats) */}
-      <div className={panelClasses}>
+      <div className={leftPanelClasses}>
         <ChatListPanel
           // 🟢 Pasar la lista REAL
           chatList={chatList}
@@ -245,18 +247,16 @@ const ChatGeneral: React.FC = () => {
       </div>
 
       {/* ➡️ Panel de la derecha (Vista del Chat Actual) */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      <div className={`flex-1 flex flex-col overflow-hidden relative ${!selectedChatId ? 'hidden md:flex' : 'w-full'}`}>
         {/* Contenido principal del Chat */}
         {selectedChatId ? (
-          <div className="flex-1 overflow-hidden animate-fadeIn">
+          <div className="flex-1 overflow-hidden animate-fadeIn w-full">
             <ChatView
               chatId={selectedChatId}
               contactPhotoUrl={
                 selectedChat
                   ? getContactPhotoUrl(selectedChat)
-                  : `https://randomuser.me/api/portraits/${
-                      selectedChatId % 2 === 0 ? "women" : "men"
-                    }/${selectedChatId}.jpg`
+                  : `https://ui-avatars.com/api/?name=User&background=random`
               }
               contactName={
                 selectedChat

@@ -106,7 +106,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
     );
   }
 
-  if (error || matches.length === 0) {
+  // Si hay error, o no hay matches, o se acabó la lista (displayData es null)
+  if (error || matches.length === 0 || (!displayData && !loading)) {
     return (
       <main
         className="min-h-screen w-full flex items-center justify-center p-4 md:p-6"
@@ -119,7 +120,7 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       >
         <div className="text-center">
           <p className="text-gray-600">
-            {error || "No hay recomendaciones disponibles"}
+            {error || "No hay más recomendaciones disponibles por ahora"}
           </p>
         </div>
       </main>
