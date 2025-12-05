@@ -5,6 +5,7 @@ export interface AppNotification {
     message: string;
     read: boolean;
     created_at: Date;
+    chat_id?: number | null;  // ID del chat para navegación (solo en notificaciones de tipo 'chat')
 }
 
 // También exporta otros tipos relacionados
