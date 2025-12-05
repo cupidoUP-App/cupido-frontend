@@ -67,7 +67,8 @@ const ChatView: React.FC<ChatViewProps> = ({
         // navigate(`/perfil/${chatId}?userId=${...}`);
         // Asumimos que contactId es el ID del usuario
         if (contactId) {
-             navigate(`/profile/other/${contactId}`);
+             navigate(`/other-user-profile/${contactId}`);
+             
         } else {
              console.warn("No contactId available for navigation");
         }

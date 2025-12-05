@@ -92,7 +92,7 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
         // Evita que al hacer clic en la foto también se seleccione el chat
         e.stopPropagation();
         // Navegar al perfil del usuario
-        navigate(`/profile/other/${chat.contacto.id}`);
+        navigate(`/other-user-profile/${chat.contacto.id}`);
     };
 
     // 🟢 Renderizado condicional para carga y error

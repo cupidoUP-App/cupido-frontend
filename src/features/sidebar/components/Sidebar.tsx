@@ -45,31 +45,13 @@ export default function Sidebar({ abrirModalCerrar, userId }: SidebarProps) {
           />
         </NavLink>
 
-        <NavLink to="/test-chat" className="item">
+        <NavLink to="/chat" className="item">
           <img
             src="https://i.postimg.cc/dQdw0GdL/chat.png"
             alt="chat"
             className="item"
           />
         </NavLink>
-
-        {/*
-        <NavLink to="/notificaciones" className="item">
-        <img 
-        src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png" 
-        alt="Notificaciones" 
-        className="item" 
-        />
-        </NavLink>
-        */}
-        {/*
-        <div className="item disabled" title="Próximamente">
-         <img 
-          src="https://i.postimg.cc/Y9FKhwvs/notificaciones.png" 
-           alt="Notificaciones"
-           />
-        </div>
-        */}
 
         <button
           className="item"
