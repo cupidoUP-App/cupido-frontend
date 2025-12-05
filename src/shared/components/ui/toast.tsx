@@ -7,6 +7,11 @@ import { cn } from "@lib/utils";
 
 const ToastProvider = ToastPrimitives.Provider;
 
+/**
+ * Viewport del toast con posición fija en la esquina superior derecha.
+ * - Responsivo: ancho máximo ajustado para móviles
+ * - Safe area padding para dispositivos con notch
+ */
 const ToastViewport = React.forwardRef<
   React.ElementRef<typeof ToastPrimitives.Viewport>,
   React.ComponentPropsWithoutRef<typeof ToastPrimitives.Viewport>
@@ -14,7 +19,7 @@ const ToastViewport = React.forwardRef<
   <ToastPrimitives.Viewport
     ref={ref}
     className={cn(
-      "fixed top-4 right-4 z-[9999] flex max-h-screen w-full flex-col gap-2 p-0 sm:max-w-[380px] md:max-w-[420px]",
+      "fixed top-4 right-4 z-[9999] flex max-h-screen w-full flex-col gap-3 p-0 sm:max-w-[380px] max-w-[calc(100vw-2rem)]",
       className,
     )}
     {...props}
@@ -22,16 +27,22 @@ const ToastViewport = React.forwardRef<
 ));
 ToastViewport.displayName = ToastPrimitives.Viewport.displayName;
 
+/**
+ * Variantes de toast (Radix) con estilos "soft brutalism".
+ * - Bordes de 2px para mayor presencia visual
+ * - Sombras offset para efecto de profundidad
+ * - Colores sólidos que contrastan con el fondo de la app
+ */
 const toastVariants = cva(
-  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border p-4 pr-8 shadow-lg transition-all duration-300 ease-out data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full backdrop-blur-sm",
+  "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-xl border-2 p-4 pr-8 transition-all duration-300 ease-out data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-right-full data-[state=open]:slide-in-from-top-full min-w-[280px] max-w-[90vw] sm:max-w-[380px]",
   {
     variants: {
       variant: {
-        default: "border bg-background/95 text-foreground shadow-md",
-        destructive: "destructive group border-red-500/50 bg-red-600/95 text-white",
-        success: "border-green-500/50 bg-green-600/95 text-white",
-        info: "border-blue-500/50 bg-blue-600/95 text-white",
-        warning: "border-amber-500/50 bg-amber-500/95 text-white"
+        default: "border-gray-800/20 bg-white text-gray-900 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.1)]",
+        destructive: "destructive group border-red-700/50 bg-red-600 text-white shadow-[3px_3px_0px_0px_rgba(220,38,38,0.3)]",
+        success: "border-emerald-700/50 bg-emerald-600 text-white shadow-[3px_3px_0px_0px_rgba(5,150,105,0.3)]",
+        info: "border-blue-700/50 bg-blue-600 text-white shadow-[3px_3px_0px_0px_rgba(37,99,235,0.3)]",
+        warning: "border-amber-600/50 bg-amber-500 text-white shadow-[3px_3px_0px_0px_rgba(245,158,11,0.3)]"
       },
     },
     defaultVariants: {

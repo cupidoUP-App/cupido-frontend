@@ -241,7 +241,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
 
       toast({
         title: "¡Registro completado!",
-        description: "Tu cuenta ha sido creada exitosamente.",
+        description: "Tu cuenta ha sido creada exitosamente. Ahora puedes ingresar a Cupido.",
       });
 
       setCurrentStep('completed');

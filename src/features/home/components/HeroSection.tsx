@@ -1,12 +1,9 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@ui/button';
 import heroPreloaderGif from '@assets/hero-preloader.webp';
-//import manGif from '@/assets/man.webp';
 import { useAppStore } from '@store/appStore';
 import { useEffect } from 'react';
 import { ParticlesComponent } from './Particles';
-
-
 
 interface HeroSectionProps {
   onOpenSignup?: () => void;
@@ -14,9 +11,7 @@ interface HeroSectionProps {
 }
 
 export default function HeroSection() {
-  //theme,
   const { openSigUp, openLogin } = useAppStore();
-  //const currentGif = theme === 'masculino' ? manGif : heroPreloaderGif;
 
   useEffect(() => {
     const preloadGifs = [heroPreloaderGif];
@@ -39,15 +34,48 @@ export default function HeroSection() {
 
           <div className="text-center lg:text-left space-y-6 sm:space-y-8 animate-fade-in">
             <div className="space-y-4 sm:space-y-6">
-              <h1 
-                className="font-display font-bold text-foreground leading-tight"
-                style={{ fontSize: 'clamp(1.75rem, 6vw, 3.5rem)' }}
-              >
-                Conecta con quien comparte tu{' '}
-                <span className="text-primary">
-                  campus
+              <h1 className="font-display font-extrabold leading-[1.05] space-y-0">
+                <span 
+                  className="block text-foreground" 
+                  style={{ 
+                    fontSize: 'clamp(2rem, 6.5vw, 3.75rem)',
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Conecta con quien
+                </span>
+                <span 
+                  className="block relative" 
+                  style={{ 
+                    fontSize: 'clamp(2rem, 6.5vw, 3.75rem)',
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  comparte tu{' '}
+                  <span className="relative inline-block ml-1 sm:ml-2">
+                    {/* Rectángulo rotado atrás - reducido verticalmente */}
+                    <span 
+                      className="absolute -inset-x-1 inset-y-0 top-[0.1rem] bottom-[-0.4rem] bg-accent/30 -rotate-3 -z-10"
+                      aria-hidden="true"
+                    />
+
+                    {/* Texto principal rotado */}
+                    <span className="text-primary font-black inline-block rotate-2 px-1">
+                      campus
+                    </span>
+                    {/* Mini texto rotado superior derecha */}
+                    <span 
+                      className="absolute -top-4 sm:-top-5 -right-4 sm:-right-6 text-[0.6rem] sm:text-xs 
+                                 font-black text-foreground uppercase rotate-12
+                                 bg-primary text-primary-foreground px-1.5 sm:px-2 py-0.5"
+                      aria-hidden="true"
+                    >
+                      UP
+                    </span>
+                  </span>
                 </span>
               </h1>
+              
               <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 Matches auténticos entre jóvenes verificados por correo universitario.
                 Descubre personas afines en tu universidad.
