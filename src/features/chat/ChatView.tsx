@@ -53,7 +53,6 @@ const ChatView: React.FC<ChatViewProps> = ({
     isInputDisabled,
     onTogglePanel,
     onCloseChat,
-    onCloseChat,
     onClearHistory,
     contactId,
 }) => {
