@@ -53,9 +53,9 @@ export default function HeroSection() {
                 >
                   comparte tu{' '}
                   <span className="relative inline-block ml-1 sm:ml-2">
-                    {/* Rectángulo rotado atrás - reducido verticalmente */}
+                    {/* Rectángulo rotado atrás - más compacto verticalmente */}
                     <span 
-                      className="absolute -inset-x-1 inset-y-0 top-[0.1rem] bottom-[-0.4rem] bg-accent/30 -rotate-3 -z-10"
+                      className="absolute -inset-x-1 top-[0.3rem] bottom-[-0.3rem] bg-accent/30 -rotate-3 -z-10"
                       aria-hidden="true"
                     />
 
@@ -65,7 +65,7 @@ export default function HeroSection() {
                     </span>
                     {/* Mini texto rotado superior derecha */}
                     <span 
-                      className="absolute -top-4 sm:-top-5 -right-4 sm:-right-6 text-[0.6rem] sm:text-xs 
+                      className="absolute -top-3 sm:-top-4 -right-4 sm:-right-5 text-[0.6rem] sm:text-xs 
                                  font-black text-foreground uppercase rotate-12
                                  bg-primary text-primary-foreground px-1.5 sm:px-2 py-0.5"
                       aria-hidden="true"

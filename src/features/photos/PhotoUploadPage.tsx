@@ -445,8 +445,9 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
     const photo = allFiles[index];
     const isServerFile = index < serverFiles.length;
     const isLarge = index === 0;
-    const width = isLarge ? "w-72" : "w-56";
-    const height = isLarge ? "h-96" : "h-44";
+    // Móvil: slots más pequeños para caber en columna | Desktop: tamaños originales grandes
+    const width = isLarge ? "w-64 sm:w-72 lg:w-72" : "w-48 sm:w-52 lg:w-56";
+    const height = isLarge ? "h-80 sm:h-96 lg:h-96" : "h-36 sm:h-40 lg:h-44";
     
     return (
       <div>
@@ -516,16 +517,18 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
   };
 
   return (
-    <div className="min-h-[100dvh] w-full flex relative bg-background overflow-y-auto overflow-x-hidden">
-      <div
-        className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3 opacity-60"
-        style={{
-          backgroundImage: `url(${fondo})`,
-          backgroundSize: "contain",
-          backgroundPosition: "bottom center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
+    <div className="min-h-[100dvh] h-[100dvh] w-full flex flex-col relative bg-background overflow-hidden">
+      {/* Contenedor scrolleable */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div
+          className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3 opacity-60 pointer-events-none"
+          style={{
+            backgroundImage: `url(${fondo})`,
+            backgroundSize: "contain",
+            backgroundPosition: "bottom center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
 
       {/* Botón de regreso con diseño consistente */}
       {onBack && (
@@ -545,8 +548,8 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
         </button>
       )}
 
-      <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10">
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 mt-16 sm:mt-12 lg:-mt-60">
+      <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10 min-h-full lg:min-h-[100dvh]">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 pt-16 sm:pt-12 lg:pt-0">
           <div className="max-w-md text-center">
             <div className="flex justify-center mb-6">
               <img src={logo} alt="Logo" className="w-20 h-20 sm:w-24 sm:h-24 object-contain" />
@@ -574,11 +577,11 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
           </div>
         </div>
 
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:pr-12 pt-8 sm:pt-12 pb-32 sm:pb-48 lg:py-0">
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6 sm:mb-8 items-center">
+        <div className="w-full lg:w-1/2 flex flex-col items-center justify-start lg:justify-center px-4 sm:px-6 lg:pr-12 pt-6 sm:pt-8 pb-32 sm:pb-40 lg:pt-0 lg:pb-0">
+          <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8 items-center">
             {renderImageSlot(0)}
             
-            <div className="flex flex-row sm:flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
               {renderImageSlot(1)}
               {renderImageSlot(2)}
             </div>
@@ -606,6 +609,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
             </button>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );
