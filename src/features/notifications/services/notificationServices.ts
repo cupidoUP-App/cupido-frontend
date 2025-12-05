@@ -1,3 +1,4 @@
+
 // services/notificationServices.ts
 import { AppNotification } from "../types/notification.types";
 
@@ -8,6 +9,7 @@ const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
         message: djangoNotif.mensaje,
         read: djangoNotif.estado === 'leido', 
         created_at: new Date(djangoNotif.fecha_envio),
+        chat_id: djangoNotif.chat_id || null,  // ID del chat para navegación
     };
 };
 
@@ -137,6 +139,43 @@ export const NotificationsServices = {
             return result;
         } catch (error) {
             console.error('❌ Error in markAsRead:', error);
+            throw error;
+        }
+    },
+
+
+    async deleteNotification(id: string): Promise<boolean> {
+        const token = getAuthToken();
+        
+        if (!token) {
+            throw new Error('No authentication token found');
+        }
+
+        const headers: HeadersInit = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        };
+
+        try {
+            const deleteUrl = `${API_BASE_URL}${id}/`;
+            console.log('🗑️ Deleting notification:', deleteUrl);
+            
+            const res = await fetch(deleteUrl, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers,
+            });
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`❌ Error deleting notification ${id}:`, res.status, errorText);
+                throw new Error(`Failed to delete notification: ${res.status}`);
+            }
+            
+            console.log('✅ Notification deleted:', id);
+            return true;
+        } catch (error) {
+            console.error('❌ Error in deleteNotification:', error);
             throw error;
         }
     },
@@ -295,7 +334,7 @@ export const NotificationsServices = {
                 resolve(data);
             } catch (error) {
                 console.error('❌ API test error:', error);
-                resolve({ error: error.message });
+                resolve({ error: error instanceof Error ? error.message : 'Unknown error' });
             }
         });
     }
