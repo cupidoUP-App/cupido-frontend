@@ -73,55 +73,55 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     );
   }, [isError, error]);
 
-  const uploadMutation = useMutation({
-    mutationFn: photoAPI.uploadPhoto,
-    onSuccess: (data) => {
-      console.log(" Subida exitosa:", data);
-      queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
-    },
-    onError: (error: any) => {
-      console.error(" Error en uploadPhoto:", error);
-      const errorData = error.response?.data;
+    const uploadMutation = useMutation({
+      mutationFn: photoAPI.uploadPhoto,
+      onSuccess: (data) => {
+        console.log(" Subida exitosa:", data);
+        queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
+      },
+      onError: (error: any) => {
+        console.error(" Error en uploadPhoto:", error);
+        const errorData = error.response?.data;
 
-      if (errorData) {
-        console.log(" Datos del error:", errorData);
+        if (errorData) {
+          console.log(" Datos del error:", errorData);
 
-        // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
-        if (errorData.imagen && Array.isArray(errorData.imagen)) {
-          const moderationMessage = errorData.imagen[0];
-          
-          // Verificar si es un error de moderación por contenido inapropiado
-          if (moderationMessage.includes("no puede ser publicada") || 
-              moderationMessage.includes("contenido")) {
-            toast.error(moderationMessage, {
-              duration: 6000, // Mostrar más tiempo para que el usuario lea
-              icon: "🚫",
-            });
-            return;
+          // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
+          if (errorData.imagen && Array.isArray(errorData.imagen)) {
+            const moderationMessage = errorData.imagen[0];
+            
+            // Verificar si es un error de moderación por contenido inapropiado
+            if (moderationMessage.includes("no puede ser publicada") || 
+                moderationMessage.includes("contenido")) {
+              toast.error(moderationMessage, {
+                duration: 6000, // Mostrar más tiempo para que el usuario lea
+                icon: "🚫",
+              });
+              return;
+            }
           }
-        }
 
-        // Otros errores de validación
-        if (typeof errorData === "object") {
-          const errorMessages = Object.entries(errorData)
-            .map(
-              ([key, value]) =>
-                Array.isArray(value) ? value.join(", ") : String(value)
-            )
-            .join("; ");
-          toast.error(errorMessages || "Error al subir la imagen");
-        } else if (typeof errorData === "string") {
-          toast.error(errorData);
+          // Otros errores de validación
+          if (typeof errorData === "object") {
+            const errorMessages = Object.entries(errorData)
+              .map(
+                ([key, value]) =>
+                  Array.isArray(value) ? value.join(", ") : String(value)
+              )
+              .join("; ");
+            toast.error(errorMessages || "Error al subir la imagen");
+          } else if (typeof errorData === "string") {
+            toast.error(errorData);
+          } else {
+            toast.error(
+              error.message || "Error desconocido al subir imagen"
+            );
+          }
         } else {
-          toast.error(
-            error.message || "Error desconocido al subir imagen"
-          );
+          toast.error(`Error de conexión: ${error.message}`);
         }
-      } else {
-        toast.error(`Error de conexión: ${error.message}`);
-      }
-    },
-  });
+      },
+    });
 
   const deleteMutation = useMutation({
     mutationFn: photoAPI.deletePhoto,

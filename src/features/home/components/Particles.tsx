@@ -35,31 +35,30 @@ export const ParticlesComponent = (props: { id?: string }) => {
         enable: false,
         zIndex: 0,
       },
-      fpsLimit: 120,
+      fpsLimit: 60,
       interactivity: {
         events: {
           onClick: {
-            enable: true,
-            mode: "push",
+            enable: false,
           },
           onHover: {
             enable: true,
-            mode: "repulse",
+            mode: "grab",
           },
         },
         modes: {
-          push: {
-            quantity: 2,
-          },
-          repulse: {
-            distance: 100,
-            duration: 0.4,
+          grab: {
+            distance: 120,
+            links: {
+              opacity: 0.2,
+              color: "#D9857E",
+            },
           },
         },
       },
       particles: {
         color: {
-          value: '#D9857E',
+          value: ['#D9857E', '#E8A5A0', '#C4706A'],
         },
         shape: {
           type: 'heart',
@@ -67,24 +66,41 @@ export const ParticlesComponent = (props: { id?: string }) => {
         number: {
           density: {
             enable: true,
+            area: 900,
           },
-          value: 130,
+          value: 25,
         },
         opacity: {
-          value: { min: 0.22, max: 0.6 },
+          value: { min: 0.2, max: 0.5 },
+          animation: {
+            enable: true,
+            speed: 0.3,
+            minimumValue: 0.15,
+            sync: false,
+          },
         },
         size: {
-          value: { min: 2.8, max: 6 },
+          value: { min: 4, max: 12 },
+          animation: {
+            enable: true,
+            speed: 1,
+            minimumValue: 3,
+            sync: false,
+          },
         },
         move: {
           direction: "none",
           enable: true,
           outModes: {
-            default: "out",
+            default: "bounce",
           },
-          random: true,
-          speed: 1,
+          random: false,
+          speed: 0.4,
           straight: false,
+          warp: false,
+          attract: {
+            enable: false,
+          },
         },
 
       },

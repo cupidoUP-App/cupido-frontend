@@ -29,23 +29,26 @@ export default function HeroSection() {
   return (
     <section
       id="hero-section"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16 md:pt-14"
       style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
       <ParticlesComponent id="tsparticles" />
 
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
-          <div className="text-center lg:text-left space-y-8 animate-fade-in">
-            <div className="space-y-6">
-              <h1 className="font-display font-bold text-display-xl text-foreground leading-tight">
+          <div className="text-center lg:text-left space-y-6 sm:space-y-8 animate-fade-in">
+            <div className="space-y-4 sm:space-y-6">
+              <h1 
+                className="font-display font-bold text-foreground leading-tight"
+                style={{ fontSize: 'clamp(1.75rem, 6vw, 3.5rem)' }}
+              >
                 Conecta con quien comparte tu{' '}
                 <span className="text-gradient-primary">
                   campus
                 </span>
               </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                 Matches auténticos entre jóvenes verificados por correo universitario.
                 Descubre personas afines en tu universidad.
               </p>
