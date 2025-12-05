@@ -5,10 +5,8 @@ import { MatchData } from "../types";
 import { getMatches } from "../services/matchService";
 
 export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) => {
-  const [matchList] = useState<MatchData[]>(matches || getMatches());
-  const [currentIndex, setCurrentIndex] = useState(() =>
-    Math.floor(Math.random() * matchList.length)
-  );
+  const [matchList, setMatchList] = useState<MatchData[]>(matches || getMatches());
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [isAtTop, setIsAtTop] = useState(true);
   const [rotation, setRotation] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
@@ -26,7 +24,23 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const [swipeRotation, setSwipeRotation] = useState(0);
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // ⭐ Actualizar matchList cuando lleguen los datos reales (matches cambia)
+  useEffect(() => {
+    if (matches && matches.length > 0) {
+      console.log("🔄 useMatch: Actualizando matchList con", matches.length, "matches");
+      setMatchList(matches);
+      setCurrentIndex(0); // Reiniciar al primer match
+    }
+  }, [matches]);
+
   const displayData = initialMatchData || matchList[currentIndex];
+  
+  // 🔍 DEBUG: Ver qué datos está mostrando
+  useEffect(() => {
+    console.log("📊 useMatch displayData:", displayData);
+    console.log("📊 matchList tiene", matchList.length, "items");
+    console.log("📊 currentIndex:", currentIndex);
+  }, [displayData, matchList, currentIndex]);
 
   // Calculate time until midnight reset
   useEffect(() => {
