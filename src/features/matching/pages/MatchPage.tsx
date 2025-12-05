@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import MatchBG from "@assets/background_verification.webp";
 import { MatchPageProps } from "../types";
 import { useMatch } from "../hooks/useMatch";
+import { useAutoRefresh, AutoRefreshPresets } from "../hooks/useAutoRefresh";
 import { fetchMatches } from "../services/matchService";
 import MatchCard from "../components/MatchCard";
 import MatchLimitDialog from "../components/MatchLimitDialog";
@@ -13,23 +14,50 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const loadMatches = async () => {
-      try {
+  // Función para cargar matches
+  const loadMatches = async (showLoading = true) => {
+    try {
+      if (showLoading) {
         setLoading(true);
-        const data = await fetchMatches();
-        setMatches(data);
-        setError(null);
-      } catch (err) {
-        console.error("Error loading matches:", err);
-        setError("No se pudieron cargar las recomendaciones");
-      } finally {
+      }
+      const data = await fetchMatches();
+      setMatches(data);
+      setError(null);
+
+      console.log("✅ Matches cargados/refrescados:", data.length);
+    } catch (err) {
+      console.error("Error loading matches:", err);
+      setError("No se pudieron cargar las recomendaciones");
+    } finally {
+      if (showLoading) {
         setLoading(false);
       }
-    };
+    }
+  };
 
+  // Carga inicial de matches
+  useEffect(() => {
     loadMatches();
   }, []);
+
+  // 🔄 OPCIÓN 3: Regeneración periódica automática de URLs
+  // Callback memoizado para el auto-refresh
+  const refreshCallback = useCallback(async () => {
+    // Refrescar sin mostrar loading (seamless para el usuario)
+    await loadMatches(false);
+  }, []);
+
+  // Configurar auto-refresh cada 45 minutos (antes de que expiren las URLs de 1 hora)
+  useAutoRefresh(refreshCallback, {
+    ...AutoRefreshPresets.CONSERVATIVE, // 45 minutos
+    enabled: true,
+    onRefreshSuccess: () => {
+      console.log('✅ Presigned URLs refrescadas exitosamente');
+    },
+    onRefreshError: (error) => {
+      console.error('❌ Error refrescando presigned URLs:', error);
+    },
+  });
 
   const {
     displayData,
