@@ -135,5 +135,5 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
 };
 
 export const getMatches = (): MatchData[] => {
-  return mockMatchDataList;
+  return []; // Ya no usar datos mock, siempre usar fetchMatches
 };
