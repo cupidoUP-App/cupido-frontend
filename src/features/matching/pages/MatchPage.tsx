@@ -7,6 +7,7 @@ import { fetchMatches } from "../services/matchService";
 import MatchCard from "../components/MatchCard";
 import MatchLimitDialog from "../components/MatchLimitDialog";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
+import MatchSuccessSlide from "../components/MatchSuccessSlide";
 import { MatchData } from "../types";
 
 const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
@@ -82,6 +83,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
     handlePointerMove,
     handlePointerUp,
     handlePointerCancel,
+    matchSuccessData,
+    onCloseMatchSuccess,
   } = useMatch(matchData, matches);
 
   if (loading) {
@@ -140,6 +143,14 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       />
 
       <MatchOptionsDialog open={showOptions} onOpenChange={setShowOptions} />
+
+      {matchSuccessData && (
+        <MatchSuccessSlide
+          matchedUser={matchSuccessData}
+          // currentUserPhotoUrl={user?.photoUrl} // TODO: Obtener foto del usuario actual si es posible
+          onClose={onCloseMatchSuccess}
+        />
+      )}
 
       <MatchCard
         data={displayData}

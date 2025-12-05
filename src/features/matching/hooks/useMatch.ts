@@ -14,9 +14,16 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const [showOverlay, setShowOverlay] = useState(false);
   const [overlayIcon, setOverlayIcon] = useState<string>("");
   const [showOptions, setShowOptions] = useState(false);
-  const [likesRemaining, setLikesRemaining] = useState(10);
+  const [likesRemaining, setLikesRemaining] = useState(50); // Aumentado a 50
   const [timeUntilReset, setTimeUntilReset] = useState<string>("");
   const [showLimitOverlay, setShowLimitOverlay] = useState(false);
+  
+  // Estado para el slide de éxito de match
+  const [matchSuccessData, setMatchSuccessData] = useState<{
+    name: string;
+    photoUrl?: string;
+    id: number | string;
+  } | null>(null);
 
   // Swipe states
   const [isDragging, setIsDragging] = useState(false);
@@ -113,7 +120,8 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       console.error("displayData completo:", displayData);
       
       // Buscar en otras posibles ubicaciones
-      const possibleId = displayData?.id || displayData?.userId || displayData?.user_id;
+      const data = displayData as any;
+      const possibleId = data?.id || data?.userId || data?.user_id;
       if (possibleId) {
         console.log("⚠️  Encontrado en otra propiedad:", possibleId);
       } else {
@@ -150,7 +158,13 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       
       if (response.match_found) {
         console.log("🎯 ¡MATCH ENCONTRADO!");
-        alert(`¡Match! ${response.message}`);
+        // En lugar de alert, seteamos el estado para mostrar el slide
+        const resp = response as any;
+        setMatchSuccessData({
+            name: displayData?.info?.title || "Usuario",
+            photoUrl: displayData?.mainImage,
+            id: resp.chat_id || currentUserId // Usar chat_id si viene, o user_id
+        });
       }
       
       console.log("✅ Like guardado en base de datos");
@@ -229,7 +243,8 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       console.error("❌ No hay usuario_id en displayData");
       console.error("displayData completo:", displayData);
       
-      const possibleId = displayData?.id || displayData?.userId || displayData?.user_id;
+      const data = displayData as any;
+      const possibleId = data?.id || data?.userId || data?.user_id;
       if (possibleId) {
         console.log("⚠️  Encontrado en otra propiedad:", possibleId);
       } else {
@@ -427,6 +442,8 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     handlePointerDown,
     handlePointerMove,
     handlePointerUp,
-    handlePointerCancel
+    handlePointerCancel,
+    matchSuccessData,
+    onCloseMatchSuccess: () => setMatchSuccessData(null)
   };
 };
