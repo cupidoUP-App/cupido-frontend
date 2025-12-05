@@ -76,15 +76,27 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         constructImageUrl(item.secondary_images?.[1]) || MatchPlaceholder3
       ];
 
+      // Construir el nombre completo
+      const nombreCompleto = `${item.nombre || ''} ${item.apellido || ''}`.trim();
+      
+      // Usar descripción del usuario o estado como fallback
+      const descripcion = item.descripcion || item.estado || 'Sin descripción';
+      
+      // Formatear estatura si existe
+      const estaturaTexto = item.estatura 
+        ? `${item.estatura}m` 
+        : null;
+
       return {
         mainImage,
         info: {
-          title: `${item.nombre || ''} ${item.apellido || ''}`.trim(),
-          description: `Score: ${item.score}`, // Using score as description for now
+          title: nombreCompleto,
+          description: descripcion,
           edad: item.edad,
-          ubicación: "Colombia", // Placeholder
-          intereses: item.hobbies,
-          estatura: item.estatura,
+          ubicación: item.ubicacion || 'No especificada',
+          intereses: item.hobbies || 'No especificados',
+          estatura: estaturaTexto,
+          estado: item.estado,
           score: item.score
         },
         secondaryImages
