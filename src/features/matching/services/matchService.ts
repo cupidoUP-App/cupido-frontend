@@ -43,13 +43,34 @@ export const mockMatchDataList: MatchData[] = [
 export const fetchMatches = async (): Promise<MatchData[]> => {
   try {
     const response = await api.get("/match/recommendations/");
+    
+    // 🔍 DEBUG: Ver la respuesta completa
+    console.log("🔍 RESPUESTA COMPLETA DEL BACKEND:", response.data);
+    console.log("🔍 RESULTS ARRAY:", response.data.results);
+    
     const results = response.data.results;
 
     if (!results || !Array.isArray(results)) {
+        console.error("❌ Results no es un array o está vacío");
         return [];
     }
 
-    return results.map((item: any) => {
+    console.log(`✅ Se encontraron ${results.length} matches`);
+
+    return results.map((item: any, index: number) => {
+      // 🔍 DEBUG: Ver cada item individual
+      console.log(`\n🔍 ITEM ${index + 1}:`, item);
+      console.log(`  - nombre: "${item.nombre}"`);
+      console.log(`  - apellido: "${item.apellido}"`);
+      console.log(`  - descripcion: "${item.descripcion}"`);
+      console.log(`  - estado: "${item.estado}"`);
+      console.log(`  - hobbies: "${item.hobbies}"`);
+      console.log(`  - ubicacion: "${item.ubicacion}"`);
+      console.log(`  - estatura: ${item.estatura}`);
+      console.log(`  - edad: ${item.edad}`);
+      console.log(`  - main_image: "${item.main_image}"`);
+      console.log(`  - secondary_images:`, item.secondary_images);
+      
       // Construir URLs de imágenes (mismo patrón que profile)
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
       
@@ -87,7 +108,7 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         ? `${item.estatura}m` 
         : null;
 
-      return {
+      const matchData = {
         mainImage,
         info: {
           title: nombreCompleto,
@@ -101,9 +122,14 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         },
         secondaryImages
       };
+
+      // 🔍 DEBUG: Ver el objeto final mapeado
+      console.log(`✅ MATCH DATA MAPEADO ${index + 1}:`, matchData);
+
+      return matchData;
     });
   } catch (error) {
-    console.error("Error fetching matches:", error);
+    console.error("❌ Error fetching matches:", error);
     throw error;
   }
 };
