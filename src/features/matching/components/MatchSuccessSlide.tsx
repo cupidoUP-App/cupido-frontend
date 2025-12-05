@@ -22,7 +22,7 @@ const MatchSuccessSlide: React.FC<MatchSuccessSlideProps> = ({
 
   const handleGoToChat = () => {
     // Navegar al chat con el usuario
-    navigate(`/chat?chatId=${matchedUser.id}`); // Ajustar ruta según routing real
+    navigate(`/chat`); // Ajustar ruta según routing real
     onClose();
   };
 

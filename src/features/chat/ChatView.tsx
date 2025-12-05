@@ -53,19 +53,25 @@ const ChatView: React.FC<ChatViewProps> = ({
     isInputDisabled,
     onTogglePanel,
     onCloseChat,
+    onCloseChat,
     onClearHistory,
+    contactId,
 }) => {
+    const navigate = useNavigate();
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const [inputMessage, setInputMessage] = useState('');
     const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
 
     // Placeholder para abrir el perfil del contacto al tocar la imagen
     const handleOpenProfile = () => {
-        // Aquí se podría usar useNavigate de react-router-dom, por ejemplo:
+        // Navegar al perfil del usuario
         // navigate(`/perfil/${chatId}?userId=${...}`);
-        // Por ahora solo mostramos un aviso para que el equipo de perfil lo conecte luego.
-        alert(`Aquí debería ir al perfil de ${contactName}`);
-        console.log("[TODO] Ir al perfil del contacto del chat:", contactName);
+        // Asumimos que contactId es el ID del usuario
+        if (contactId) {
+             navigate(`/profile/other/${contactId}`);
+        } else {
+             console.warn("No contactId available for navigation");
+        }
     };
 
     // Función para desplazarse al final de los mensajes

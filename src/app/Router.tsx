@@ -25,7 +25,7 @@ export const AppRouter = () => {
       <Route element={<MainLayout />}>
         <Route path="/match" element={<MatchPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/test-chat" element={<ChatGeneral />} />
+        <Route path="/chat" element={<ChatGeneral />} />
         <Route path="/other-user-profile/:userId" element={<OtherUserProfilePage />} />
       </Route>
 

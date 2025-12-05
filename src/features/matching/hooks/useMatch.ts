@@ -202,7 +202,15 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       setTimeout(() => {
         // Usar newLikesRemaining en lugar de likesRemaining
         if (newLikesRemaining > 0) {
-          setCurrentIndex((prev) => (prev + 1) % matchList.length);
+          // 🔥 CORRECCIÓN: Verificar si hay más elementos antes de incrementar
+          if (currentIndex < matchList.length - 1) {
+             setCurrentIndex((prev) => prev + 1);
+          } else {
+             // Si es el último, incrementamos para que displayData sea undefined/null
+             // y la UI pueda mostrar "No hay más perfiles"
+             setCurrentIndex((prev) => prev + 1);
+             console.log("🏁 Fin de la lista de matches alcanzado");
+          }
         }
         setRotation(-20);
         setShowOverlay(true);
@@ -304,7 +312,13 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
 
       setTimeout(() => {
         if (newLikesRemaining > 0) {
-          setCurrentIndex((prev) => (prev + 1) % matchList.length);
+          // 🔥 CORRECCIÓN: Verificar si hay más elementos antes de incrementar
+          if (currentIndex < matchList.length - 1) {
+             setCurrentIndex((prev) => prev + 1);
+          } else {
+             setCurrentIndex((prev) => prev + 1);
+             console.log("🏁 Fin de la lista de matches alcanzado (Dislike)");
+          }
         }
         setRotation(20);
         setShowOverlay(true);
