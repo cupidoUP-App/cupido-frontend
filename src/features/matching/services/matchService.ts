@@ -91,10 +91,10 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
       };
 
-      const mainImage = constructImageUrl(item.main_image) || MatchPlaceholder1;
+      const mainImage = constructImageUrl(item.main_image);
       const secondaryImages: [string?, string?] = [
-        constructImageUrl(item.secondary_images?.[0]) || MatchPlaceholder2,
-        constructImageUrl(item.secondary_images?.[1]) || MatchPlaceholder3
+        constructImageUrl(item.secondary_images?.[0]),
+        constructImageUrl(item.secondary_images?.[1])
       ];
 
       // Construir el nombre completo
@@ -135,5 +135,5 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
 };
 
 export const getMatches = (): MatchData[] => {
-  return mockMatchDataList;
+  return []; // Ya no usar datos mock, siempre usar fetchMatches
 };
