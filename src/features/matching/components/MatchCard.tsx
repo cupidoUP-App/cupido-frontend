@@ -120,46 +120,64 @@ const MatchCard: React.FC<MatchCardProps> = ({
             )}
           </div>
           <div className="flex flex-col w-full h-full">
-            {/* Main Image Section */}
-            <div className="w-full aspect-[101/150] overflow-hidden flex items-center justify-center relative shadow-sm shadow-black/50 corner-round rounded-lg select-none pointer-events-none">
-              <img
-                src={data?.mainImage || "/placeholder.svg"}
-                alt="Main profile blurred background"
-                className="absolute inset-0 w-full h-full object-cover object-center filter blur-2xl scale-110 z-0 opacity-50 select-none pointer-events-none"
-                aria-hidden="true"
-                draggable={false}
-              />
-              <div className="absolute inset-0 flex items-center justify-center z-10 select-none pointer-events-none">
+            {/* Main Image Section - Solo si hay imagen principal */}
+            {data?.mainImage && !data.mainImage.includes('MatchPlaceholder') ? (
+              <div className="w-full aspect-[101/150] overflow-hidden flex items-center justify-center relative shadow-sm shadow-black/50 corner-round rounded-lg select-none pointer-events-none">
                 <img
-                  src={data?.mainImage || "/placeholder.svg"}
-                  alt="Main profile"
-                  className="w-full rounded-lg object-contain shadow-lg shadow-black/20 select-none pointer-events-none"
+                  src={data.mainImage}
+                  alt="Main profile blurred background"
+                  className="absolute inset-0 w-full h-full object-cover object-center filter blur-2xl scale-110 z-0 opacity-50 select-none pointer-events-none"
+                  aria-hidden="true"
                   draggable={false}
                 />
+                <div className="absolute inset-0 flex items-center justify-center z-10 select-none pointer-events-none">
+                  <img
+                    src={data.mainImage}
+                    alt="Main profile"
+                    className="w-full rounded-lg object-contain shadow-lg shadow-black/20 select-none pointer-events-none"
+                    draggable={false}
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Sin imagen principal - Mostrar mensaje especial */
+              <div className="w-full aspect-[101/150] overflow-hidden flex items-center justify-center relative bg-gradient-to-br from-pink-100 via-red-50 to-pink-200 rounded-lg select-none">
+                <div className="text-center px-6">
+                  <span className="text-6xl mb-4 block">💕</span>
+                  <p className="text-gray-700 text-lg font-['Poppins'] leading-relaxed">
+                    Este usuario no tiene imágenes, ¡atrévete a conocerlo haciendo match! ❤️
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Info Frame */}
             <MatchInfo data={data} />
 
-            {/* Two Image Frames */}
+            {/* Secondary Images - Solo mostrar las que existen */}
             <div className="w-full flex flex-col select-none px-4 pb-24">
-              <div className="w-full aspect-square overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none">
-                <img
-                  src={data?.secondaryImages?.[0] || "/placeholder.svg"}
-                  alt="Secondary image 1"
-                  className="w-full h-full object-cover select-none pointer-events-none"
-                  draggable={false}
-                />
-              </div>
-              <div className="w-full aspect-square overflow-hidden rounded-lg mt-[10px] shadow-sm shadow-black/50 select-none">
-                <img
-                  src={data?.secondaryImages?.[1] || "/placeholder.svg"}
-                  alt="Secondary image 2"
-                  className="w-full h-full object-cover select-none pointer-events-none"
-                  draggable={false}
-                />
-              </div>
+              {/* Primera imagen secundaria */}
+              {data?.secondaryImages?.[0] && !data.secondaryImages[0].includes('MatchPlaceholder') && (
+                <div className="w-full aspect-square overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none">
+                  <img
+                    src={data.secondaryImages[0]}
+                    alt="Secondary image 1"
+                    className="w-full h-full object-cover select-none pointer-events-none"
+                    draggable={false}
+                  />
+                </div>
+              )}
+              {/* Segunda imagen secundaria */}
+              {data?.secondaryImages?.[1] && !data.secondaryImages[1].includes('MatchPlaceholder') && (
+                <div className={`w-full aspect-square overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none ${data?.secondaryImages?.[0] && !data.secondaryImages[0].includes('MatchPlaceholder') ? 'mt-[10px]' : ''}`}>
+                  <img
+                    src={data.secondaryImages[1]}
+                    alt="Secondary image 2"
+                    className="w-full h-full object-cover select-none pointer-events-none"
+                    draggable={false}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </ScrollArea>

@@ -14,19 +14,121 @@ const api: AxiosInstance = axios.create({
 });
 
 // --------------------------------------------------------
-// REQUEST INTERCEPTOR (corregido)
-// NO manda "Bearer null" ni "Bearer undefined"
+// UTILIDAD: Decodificar JWT sin verificar firma
+// --------------------------------------------------------
+function decodeJWT(token: string): any {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (error) {
+    console.error('Error decodificando JWT:', error);
+    return null;
+  }
+}
+
+// --------------------------------------------------------
+// UTILIDAD: Verificar si el token está próximo a expirar
+// --------------------------------------------------------
+function isTokenExpiringSoon(token: string, bufferMinutes: number = 5): boolean {
+  const decoded = decodeJWT(token);
+  if (!decoded || !decoded.exp) return true;
+
+  const expirationTime = decoded.exp * 1000; // Convertir a milisegundos
+  const currentTime = Date.now();
+  const bufferTime = bufferMinutes * 60 * 1000;
+
+  return expirationTime - currentTime < bufferTime;
+}
+
+// --------------------------------------------------------
+// Variable para evitar múltiples refreshes simultáneos
+// --------------------------------------------------------
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+function subscribeTokenRefresh(callback: (token: string) => void) {
+  refreshSubscribers.push(callback);
+}
+
+function onTokenRefreshed(token: string) {
+  refreshSubscribers.forEach((callback) => callback(token));
+  refreshSubscribers = [];
+}
+
+// --------------------------------------------------------
+// REQUEST INTERCEPTOR (mejorado con refresh proactivo)
 // --------------------------------------------------------
 api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("access_token");
+  async (config) => {
+    let token = localStorage.getItem("access_token");
 
+    // Verificar si el token está válido
     if (
       token &&
       token !== "null" &&
       token !== "undefined" &&
       token.trim() !== ""
     ) {
+      // Refresh proactivo: si el token expira pronto, renovarlo antes
+      if (isTokenExpiringSoon(token, 5)) {
+        console.log('🔄 Token próximo a expirar, refrescando proactivamente...');
+
+        if (!isRefreshing) {
+          isRefreshing = true;
+
+          try {
+            const refreshToken = localStorage.getItem("refresh_token");
+            if (!refreshToken) {
+              throw new Error("No refresh token available");
+            }
+
+            const refreshResponse = await refreshClient.post("/auth/token/refresh/", {
+              refresh: refreshToken,
+            });
+
+            const newAccessToken = refreshResponse.data.access;
+            const newRefreshToken = refreshResponse.data.refresh;
+
+            if (newAccessToken) {
+              localStorage.setItem("access_token", newAccessToken);
+              token = newAccessToken;
+            }
+            if (newRefreshToken) {
+              localStorage.setItem("refresh_token", newRefreshToken);
+            }
+
+            console.log('✅ Token refrescado proactivamente');
+            onTokenRefreshed(newAccessToken);
+            isRefreshing = false;
+          } catch (error) {
+            console.error('❌ Error al refrescar token proactivamente:', error);
+            isRefreshing = false;
+
+            // Si falla el refresh proactivo, limpiar y hacer logout
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("refresh_token");
+            const { useAppStore } = await import("@store/appStore");
+            useAppStore.getState().logout();
+
+            return Promise.reject(error);
+          }
+        } else {
+          // Si ya hay un refresh en progreso, esperar a que termine
+          token = await new Promise<string>((resolve) => {
+            subscribeTokenRefresh((newToken: string) => {
+              resolve(newToken);
+            });
+          });
+        }
+      }
+
       config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -47,7 +149,7 @@ const refreshClient = axios.create({
 });
 
 // --------------------------------------------------------
-// RESPONSE INTERCEPTOR (corregido)
+// RESPONSE INTERCEPTOR (mejorado con manejo de race conditions)
 // --------------------------------------------------------
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -59,9 +161,40 @@ api.interceptors.response.use(
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
+      // Si ya hay un refresh en progreso, esperar a que termine
+      if (isRefreshing) {
+        try {
+          const newToken = await new Promise<string>((resolve, reject) => {
+            subscribeTokenRefresh((token: string) => {
+              resolve(token);
+            });
+
+            // Timeout de 10 segundos para evitar espera infinita
+            setTimeout(() => {
+              reject(new Error('Token refresh timeout'));
+            }, 10000);
+          });
+
+          originalRequest.headers.Authorization = `Bearer ${newToken}`;
+          return api(originalRequest);
+        } catch (err) {
+          console.error('❌ Error esperando refresh de token:', err);
+          return Promise.reject(err);
+        }
+      }
+
+      // Iniciar proceso de refresh
+      isRefreshing = true;
+
       try {
+        const refreshToken = localStorage.getItem("refresh_token");
+
+        if (!refreshToken) {
+          throw new Error("No refresh token available");
+        }
+
         const refreshResponse = await refreshClient.post("/auth/token/refresh/", {
-          refresh: localStorage.getItem("refresh_token"),
+          refresh: refreshToken,
         });
 
         const newAccessToken = refreshResponse.data.access;
@@ -70,17 +203,26 @@ api.interceptors.response.use(
         // Guardar tokens nuevos
         if (newAccessToken) {
           localStorage.setItem("access_token", newAccessToken);
+          console.log('✅ Token refrescado reactivamente (401)');
         }
         if (newRefreshToken) {
           localStorage.setItem("refresh_token", newRefreshToken);
         }
 
-        // reintentar request original
+        // Notificar a todas las requests en espera
+        onTokenRefreshed(newAccessToken);
+        isRefreshing = false;
+
+        // Reintentar request original
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return api(originalRequest);
 
       } catch (refreshError) {
+        isRefreshing = false;
+        onTokenRefreshed(''); // Liberar subscribers con error
+
         // Si falla refresh → logout
+        console.error('❌ Error al refrescar token reactivamente:', refreshError);
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 
@@ -297,5 +439,38 @@ export const photoAPI = {
     return response.data;
   },
 };
+
+export const likeAPI = {
+  /**
+   * Enviar un like a un usuario
+   * @param receptorId - ID del usuario receptor
+   */
+  sendLike: async (receptorId: string): Promise<{
+    match_found: boolean;
+    message: string;
+    usuario_match?: string;
+  }> => {
+    const response = await api.post("/like/interaction/", {
+      receptor_id: receptorId,
+      accion: "LIKE",
+    });
+    return response.data;
+  },
+
+  /**
+   * Enviar un dislike a un usuario
+   * @param receptorId - ID del usuario receptor
+   */
+  sendDislike: async (receptorId: string): Promise<{
+    message: string;
+  }> => {
+    const response = await api.post("/like/interaction/", {
+      receptor_id: receptorId,
+      accion: "DISLIKE",
+    });
+    return response.data;
+  },
+};
+
 
 export default api;

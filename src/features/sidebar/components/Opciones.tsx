@@ -29,7 +29,7 @@ export default function Opciones({ onClose, abrirModalCerrar }: OpcionesProps) {
           onClose();
         }}
       >
-        Cerrar Cuenta
+        Cerrar Sesion
       </button>
 
       <hr className="linea-separadora" />
