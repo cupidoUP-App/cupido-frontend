@@ -2,7 +2,7 @@ import React from "react";
 import { Card } from "@ui/card";
 import { ScrollArea } from "@ui/scroll-area";
 import OptionDots from "@assets/OptionDots.png";
-import CupidWhite from "@assets/cupid-white.png";
+import CupidWhite from "@assets/cupid-white-optimized.webp";
 import MatchLike from "@assets/MatchLike.png";
 import { MatchData } from "../types";
 import MatchInfo from "./MatchInfo";

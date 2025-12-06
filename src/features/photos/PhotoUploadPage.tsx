@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Star } from "lucide-react";
 import { Camera, ArrowLeft } from "@phosphor-icons/react";
-import fondo from "@assets/fondoCargueImagenes.png";
+import fondo from "@assets/fondoCargueImagenes-optimized.webp";
 import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
 import { photoAPI } from "@lib/api";

@@ -1,4 +1,3 @@
-import { useAppStore } from "@store/appStore";
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";
@@ -7,17 +6,37 @@ import { loadSlim } from "@tsparticles/slim";
 import { loadHeartShape } from "@tsparticles/shape-heart";
 
 export const ParticlesComponent = (props: { id?: string }) => {
-  //const { theme } = useAppStore();
   const [init, setInit] = useState(false);
+  // Estado para diferir la inicialización hasta que el navegador esté idle
+  const [shouldInit, setShouldInit] = useState(false);
 
   useEffect(() => {
+    // Diferir la inicialización de partículas para no bloquear el hilo principal
+    // requestIdleCallback ejecuta cuando el navegador está inactivo
+    const initWhenIdle = () => {
+      setShouldInit(true);
+    };
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(initWhenIdle, { timeout: 2000 });
+      return () => window.cancelIdleCallback(idleId);
+    } else {
+      // Fallback para navegadores sin soporte (Safari)
+      const timeoutId = setTimeout(initWhenIdle, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shouldInit) return;
+    
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
       await loadHeartShape(engine);
     }).then(() => {
       setInit(true);
     });
-  }, []);
+  }, [shouldInit]);
 
   const particlesLoaded = async (container?: Container): Promise<void> => {
     console.log(container);

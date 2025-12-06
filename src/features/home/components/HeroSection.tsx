@@ -1,9 +1,10 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@ui/button';
-import heroPreloaderGif from '@assets/hero-preloader.webp';
 import { useAppStore } from '@store/appStore';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { ParticlesComponent } from './Particles';
+// Poster estático para LCP rápido (10KB vs 877KB del animado)
+import heroPoster from '@assets/hero-preloader-poster.webp';
 
 interface HeroSectionProps {
   onOpenSignup?: () => void;
@@ -12,13 +13,16 @@ interface HeroSectionProps {
 
 export default function HeroSection() {
   const { openSigUp, openLogin } = useAppStore();
+  const [heroGifSrc, setHeroGifSrc] = useState<string | null>(null);
 
   useEffect(() => {
-    const preloadGifs = [heroPreloaderGif];
-    preloadGifs.forEach((gif) => {
-      const img = new Image();
-      img.src = gif;
-    });
+    // Cargar GIF animado después del LCP inicial (deferred 1.5s)
+    const timer = setTimeout(() => {
+      import('@assets/hero-preloader.webp').then((module) => {
+        setHeroGifSrc(module.default);
+      });
+    }, 1500);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -114,10 +118,14 @@ export default function HeroSection() {
           <div className="relative animate-scale-in" style={{ animationDelay: '0.3s' }}>
             <div className="relative mx-auto max-w-lg lg:max-w-xl">
               <div className="relative">
+                {/* Poster estático inicial para LCP rápido, luego reemplaza con animado */}
                 <img
-                  src={heroPreloaderGif}
-                  alt="cUPido animated visual"
+                  src={heroGifSrc || heroPoster}
+                  alt="cUPido visual"
                   className="relative w-full h-auto"
+                  // fetchpriority high para el LCP
+                  fetchPriority="high"
+                  decoding="async"
                 />
               </div>
             </div>
