@@ -1,5 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "@home/Home";
+import OtherUserProfilePage from "@profile/components/OtherUserProfilePage";
 import ProfilePage from "@profile/components/ProfilePage";
 import EditProfilePage from "@profile/components/EditProfilePage";
 import NotFound from "@pages/NotFound";
@@ -24,7 +25,8 @@ export const AppRouter = () => {
       <Route element={<MainLayout />}>
         <Route path="/match" element={<MatchPage />} />
         <Route path="/profile" element={<ProfilePage />} />
-        <Route path="/test-chat" element={<ChatGeneral />} />
+        <Route path="/chat" element={<ChatGeneral />} />
+        <Route path="/other-user-profile/:userId" element={<OtherUserProfilePage />} />
       </Route>
 
       {/* CATCH ALL */}

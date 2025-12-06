@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useChatList, ChatListItemReal } from '@hooks/useChatList';
 import { getPresenceFromLastLogin } from './utils/presence';
 //import { MOCK_CHAT_LIST } from './mock-chat-data';
@@ -28,6 +29,7 @@ const formatTime = (isoString: string | undefined): string => {
 const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedChatId, onCloseChat, chatList, listLoading, listError }) => {
     // 🟢 REEMPLAZO CLAVE: Usar el hook para obtener datos reales
     //const { chatList, loading, error } = useChatList();
+    const navigate = useNavigate();
     
     const [searchTerm, setSearchTerm] = useState('');
     // 🟢 Nuevo estado: Almacena el ID del chat cuyo menú de opciones está abierto.
@@ -72,23 +74,25 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
         }
     };
 
-    // Función para la URL de la foto (simulación temporal)
+    // Función para la URL de la foto (Real o Fallback)
     const getContactPhotoUrl = (chat: ChatListItemReal) => {
-        // ⚠️ Nota: Reemplaza esto con la URL real que obtengas del backend.
-        return `https://randomuser.me/api/portraits/${
-            chat.contacto.id % 2 === 0 ? 'women' : 'men'
-        }/${chat.contacto.id}.jpg`;
+        // 1. Usar imagen real del backend si existe
+        if (chat.contacto.imagen_principal) {
+            return chat.contacto.imagen_principal;
+        }
+        
+        // 2. Fallback: Generar avatar con iniciales usando ui-avatars
+        return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+            `${chat.contacto.nombres} ${chat.contacto.apellidos}`
+        )}&background=ec4899&color=fff&size=200`;
     };
 
-    // Navegar al perfil del contacto (placeholder, para que el equipo de perfil lo conecte luego)
+    // Navegar al perfil del contacto
     const handleOpenProfile = (e: React.MouseEvent, chat: ChatListItemReal) => {
         // Evita que al hacer clic en la foto también se seleccione el chat
         e.stopPropagation();
-        // Aquí se podría usar useNavigate de react-router-dom, por ejemplo:
-        // navigate(`/perfil/${chat.contacto.id}`);
-        // Por ahora, dejamos un placeholder claro para el equipo de perfil.
-        console.log("[TODO] Ir al perfil del usuario con id:", chat.contacto.id);
-        alert(`Aquí debería ir al perfil de ${chat.contacto.nombres} ${chat.contacto.apellidos}`);
+        // Navegar al perfil del usuario
+        navigate(`/other-user-profile/${chat.contacto.id}`, { state: { allowed: true } });
     };
 
     // 🟢 Renderizado condicional para carga y error
@@ -176,7 +180,7 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
                         {/* Foto de perfil (clickable para ir al perfil) */}
                         <div className="relative flex-shrink-0">
                             <img
-                                src={"https://randomuser.me/api/portraits/men/"+chat.contacto.id+".jpg"}
+                                src={getContactPhotoUrl(chat)}
                                 alt={chat.contacto.nombres + ' ' + chat.contacto.apellidos}
                                 className="w-14 h-14 rounded-full object-cover mr-3 cursor-pointer ring-2 ring-pink-200 hover:ring-pink-400 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105"
                                 onClick={(e) => handleOpenProfile(e, chat)}

@@ -7,6 +7,7 @@ import { fetchMatches } from "../services/matchService";
 import MatchCard from "../components/MatchCard";
 import MatchLimitDialog from "../components/MatchLimitDialog";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
+import MatchSuccessSlide from "../components/MatchSuccessSlide";
 import { MatchData } from "../types";
 
 const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
@@ -82,6 +83,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
     handlePointerMove,
     handlePointerUp,
     handlePointerCancel,
+    matchSuccessData,
+    onCloseMatchSuccess,
   } = useMatch(matchData, matches);
 
   if (loading) {
@@ -103,7 +106,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
     );
   }
 
-  if (error || matches.length === 0) {
+  // Si hay error, o no hay matches, o se acabó la lista (displayData es null)
+  if (error || matches.length === 0 || (!displayData && !loading)) {
     return (
       <main
         className="min-h-screen w-full flex items-center justify-center p-4 md:p-6"
@@ -116,7 +120,7 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       >
         <div className="text-center">
           <p className="text-gray-600">
-            {error || "No hay recomendaciones disponibles"}
+            {error || "No hay más recomendaciones disponibles por ahora"}
           </p>
         </div>
       </main>
@@ -140,6 +144,14 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       />
 
       <MatchOptionsDialog open={showOptions} onOpenChange={setShowOptions} />
+
+      {matchSuccessData && (
+        <MatchSuccessSlide
+          matchedUser={matchSuccessData}
+          // currentUserPhotoUrl={user?.photoUrl} // TODO: Obtener foto del usuario actual si es posible
+          onClose={onCloseMatchSuccess}
+        />
+      )}
 
       <MatchCard
         data={displayData}
