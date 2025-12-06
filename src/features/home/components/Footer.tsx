@@ -29,9 +29,9 @@ export default function Footer() {
     {
       title: 'Legal',
       links: [
-        { label: 'Términos', href: '#terms' },
+        { label: 'Advertencia y autorización', target: '_blank', href: 'https://drive.google.com/file/d/1mYLWA-KEx1WMhFpsEw2T740d8plZhQEG/view?usp=sharing' },
         { label: 'Privacidad', target: '_blank', href: 'https://drive.google.com/file/d/1HJxuJaxnaDsad_JhiaZdMC6oUl_vgfwD/view?usp=drive_link' },
-        { label: 'Disclaimer', target: '_blank', href: 'https://drive.google.com/file/d/1mYLWA-KEx1WMhFpsEw2T740d8plZhQEG/view?usp=sharing' }
+        { label: 'Términos', href: '#terms' }
       ]
     },
     {
