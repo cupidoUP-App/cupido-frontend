@@ -124,18 +124,15 @@ export default function NotificationsPage({
                 className={`notification-card ${
                   !notification.read ? "unread" : ""
                 }`}
-                onClick={() => {
-                  console.log("Click en:", notification);
-                  markAsRead(notification.id);
+                onClick={async () => {
+  console.log("Click en:", notification);
+  await markAsRead(notification.id);
 
-                  // Si es una notificación de chat, navegar al chat
-                  if (
-                    notification.title.toLowerCase().includes("chat") &&
-                    notification.chat_id
-                  ) {
-                    onClose?.(); // Cerrar el panel de notificaciones
-                    navigate(/chat?id=${notification.chat_id});
-                  }
+  if (notification.chat_id) {
+    onClose?.(); // si quieres cerrar panel antes de navegar
+    navigate(/chat?id=${notification.chat_id});
+  }
+}}
                 }}
                 style={{
                   cursor: "pointer",
