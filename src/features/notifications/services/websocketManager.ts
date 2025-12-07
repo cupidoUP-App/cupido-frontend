@@ -110,7 +110,8 @@ class WebSocketManager {
                             title: data.tipo.charAt(0).toUpperCase() + data.tipo.slice(1),
                             message: data.mensaje,
                             read: data.estado === 'leido',
-                            created_at: new Date(data.fecha_envio || Date.now())
+                            created_at: new Date(data.fecha_envio || Date.now()),
+                            chat_id: data.chat_id || null,  // Include chat_id for navigation
                         };
                         this.notifyListeners(notification);
                     }

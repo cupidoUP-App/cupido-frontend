@@ -70,7 +70,20 @@ export const useNotification = (autoConnect = true) => {
 
         const handleNewNotification = (notification: AppNotification) => {
             if (componentMounted.current) {
-                setNotifications(prev => [notification, ...prev]);
+                setNotifications(prev => {
+                    // If this is a chat notification, update existing one instead of adding duplicate
+                    if (notification.chat_id) {
+                        const existingIndex = prev.findIndex(n => n.chat_id === notification.chat_id);
+                        if (existingIndex !== -1) {
+                            // Replace existing notification with the new one (updated message)
+                            const updated = [...prev];
+                            updated[existingIndex] = notification;
+                            return updated;
+                        }
+                    }
+                    // Otherwise, add as new notification
+                    return [notification, ...prev];
+                });
             }
         };
 

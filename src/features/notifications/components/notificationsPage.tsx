@@ -199,7 +199,19 @@ export default function NotificationsPage({
                 className={`notification-card ${
                   !notification.read ? "unread" : ""
                 }`}
+<<<<<<< Updated upstream
                 onClick={() => handleNotificationClick(notification)}
+=======
+                onClick={async () => {
+                  console.log("Click en:", notification);
+                  await markAsRead(notification.id);
+
+                  if (notification.chat_id) {
+                    onClose?.(); // si quieres cerrar panel antes de navegar
+                    navigate(`/chat?chatId=${notification.chat_id}`);
+                  }
+                }}
+>>>>>>> Stashed changes
                 style={{
                   cursor: "pointer",
                   border: "3px solid #3b82f6",
