@@ -15,7 +15,6 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import { useAppStore } from '@store/appStore';
 import SigUpForm from '@auth/SigUpForm';
 import LoginForm from '@auth/LoginForm';
-import Dashboard from '@dashboard/Dashboard';
 
 // Constante para detectar registro pendiente (debe coincidir con LoginForm)
 const REGISTRATION_STEP_KEY = "cupido_registration_step";
@@ -120,10 +119,7 @@ const Index = () => {
         <SigUpForm onClose={handleCloseAuthModal} />
       )}
 
-      {/* ✅ Mostrar Dashboard cuando authModal es 'dashboard' */}
-      {authModal === 'dashboard' && (
-        <Dashboard />
-      )}
+
 
       <ScrollToTopButton />
     </div>
