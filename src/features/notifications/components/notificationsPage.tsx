@@ -134,7 +134,7 @@ export default function NotificationsPage({
                     notification.chat_id
                   ) {
                     onClose?.(); // Cerrar el panel de notificaciones
-                    navigate(`/test-chat?id=${notification.chat_id}`);
+                    navigate(`/chat?id=${notification.chat_id}`);
                   }
                 }}
                 style={{
