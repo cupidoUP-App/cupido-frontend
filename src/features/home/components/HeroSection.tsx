@@ -42,7 +42,7 @@ export default function HeroSection() {
                 <span 
                   className="block text-foreground" 
                   style={{ 
-                    fontSize: 'clamp(2rem, 6.5vw, 3.75rem)',
+                    fontSize: 'clamp(3rem, 7.5vw, 4rem)',
                     letterSpacing: '-0.025em'
                   }}
                 >
@@ -51,7 +51,7 @@ export default function HeroSection() {
                 <span 
                   className="block relative" 
                   style={{ 
-                    fontSize: 'clamp(2rem, 6.5vw, 3.75rem)',
+                    fontSize: 'clamp(3rem, 7.5vw, 4rem)',
                     letterSpacing: '-0.025em'
                   }}
                 >
