@@ -3,12 +3,11 @@ import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
 import { useNavigate } from "react-router-dom";
 
-// Constantes para persistencia del flujo de registro (Feature: imageUpload)
 const REGISTRATION_STEP_KEY = "cupido_registration_step";
 const REGISTRATION_USER_ID_KEY = "current_user_id";
 
 import EmailField from "./components/forms/EmailField";
-import PasswordField from "./components/forms/PasswordField"; // ✅ Importar PasswordField
+import PasswordField from "./components/forms/PasswordField"; 
 import ReCaptchaModal from "./components/modals/ReCaptchaModal";
 import ForgotPasswordModal from "./components/modals/ForgotPasswordModal";
 import CompleteRegister, {
@@ -456,10 +455,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div className="w-[439px] h-[680px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
+        <div className="w-[460px] h-[700px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-700 hover:text-gray-900 p-1 rounded-full hover:bg-rose-300 transition-colors z-10"
+            className="absolute top-5 right-5 text-gray-700 hover:text-gray-900 p-1.5 rounded-full hover:bg-rose-300 transition-colors z-10"
             aria-label="Cerrar login"
           >
             <svg
@@ -477,12 +476,12 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </svg>
           </button>
 
-          <div className="h-full flex flex-col p-5">
-            <div className="flex justify-center mb-4">
+          <div className="h-full flex flex-col p-6">
+            <div className="flex justify-center mb-5">
               <img
                 src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
-                className="w-[87px] h-[80px]"
+                className="w-[90px] h-[83px]"
               />
             </div>
 
@@ -501,7 +500,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
               onSubmit={handleSubmit}
               className="flex-1 flex flex-col justify-between"
             >
-              <div className="space-y-4">
+              <div className="space-y-5">
                 <EmailField value={email} onChange={setEmail} />
 
                 {/* ✅ Usando el componente PasswordField importado */}
@@ -510,9 +509,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 {/* Indicador de estado del CAPTCHA */}
                 <div className="mb-4">
                   {!isCaptchaVerified && (
-                    <div className="flex items-center justify-center text-amber-600 text-xs">
+                    <div className="flex items-center justify-center text-amber-600 text-sm">
                       <svg
-                        className="w-4 h-4 mr-1"
+                        className="w-4 h-4 mr-1.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -527,9 +526,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                   )}
 
                   {isCaptchaVerified && (
-                    <div className="flex items-center justify-center text-green-600 text-xs">
+                    <div className="flex items-center justify-center text-green-600 text-sm">
                       <svg
-                        className="w-4 h-4 mr-1"
+                        className="w-4 h-4 mr-1.5"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -546,22 +545,22 @@ const LoginForm: React.FC<LoginFormProps> = ({
               </div>
 
               {/* Enlace para recuperar contraseña */}
-              <div className="text-right mt-1">
+              <div className="text-right mt-1.5">
                 <button
                   type="button"
                   onClick={() => setShowForgotPassword(true)}
-                  className="text-[#E93923] hover:text-[#d1321f] text-xs underline"
+                  className="text-[#E93923] hover:text-[#d1321f] text-sm underline font-medium"
                 >
                   ¿Olvidaste tu contraseña?
                 </button>
               </div>
 
               {/* Botón de iniciar sesión */}
-              <div className="pt-4">
+              <div className="pt-5">
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-[#E93923] hover:bg-[#d1321f] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm shadow-md hover:shadow-lg"
+                  className="w-full bg-[#E93923] hover:bg-[#d1321f] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition duration-200 text-sm shadow-md hover:shadow-lg"
                 >
                   {isSubmitting ? "Iniciando sesión..." : "Iniciar Sesión"}
                 </button>
@@ -569,13 +568,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
             </form>
 
             {/* Footer con enlace a registro */}
-            <div className="text-center mt-4 pt-3 border-t border-rose-300">
-              <p className="text-xs text-gray-600">
+            <div className="text-center mt-5 pt-3.5 border-t border-rose-300">
+              <p className="text-sm text-gray-600">
                 ¿No tienes una cuenta?{" "}
                 <button
                   type="button"
                   onClick={onSwitchToRegister}
-                  className="text-[#E93923] hover:text-[#d1321f] font-semibold underline text-xs"
+                  className="text-[#E93923] hover:text-[#d1321f] font-semibold underline text-sm"
                 >
                   Regístrate aquí
                 </button>

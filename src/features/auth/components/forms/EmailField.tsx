@@ -9,7 +9,7 @@ interface EmailFieldProps {
 const EmailField: React.FC<EmailFieldProps> = ({ value, onChange }) => {
   return (
     <div className="w-full">
-      <label className="block text-xs font-medium text-gray-700 mb-1.5">
+      <label className="block text-base font-semibold text-gray-700 mb-2.5 font-['Poppins']">
         Correo Electrónico
       </label>
       <input
@@ -18,7 +18,7 @@ const EmailField: React.FC<EmailFieldProps> = ({ value, onChange }) => {
         onChange={(e) => onChange(e.target.value)}
         placeholder="tu.correo@unipamplona.edu.co"
         maxLength={50}
-        className="w-full px-2.5 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-pink-500 focus:border-transparent text-xs"
+        className="w-full px-2.5 py-1.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-[#E93923] focus:border-transparent text-base font-['Poppins']"
       />
       <EmailRequirements email={value} />
     </div>

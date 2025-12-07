@@ -24,20 +24,20 @@ const PasswordRequirements: React.FC<PasswordRequirementsProps> = ({ password })
     if (missing.length === 0) {
       return {
         text: '✓ Segura',
-        className: 'text-green-600 font-medium',
+        className: 'text-green-600 font-semibold',
       };
     }
 
     return {
       text: `Falta: ${missing.join(', ')}`,
-      className: 'text-amber-600',
+      className: 'text-amber-600 font-medium',
     };
   };
 
   const { text, className } = getMessage();
 
   return (
-    <p className={`${className} text-xs mt-1.5 transition-colors duration-150`}>
+    <p className={`${className} text-sm mt-2 transition-colors duration-150 font-['Poppins']`}>
       {text}
     </p>
   );

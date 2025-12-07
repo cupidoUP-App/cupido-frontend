@@ -78,7 +78,7 @@ const EmailRequirements: React.FC<EmailRequirementsProps> = ({ email }) => {
     if (errors.length > 0) {
       return {
         text: `✗ ${errors.join(', ')}`,
-        className: 'text-red-600 font-medium',
+        className: 'text-red-600 font-semibold',
       };
     }
 
@@ -86,23 +86,22 @@ const EmailRequirements: React.FC<EmailRequirementsProps> = ({ email }) => {
     if (missing.length > 0) {
       return {
         text: `Falta: ${missing.join(', ')}`,
-        className: 'text-amber-600',
+        className: 'text-amber-600 font-medium',
       };
     }
 
     // Si pasa todas las validaciones
     return {
       text: '✓ Correo institucional válido',
-      className: 'text-green-600 font-medium',
+      className: 'text-green-600 font-semibold',
     };
   };
 
   const { text, className } = getMessage();
 
   return (
-    <div className="text-xs mt-1.5 transition-colors duration-150">
+    <div className="text-sm mt-2 transition-colors duration-150 font-['Poppins']">
       <p className={className}>{text}</p>
-
     </div>
   );
 };
