@@ -66,7 +66,7 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 h-[50px] transition-all duration-300 ease-in-out ${
+        className={`fixed top-0 left-0 right-0 z-40 h-[70px] transition-all duration-300 ease-in-out ${
           scrolled 
             ? 'bg-white/95 backdrop-blur-lg border-b-[3px] black/40 shadow-[0_4px_0px_0px_hsl(var(--primary)/0.12)]' 
             : 'bg-white border-b-[3px] blac/25'
@@ -82,8 +82,8 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
               onKeyDown={(e) => e.key === 'Enter' && scrollToHeroSection()}
               aria-label="Ir al inicio"
             >
-              <img src={logo} alt="cUPido logo" className="h-8 w-auto" />
-              <span className="font-display font-bold text-xl text-foreground hidden sm:block">
+              <img src={logo} alt="cUPido logo" className="h-10 w-auto" />
+              <span className="font-display font-bold text-2xl text-foreground hidden sm:block">
                 cUPido
               </span>
             </div>
@@ -98,7 +98,7 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
                       item.onClick();
                     }
                   }}
-                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium cursor-pointer"
+                  className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium text-base cursor-pointer"
                 >
                   {item.label}
                 </a>
@@ -109,18 +109,18 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
               {isAuthenticated ? (
                 <>
                   <div className="flex items-center space-x-2 text-foreground">
-                    <User className="h-4 w-4" />
-                    <span className="text-sm font-medium">
+                    <User className="h-5 w-5" />
+                    <span className="text-base font-medium">
                       {user?.nombres || user?.email}
                     </span>
                   </div>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="default"
                     onClick={logout}
                     className="text-foreground"
                   >
-                    <LogOut className="h-4 w-4 mr-2" />
+                    <LogOut className="h-5 w-5 mr-2" />
                     Salir
                   </Button>
                 </>
@@ -128,16 +128,16 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
                 <>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="default"
                     onClick={openLogin}
-                    className="text-foreground"
+                    className="text-foreground text-base"
                   >
                     Ingresar
                   </Button>
                   <Button
                     onClick={openSigUp}
-                    size="sm"
-                    className="btn-hero px-6"
+                    size="default"
+                    className="btn-hero px-6 text-base"
                   >
                     Crear cuenta
                   </Button>
@@ -149,17 +149,17 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
               onClick={() => setIsMenuOpen(!isMenuOpen)}
               aria-label={isMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
             >
-              {isMenuOpen ? <X className="h-6 w-6 text-foreground" /> : <Menu className="h-6 w-6 text-foreground" />}
+              {isMenuOpen ? <X className="h-7 w-7 text-foreground" /> : <Menu className="h-7 w-7 text-foreground" />}
             </button>
           </div>
           {isMenuOpen && (
-            <div className="absolute top-[50px] left-0 right-0 z-30 bg-white shadow-lg lg:hidden border-t border-gray-200 p-4 animate-slide-up">
+            <div className="absolute top-[70px] left-0 right-0 z-30 bg-white shadow-lg lg:hidden border-t border-gray-200 p-4 animate-slide-up">
               <nav className="flex flex-col space-y-4">
                 {navItems.map((item) => (
                   <a
                     key={item.label}
                     href={item.onClick ? '#' : item.href}
-                    className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2 cursor-pointer"
+                    className="text-muted-foreground hover:text-foreground transition-colors duration-200 font-medium py-2 text-base cursor-pointer"
                     onClick={(e) => {
                       if (item.onClick) {
                         e.preventDefault();
@@ -178,17 +178,17 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
                   {isAuthenticated ? (
                     <>
                       <div className="flex items-center space-x-2 text-foreground px-3 py-2">
-                        <User className="h-4 w-4" />
-                        <span className="text-sm font-medium">
+                        <User className="h-5 w-5" />
+                        <span className="text-base font-medium">
                           {user?.nombres || user?.email}
                         </span>
                       </div>
                       <Button
                         variant="outline"
                         onClick={() => { logout(); setIsMenuOpen(false); }}
-                        className="justify-start text-foreground"
+                        className="justify-start text-foreground text-base"
                       >
-                        <LogOut className="h-4 w-4 mr-2" />
+                        <LogOut className="h-5 w-5 mr-2" />
                         Salir
                       </Button>
                     </>
@@ -197,13 +197,13 @@ export function Header({ /*onThemeChange*/ }: HeaderProps) {
                       <Button
                         variant="outline"
                         onClick={() => { openLogin(); setIsMenuOpen(false); }}
-                        className="justify-start text-foreground"
+                        className="justify-start text-foreground text-base"
                       >
                         Ingresar
                       </Button>
                       <Button
                         onClick={() => { openSigUp(); setIsMenuOpen(false); }}
-                        className="btn-hero justify-start"
+                        className="btn-hero justify-start text-base"
                       >
                         Crear cuenta
                       </Button>
