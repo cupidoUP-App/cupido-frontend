@@ -74,55 +74,55 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
     );
   }, [isError, error]);
 
-    const uploadMutation = useMutation({
-      mutationFn: photoAPI.uploadPhoto,
-      onSuccess: (data) => {
-        console.log(" Subida exitosa:", data);
-        queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
-      },
-      onError: (error: any) => {
-        console.error(" Error en uploadPhoto:", error);
-        const errorData = error.response?.data;
+  const uploadMutation = useMutation({
+    mutationFn: photoAPI.uploadPhoto,
+    onSuccess: (data) => {
+      console.log(" Subida exitosa:", data);
+      queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
+    },
+    onError: (error: any) => {
+      console.error(" Error en uploadPhoto:", error);
+      const errorData = error.response?.data;
 
-        if (errorData) {
-          console.log(" Datos del error:", errorData);
+      if (errorData) {
+        console.log(" Datos del error:", errorData);
 
-          // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
-          if (errorData.imagen && Array.isArray(errorData.imagen)) {
-            const moderationMessage = errorData.imagen[0];
-            
-            // Verificar si es un error de moderación por contenido inapropiado
-            if (moderationMessage.includes("no puede ser publicada") || 
-                moderationMessage.includes("contenido")) {
-              toast.error(moderationMessage, {
-                duration: 6000, // Mostrar más tiempo para que el usuario lea
-                icon: "🚫",
-              });
-              return;
-            }
+        // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
+        if (errorData.imagen && Array.isArray(errorData.imagen)) {
+          const moderationMessage = errorData.imagen[0];
+          
+          // Verificar si es un error de moderación por contenido inapropiado
+          if (moderationMessage.includes("no puede ser publicada") || 
+              moderationMessage.includes("contenido")) {
+            toast.error(moderationMessage, {
+              duration: 6000, // Mostrar más tiempo para que el usuario lea
+              icon: "🚫",
+            });
+            return;
           }
-
-          // Otros errores de validación
-          if (typeof errorData === "object") {
-            const errorMessages = Object.entries(errorData)
-              .map(
-                ([key, value]) =>
-                  Array.isArray(value) ? value.join(", ") : String(value)
-              )
-              .join("; ");
-            toast.error(errorMessages || "Error al subir la imagen");
-          } else if (typeof errorData === "string") {
-            toast.error(errorData);
-          } else {
-            toast.error(
-              error.message || "Error desconocido al subir imagen"
-            );
-          }
-        } else {
-          toast.error(`Error de conexión: ${error.message}`);
         }
-      },
-    });
+
+        // Otros errores de validación
+        if (typeof errorData === "object") {
+          const errorMessages = Object.entries(errorData)
+            .map(
+              ([key, value]) =>
+                Array.isArray(value) ? value.join(", ") : String(value)
+            )
+            .join("; ");
+          toast.error(errorMessages || "Error al subir la imagen");
+        } else if (typeof errorData === "string") {
+          toast.error(errorData);
+        } else {
+          toast.error(
+            error.message || "Error desconocido al subir imagen"
+          );
+        }
+      } else {
+        toast.error(`Error de conexión: ${error.message}`);
+      }
+    },
+  });
 
   const deleteMutation = useMutation({
     mutationFn: photoAPI.deletePhoto,
@@ -530,86 +530,75 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
           }}
         />
 
-      {/* Botón de regreso con diseño consistente */}
-      {onBack && (
-        <button 
-          onClick={onBack}
-          className="absolute top-4 sm:top-6 left-4 sm:left-6 z-20 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/90 backdrop-blur-sm rounded-xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-0.5 transition-all duration-200 group"
-          aria-label="Volver al paso anterior"
-        >
-          <ArrowLeft 
-            size={20} 
-            weight="bold" 
-            className="text-foreground group-hover:text-primary group-hover:-translate-x-0.5 transition-all duration-200" 
-          />
-          <span className="text-sm font-sans font-medium text-foreground group-hover:text-primary hidden sm:inline">
-            Volver
-          </span>
-        </button>
-      )}
+        {/* Botón de regreso con diseño consistente */}
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="absolute top-4 sm:top-6 left-4 sm:left-6 z-20 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/90 backdrop-blur-sm rounded-xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-0.5 transition-all duration-200 group"
+            aria-label="Volver al paso anterior"
+          >
+            <ArrowLeft 
+              size={20} 
+              weight="bold" 
+              className="text-foreground group-hover:text-primary group-hover:-translate-x-0.5 transition-all duration-200" 
+            />
+            <span className="text-sm font-sans font-medium text-foreground group-hover:text-primary hidden sm:inline">
+              Volver
+            </span>
+          </button>
+        )}
 
-      <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10 min-h-full lg:min-h-[100dvh]">
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 pt-16 sm:pt-12 lg:pt-0">
-          <div className="max-w-md text-center">
-            <div className="flex justify-center mb-6">
-              <img src={logo} alt="Logo" className="w-20 h-20 sm:w-24 sm:h-24 object-contain" />
-            </div>
+        <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10 min-h-full lg:min-h-[100dvh]">
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 pt-16 sm:pt-12 lg:pt-0">
+            <div className="max-w-md text-center">
+              <div className="flex justify-center mb-6">
+                <img src={logo} alt="Logo" className="w-20 h-20 sm:w-24 sm:h-24 object-contain" />
+              </div>
 
-            <h1 className="font-display text-3xl sm:text-4xl lg:text-display-md font-bold text-foreground mb-4">
-              Sube tus mejores fotos
-            </h1>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-display-md font-bold text-foreground mb-4">
+                Sube tus mejores fotos
+              </h1>
 
-            <p className="font-sans text-muted-foreground text-base sm:text-lg mb-8 leading-relaxed px-2">
-              Puedes subir entre 1 y 3 imágenes para tu perfil.
-            </p>
+              <p className="font-sans text-muted-foreground text-base sm:text-lg mb-8 leading-relaxed px-2">
+                Puedes subir entre 1 y 3 imágenes para tu perfil.
+              </p>
 
-            <button
-              onClick={handleContinue}
-              disabled={
-                (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
-              }
-              className="w-full px-8 sm:px-10 py-3 sm:py-4 bg-primary text-primary-foreground rounded-xl font-sans font-semibold border-2 border-primary/80 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)] text-base sm:text-lg"
-            >
-              {isSaving || uploadMutation.isPending
-                ? "Guardando..."
-                : "Continuar"}
-            </button>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-start lg:justify-center px-4 sm:px-6 lg:pr-12 pt-6 sm:pt-8 pb-32 sm:pb-40 lg:pt-0 lg:pb-0">
-          <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8 items-center">
-            {renderImageSlot(0)}
-            
-            <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
-              {renderImageSlot(1)}
-              {renderImageSlot(2)}
+              <button
+                onClick={handleContinue}
+                disabled={
+                  (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
+                }
+                className="w-full px-8 sm:px-10 py-3 sm:py-4 bg-primary text-primary-foreground rounded-xl font-sans font-semibold border-2 border-primary/80 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)] text-base sm:text-lg"
+              >
+                {isSaving || uploadMutation.isPending
+                  ? "Guardando..."
+                  : "Continuar"}
+              </button>
             </div>
           </div>
 
-          <div className="flex gap-4 sm:gap-6">
-            <button
-              onClick={() => handleSave()}
-              disabled={
-                newFiles.length === 0 || isSaving || uploadMutation.isPending
-              }
-              className="px-8 sm:px-12 py-3 sm:py-3.5 bg-primary text-primary-foreground rounded-xl font-sans font-semibold border-2 border-primary/80 shadow-[3px_3px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-[5px_5px_0px_0px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:text-muted-foreground disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.15)] text-sm sm:text-base"
-            >
-              {isSaving || uploadMutation.isPending
-                ? "Guardando..."
-                : "Guardar"}
-            </button>
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-start lg:justify-center px-4 sm:px-6 lg:pr-12 pt-6 sm:pt-8 pb-32 sm:pb-40 lg:pt-0 lg:pb-0">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8 items-center">
+              {renderImageSlot(0)}
+              
+              <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
+                {renderImageSlot(1)}
+                {renderImageSlot(2)}
+              </div>
+            </div>
 
-            <button
-              onClick={handleDeleteAll}
-              disabled={(serverFiles.length + newFiles.length) === 0}
-              className="px-8 sm:px-12 py-3 sm:py-3.5 bg-white/90 backdrop-blur-sm text-foreground rounded-xl font-sans font-semibold border-2 border-foreground/20 shadow-[3px_3px_0px_0px_hsl(var(--foreground)/0.1)] hover:border-destructive/50 hover:text-destructive hover:shadow-[5px_5px_0px_0px_hsl(var(--destructive)/0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:text-muted-foreground disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[1px] active:translate-y-[1px] text-sm sm:text-base"
-            >
-              Eliminar
-            </button>
+            {/* Botón Eliminar Todo */}
+            <div className="flex gap-4 sm:gap-6">
+              <button
+                onClick={handleDeleteAll}
+                disabled={(serverFiles.length + newFiles.length) === 0}
+                className="px-8 sm:px-12 py-3 sm:py-3.5 bg-white/90 backdrop-blur-sm text-foreground rounded-xl font-sans font-semibold border-2 border-foreground/20 shadow-[3px_3px_0px_0px_hsl(var(--foreground)/0.1)] hover:border-destructive/50 hover:text-destructive hover:shadow-[5px_5px_0px_0px_hsl(var(--destructive)/0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:text-muted-foreground disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[1px] active:translate-y-[1px] text-sm sm:text-base"
+              >
+                Eliminar todo
+              </button>
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </div>
   );
