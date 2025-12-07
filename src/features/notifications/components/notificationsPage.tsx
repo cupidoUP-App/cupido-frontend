@@ -1,5 +1,4 @@
-// notificationsPage.tsx - Versión simplificada para debugging
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppNotification } from "../types/notification.types";
 import "./notificationsPage.css";
@@ -26,53 +25,127 @@ export default function NotificationsPage({
   connected,
 }: NotificationsPageProps) {
   const navigate = useNavigate();
-  const [renderKey, setRenderKey] = useState(0);
-  const prevNotificationsRef = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Estado para evitar duplicados
+  const [processedNotifications, setProcessedNotifications] = useState<Set<string>>(new Set());
+  const [lastClickTime, setLastClickTime] = useState<number>(0);
 
-  // Forzar re-render cuando cambien las notificaciones
-  useEffect(() => {
-    if (notifications.length !== prevNotificationsRef.current) {
-      console.log("🔄 Component: Notifications changed, forcing re-render");
-      console.log("📊 Previous count:", prevNotificationsRef.current);
-      console.log("📊 New count:", notifications.length);
-      console.log("📊 Notifications:", notifications);
-
-      prevNotificationsRef.current = notifications.length;
-      setRenderKey((prev) => prev + 1);
-    }
-  }, [notifications]);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  console.log("🎨 Component render - key:", renderKey, {
-    notificationsCount: notifications.length,
-    loading,
-    error,
-    connected,
-    unreadCount,
+  // SOLUCIÓN 1: Filtrar notificaciones duplicadas
+  const uniqueNotifications = notifications.filter((notification, index, self) => {
+    // Usar id + created_at para identificar duplicados únicos
+    const key = `${notification.id}-${notification.created_at.getTime()}`;
+    const firstIndex = self.findIndex(n => 
+      `${n.id}-${n.created_at.getTime()}` === key
+    );
+    return index === firstIndex;
   });
+
+  // SOLUCIÓN 2: Navegación corregida - SIN setTimeout
+  const handleNotificationClick = useCallback(async (notification: AppNotification) => {
+    console.log("🖱️ Click en notificación ID:", notification.id);
+    
+    // Prevenir clics rápidos (debounce)
+    const now = Date.now();
+    if (now - lastClickTime < 300) {
+      console.log("⏱️ Click demasiado rápido, ignorando");
+      return;
+    }
+    setLastClickTime(now);
+    
+    try {
+      // Marcar como leído si no lo está
+      if (!notification.read) {
+        await markAsRead(notification.id);
+      }
+      
+      // SOLUCIÓN CRÍTICA: Navegar siempre que haya chat_id
+      if (notification.chat_id) {
+        console.log("🚀 Navegando a chat ID:", notification.chat_id);
+        
+        // Si hay función onClose, cerrar primero PERO SIN TIMEOUT
+        if (onClose) {
+          // Guardar el chat_id antes de cerrar
+          const chatIdToNavigate = notification.chat_id;
+          
+          // Cerrar el panel
+          onClose();
+          
+          // Navegar inmediatamente después del cierre
+          // Usar un microtask para asegurar que el panel se cerró
+          Promise.resolve().then(() => {
+            console.log("📍 Navegando después de cerrar panel");
+            navigate(`/chat?id=${chatIdToNavigate}`);
+          });
+        } else {
+          // Si no hay panel que cerrar, navegar directamente
+          navigate(`/chat?id=${notification.chat_id}`);
+        }
+      } else {
+        console.log("ℹ️ Esta notificación no tiene chat_id");
+      }
+    } catch (error) {
+      console.error("❌ Error al manejar notificación:", error);
+    }
+  }, [navigate, onClose, markAsRead, lastClickTime]);
+
+  // SOLUCIÓN 3: Manejar dismiss
+  const handleDismiss = useCallback(async (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    try {
+      await dismissNotification(id);
+    } catch (error) {
+      console.error("Error al eliminar notificación:", error);
+    }
+  }, [dismissNotification]);
+
+  // Debug: mostrar info de notificaciones
+  useEffect(() => {
+    if (notifications.length > 0) {
+      console.log("📊 Notificaciones recibidas:", notifications.length);
+      console.log("✅ Notificaciones únicas:", uniqueNotifications.length);
+      
+      // Verificar duplicados
+      const duplicateIds = notifications
+        .map(n => n.id)
+        .filter((id, index, arr) => arr.indexOf(id) !== index);
+      
+      if (duplicateIds.length > 0) {
+        console.warn("⚠️ IDs duplicados detectados:", duplicateIds);
+      }
+    }
+  }, [notifications, uniqueNotifications]);
+
+  const unreadCount = uniqueNotifications.filter((n) => !n.read).length;
 
   if (error) {
     return (
-      <div className="notifications-panel-container">
+      <div className="notifications-panel-container" ref={containerRef}>
         <div className="panel-header">
           <h2>Notificaciones</h2>
           {onClose && (
-            <button className="close-btn" onClick={onClose}>
+            <button 
+              className="close-btn" 
+              onClick={onClose}
+              type="button"
+              aria-label="Cerrar"
+            >
               ✖
             </button>
           )}
         </div>
         <div className="error-message">
           <p>Error: {error}</p>
-          <button onClick={refresh}>Reintentar</button>
+          <button onClick={refresh} type="button">Reintentar</button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="notifications-panel-container" key={renderKey}>
+    <div className="notifications-panel-container" ref={containerRef}>
       <div className="panel-header">
         <h2>Notificaciones</h2>
 
@@ -81,7 +154,12 @@ export default function NotificationsPage({
         )}
 
         {onClose && (
-          <button className="close-btn" onClick={onClose}>
+          <button 
+            className="close-btn" 
+            onClick={onClose}
+            type="button"
+            aria-label="Cerrar panel"
+          >
             ✖
           </button>
         )}
@@ -92,17 +170,14 @@ export default function NotificationsPage({
           <div className="loading-notifications">
             <p>
               Cargando notificaciones...{" "}
-              {notifications.length > 0
-                ? `(Tengo ${notifications.length} en estado)`
+              {uniqueNotifications.length > 0
+                ? `(${uniqueNotifications.length} cargadas)`
                 : ""}
             </p>
           </div>
-        ) : notifications.length === 0 ? (
+        ) : uniqueNotifications.length === 0 ? (
           <p className="empty-notifications">
-            No hay notificaciones{" "}
-            {notifications.length > 0
-              ? `(Pero tengo ${notifications.length} en estado 🤔)`
-              : ""}
+            No hay notificaciones
           </p>
         ) : (
           <>
@@ -115,25 +190,16 @@ export default function NotificationsPage({
                 fontWeight: "bold",
               }}
             >
-              ¡SÍ HAY NOTIFICACIONES! ({notifications.length})
+              ¡Notificaciones! ({uniqueNotifications.length})
             </div>
 
-            {notifications.map((notification, index) => (
+            {uniqueNotifications.map((notification, index) => (
               <div
-                key={`${notification.id}-${index}`}
+                key={`${notification.id}-${index}-${notification.created_at.getTime()}`}
                 className={`notification-card ${
                   !notification.read ? "unread" : ""
                 }`}
-                onClick={async () => {
-  console.log("Click en:", notification);
-  await markAsRead(notification.id);
-
-  if (notification.chat_id) {
-    onClose?.(); // si quieres cerrar panel antes de navegar
-    navigate(/chat?id=${notification.chat_id});
-  }
-}}
-              
+                onClick={() => handleNotificationClick(notification)}
                 style={{
                   cursor: "pointer",
                   border: "3px solid #3b82f6",
@@ -143,13 +209,16 @@ export default function NotificationsPage({
                   background: "#f0f9ff",
                   position: "relative",
                 }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    handleNotificationClick(notification);
+                  }
+                }}
               >
-                {/* X button to dismiss - positioned at far right */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dismissNotification(notification.id);
-                  }}
+                  onClick={(e) => handleDismiss(e, notification.id)}
                   style={{
                     position: "absolute",
                     top: "50%",
@@ -171,6 +240,8 @@ export default function NotificationsPage({
                     zIndex: 10,
                   }}
                   title="Eliminar notificación"
+                  type="button"
+                  aria-label="Eliminar notificación"
                 >
                   ✕
                 </button>
@@ -202,6 +273,7 @@ export default function NotificationsPage({
                       }}
                     >
                       {notification.title} {!notification.read && "🔵"}
+                      {uniqueNotifications.filter(n => n.id === notification.id).length > 1 && " ⚠️DUP"}
                     </h3>
                     <p
                       style={{
@@ -214,7 +286,9 @@ export default function NotificationsPage({
                     </p>
                     <div style={{ fontSize: "12px", color: "#6b7280" }}>
                       {notification.read ? "📖 Leída" : "📨 No leída"} |
-                      {formatNotificationTime(notification.created_at)}
+                      {formatNotificationTime(notification.created_at)} |
+                      {notification.chat_id ? ` Chat ID: ${notification.chat_id}` : " Sin chat"} |
+                      ID: {notification.id}
                     </div>
                   </div>
                 </div>
