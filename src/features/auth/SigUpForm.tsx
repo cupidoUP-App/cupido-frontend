@@ -336,6 +336,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   return (
     <>
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        {/* Contenedor principal - Reducido de 800px a 700px */}
         <div className="w-[460px] h-[700px] bg-[#F2D6CD] rounded-[40px] shadow-[2px_6px_4px_0px_rgba(0,0,0,0.35)] relative overflow-hidden">
 
           {/* Botón para cerrar */}
@@ -349,32 +350,32 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
             </svg>
           </button>
 
-          {/* Contenido del formulario */}
-          <div className="h-full flex flex-col p-6">
-            {/* Logo centrado en la parte superior */}
-            <div className="flex justify-center mb-4">
+          {/* Contenido del formulario con distribución más compacta */}
+          <div className="h-full flex flex-col p-5">
+            {/* Logo con menos margen inferior */}
+            <div className="flex justify-center mb-1">
               <img
                 src="https://i.postimg.cc/htWQx7q5/logo-Fix.webp"
                 alt="CUPIDO Logo"
-                className="w-[90px] h-[83px]"
+                className="w-[80px] h-[73px]"
               />
             </div>
 
-            {/* Header con estilos específicos */}
-            <div className="mb-4 text-center">
-              <div className="text-black text-2xl font-normal font-['Poppins']">
+            {/* Header con menos margen */}
+            <div className="mb-1 text-center">
+              <div className="text-black text-xl font-normal font-['Poppins']">
                 Bienvenido a{' '}
                 <span className="text-[#E93923] font-semibold">CUPIDO</span>
               </div>
 
-              <div className="text-black text-4xl font-medium font-['Poppins'] mt-1.5">
+              <div className="text-black text-3xl font-medium font-['Poppins']">
                 Registrarse
               </div>
             </div>
 
-            {/* Formulario con espaciado compacto */}
-            <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-between">
-              <div className="space-y-3.5">
+            {/* Formulario con distribución más compacta */}
+            <form onSubmit={handleSubmit} className="flex-1 flex flex-col justify-center">
+              <div className="space-y-1.5">
                 <EmailField
                   value={formData.email}
                   onChange={(value) => handleFieldChange('email', value)}
@@ -400,52 +401,52 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
                 </div>
               </div>
 
-              {/* Indicador de estado del flujo */}
-              <div className="mb-3">
+              {/* Indicador de estado del flujo - menos margen */}
+              <div className="my-2">
                 {!isCaptchaVerified && (
-                  <div className="flex items-center justify-center text-amber-600 text-sm">
-                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="flex items-center justify-center text-amber-600 text-xs">
+                    <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
                     </svg>
-                    Primero debes completar la verificación de seguridad
+                    Debes completar la verificación de seguridad
                   </div>
                 )}
 
                 {isCaptchaVerified && (
-                  <div className="flex items-center justify-center text-green-600 text-sm">
-                    <svg className="w-4 h-4 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                  <div className="flex items-center justify-center text-green-600 text-xs">
+                    <svg className="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                     </svg>
-                    Verificación de seguridad completada - Listo para enviar código
+                    Verificación completada - Listo para enviar código
                   </div>
                 )}
               </div>
 
-              {/* Botón de continuar */}
-              <div className="pt-3">
+              {/* Botón de continuar - ajustado */}
+              <div className="pt-0.5">
                 <button
                   type="submit"
                   disabled={isSubmitting || isVerifyingEmail}
-                  className="w-full bg-[#E93923] hover:bg-[#d1321f] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-3 px-6 rounded-lg transition duration-200 text-sm shadow-md hover:shadow-lg"
+                  className="w-full bg-[#E93923] hover:bg-[#d1321f] disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-semibold py-2.5 px-6 rounded-lg transition duration-200 text-sm shadow-md hover:shadow-lg"
                 >
                   {getButtonText()}
                 </button>
               </div>
-            </form>
 
-            {/* Footer con enlace a login */}
-            <div className="text-center mt-3.5 pt-3 border-t border-rose-300">
-              <p className="text-sm text-gray-600">
-                ¿Tienes una cuenta?{' '}
-                <button
-                  type="button"
-                  onClick={openLogin}
-                  className="text-[#E93923] hover:text-[#d1321f] font-semibold underline text-sm"
-                >
-                  Iniciar Sesión
-                </button>
-              </p>
-            </div>
+              {/* Footer con menos margen */}
+              <div className="text-center mt-3 pt-3 border-t border-rose-300">
+                <p className="text-xs text-gray-600">
+                  ¿Tienes una cuenta?{' '}
+                  <button
+                    type="button"
+                    onClick={openLogin}
+                    className="text-[#E93923] hover:text-[#d1321f] font-semibold underline text-xs"
+                  >
+                    Iniciar Sesión
+                  </button>
+                </p>
+              </div>
+            </form>
           </div>
         </div>
       </div>
