@@ -133,7 +133,7 @@ export default function NotificationsPage({
     navigate(/chat?id=${notification.chat_id});
   }
 }}
-                }}
+              
                 style={{
                   cursor: "pointer",
                   border: "3px solid #3b82f6",
