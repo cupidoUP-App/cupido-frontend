@@ -6,10 +6,10 @@ interface TermsCheckboxProps {
   onOpenTerms: () => void;
 }
 
-const TermsCheckbox: React.FC<TermsCheckboxProps> = ({ 
-  checked, 
-  onChange, 
-  onOpenTerms 
+const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
+  checked,
+  onChange,
+  onOpenTerms
 }) => {
   return (
     <div className="w-full">
@@ -28,7 +28,7 @@ const TermsCheckbox: React.FC<TermsCheckboxProps> = ({
             onClick={onOpenTerms}
             className="text-[#E93923] hover:text-[#d1321f] underline font-semibold"
           >
-            términos y condiciones
+            Advertencia y autorización de tratamiento de datos personales
           </button>
         </label>
       </div>
