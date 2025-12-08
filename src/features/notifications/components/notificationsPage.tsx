@@ -43,46 +43,58 @@ export default function NotificationsPage({
   });
 
   // Click en notificación (marcar como leída + navegar)
-  const handleNotificationClick = useCallback(
-    async (notification: AppNotification) => {
-      const now = Date.now();
-      if (now - lastClickTime < 300) return;
-      setLastClickTime(now);
+const handleNotificationClick = useCallback(
+  async (notification: AppNotification) => {
+    console.log("🖱️ Click:", notification);
 
-      try {
-        if (!notification.read) {
-          await markAsRead(notification.id);
-        }
+    const now = Date.now();
+    if (now - lastClickTime < 300) return;
+    setLastClickTime(now);
 
-        if (notification.tipo === "like" && notification.from_user_id) {
-          if (onClose) onClose();
-          setTimeout(() => {
-            navigate(`/other-user-profile/${notification.from_user_id}`);
-          }, 100);
-          return;
-        }
+    try {
+      // Marcar como leída
+      if (!notification.read) await markAsRead(notification.id);
 
-        if (notification.tipo === "match" && notification.chat_id) {
-          if (onClose) onClose();
-          setTimeout(() => {
-            navigate(`/chat?chatId=${notification.chat_id}`);
-          }, 100);
-          return;
-        }
+      const closeAndGo = (path: string) => {
+        if (onClose) onClose();
+        setTimeout(() => navigate(path), 50);
+      };
 
-        if (notification.chat_id) {
-          if (onClose) onClose();
-          setTimeout(() => {
-            navigate(`/chat?chatId=${notification.chat_id}`);
-          }, 100);
-          return;
-        }
-      } catch (err) {
-        console.error("Error:", err);
+      // ❤️ LIKE → ir al perfil
+      if (notification.tipo === "like" && notification.from_user_id) {
+        return closeAndGo('/other-user-profile/${notification.from_user_id}');
       }
-    },
-    [navigate, onClose, markAsRead, lastClickTime]
-  );
+
+      // ✨ MATCH
+      if (notification.tipo === "match") {
+
+        // Prioridad 1: ir al chat si existe
+        if (notification.chat_id) {
+          return closeAndGo('/chat?chatId=${notification.chat_id}');
+        }
+
+        // Prioridad 2: ir al perfil del match
+        if (notification.usuario_match_id) {
+          return closeAndGo('/other-user-profile/${notification.usuario_match_id}');
+        }
+
+        console.warn("⚠️ MATCH sin chat_id ni usuario_match_id", notification);
+        return;
+      }
+
+      // 💬 CHAT (notificaciones de mensajes)
+      if (notification.chat_id) {
+        return closeAndGo('/chat?chatId=${notification.chat_id}');
+      }
+
+      console.log("ℹ️ Notificación sin acción asignada.", notification);
+      
+    } catch (err) {
+      console.error("❌ Error:", err);
+    }
+  },
+  [navigate, onClose, markAsRead, lastClickTime]
+);
 
   const handleDismiss = useCallback(
     async (e: React.MouseEvent, id: string) => {

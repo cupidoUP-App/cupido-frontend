@@ -7,6 +7,7 @@ export interface AppNotification {
    fecha_envio: string | Date;
    from_user_id?: number | null;
    from_username?: string | null;
+   usuario_match_id?: number | null;
    chat_id?: number | null;
 }
 
