@@ -55,8 +55,7 @@ const ReCaptchaV2: React.FC<Props> = ({
     setFailed(false);
 
     const script = document.createElement("script");
-    script.src =
-      "https://www.google.com/recaptcha/api.js?render=explicit";
+    script.src = "https://www.google.com/recaptcha/api.js?render=explicit";
     script.async = true;
 
     script.onload = () => {
@@ -96,6 +95,7 @@ const ReCaptchaV2: React.FC<Props> = ({
     }
 
     window.grecaptcha.ready(() => {
+      if (!window.grecaptcha) return;
       try {
         log("Renderizando widget...");
         widgetIdRef.current = window.grecaptcha.render(el, {
@@ -150,9 +150,7 @@ const ReCaptchaV2: React.FC<Props> = ({
   return (
     <div className="flex flex-col items-center space-y-2">
       {loading && (
-        <div className="text-gray-600 text-xs">
-          Cargando reCAPTCHA...
-        </div>
+        <div className="text-gray-600 text-xs">Cargando reCAPTCHA...</div>
       )}
 
       <div
@@ -173,10 +171,7 @@ const ReCaptchaV2: React.FC<Props> = ({
       )}
 
       {!failed && !loading && (
-        <button
-          onClick={reset}
-          className="text-xs text-gray-600 underline"
-        >
+        <button onClick={reset} className="text-xs text-gray-600 underline">
           Reset CAPTCHA
         </button>
       )}

@@ -1,4 +1,3 @@
-import { useAppStore } from "@store/appStore";
 import { useEffect, useMemo, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import { type Container, type ISourceOptions } from "@tsparticles/engine";
@@ -7,17 +6,37 @@ import { loadSlim } from "@tsparticles/slim";
 import { loadHeartShape } from "@tsparticles/shape-heart";
 
 export const ParticlesComponent = (props: { id?: string }) => {
-  //const { theme } = useAppStore();
   const [init, setInit] = useState(false);
+  // Estado para diferir la inicialización hasta que el navegador esté idle
+  const [shouldInit, setShouldInit] = useState(false);
 
   useEffect(() => {
+    // Diferir la inicialización de partículas para no bloquear el hilo principal
+    // requestIdleCallback ejecuta cuando el navegador está inactivo
+    const initWhenIdle = () => {
+      setShouldInit(true);
+    };
+
+    if ('requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(initWhenIdle, { timeout: 2000 });
+      return () => window.cancelIdleCallback(idleId);
+    } else {
+      // Fallback para navegadores sin soporte (Safari)
+      const timeoutId = setTimeout(initWhenIdle, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!shouldInit) return;
+    
     initParticlesEngine(async (engine) => {
       await loadSlim(engine);
       await loadHeartShape(engine);
     }).then(() => {
       setInit(true);
     });
-  }, []);
+  }, [shouldInit]);
 
   const particlesLoaded = async (container?: Container): Promise<void> => {
     console.log(container);
@@ -35,31 +54,30 @@ export const ParticlesComponent = (props: { id?: string }) => {
         enable: false,
         zIndex: 0,
       },
-      fpsLimit: 120,
+      fpsLimit: 60,
       interactivity: {
         events: {
           onClick: {
-            enable: true,
-            mode: "push",
+            enable: false,
           },
           onHover: {
             enable: true,
-            mode: "repulse",
+            mode: "grab",
           },
         },
         modes: {
-          push: {
-            quantity: 2,
-          },
-          repulse: {
-            distance: 100,
-            duration: 0.4,
+          grab: {
+            distance: 120,
+            links: {
+              opacity: 0.2,
+              color: "#D9857E",
+            },
           },
         },
       },
       particles: {
         color: {
-          value: '#D9857E',
+          value: ['#D9857E', '#E8A5A0', '#C4706A'],
         },
         shape: {
           type: 'heart',
@@ -67,24 +85,41 @@ export const ParticlesComponent = (props: { id?: string }) => {
         number: {
           density: {
             enable: true,
+            area: 900,
           },
-          value: 130,
+          value: 25,
         },
         opacity: {
-          value: { min: 0.22, max: 0.6 },
+          value: { min: 0.2, max: 0.5 },
+          animation: {
+            enable: true,
+            speed: 0.3,
+            minimumValue: 0.15,
+            sync: false,
+          },
         },
         size: {
-          value: { min: 2.8, max: 6 },
+          value: { min: 4, max: 12 },
+          animation: {
+            enable: true,
+            speed: 1,
+            minimumValue: 3,
+            sync: false,
+          },
         },
         move: {
           direction: "none",
           enable: true,
           outModes: {
-            default: "out",
+            default: "bounce",
           },
-          random: true,
-          speed: 1,
+          random: false,
+          speed: 0.4,
           straight: false,
+          warp: false,
+          attract: {
+            enable: false,
+          },
         },
 
       },

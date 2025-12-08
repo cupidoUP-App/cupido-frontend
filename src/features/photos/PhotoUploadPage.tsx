@@ -1,8 +1,8 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Trash2, Star } from "lucide-react";
-import { Camera } from "@phosphor-icons/react"; // <--- NUEVO IMPORT
-import fondo from "@assets/fondoCargueImagenes.png";
+import { Camera, ArrowLeft } from "@phosphor-icons/react";
+import fondo from "@assets/fondoCargueImagenes-optimized.webp";
 import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
 import { photoAPI } from "@lib/api";
@@ -18,9 +18,10 @@ interface PhotoFile {
 
 interface PhotoUploadPageProps {
   onComplete: () => void;
+  onBack?: () => void;
 }
 
-const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
+const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack }) => {
   const queryClient = useQueryClient();
   const [serverFiles, setServerFiles] = useState<PhotoFile[]>([]);
   const [newFiles, setNewFiles] = useState<PhotoFile[]>([]);
@@ -76,15 +77,15 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   const uploadMutation = useMutation({
     mutationFn: photoAPI.uploadPhoto,
     onSuccess: (data) => {
-      console.log("✅ Subida exitosa:", data);
+      console.log(" Subida exitosa:", data);
       queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
     },
     onError: (error: any) => {
-      console.error("❌ Error en uploadPhoto:", error);
+      console.error(" Error en uploadPhoto:", error);
       const errorData = error.response?.data;
 
       if (errorData) {
-        console.log("📋 Datos del error:", errorData);
+        console.log(" Datos del error:", errorData);
 
         // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
         if (errorData.imagen && Array.isArray(errorData.imagen)) {
@@ -430,10 +431,10 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
 
   if (isLoadingPhotos) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-[#FFF0EC]">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto mb-4"></div>
-          <p className="text-gray-700">Cargando tus fotos...</p>
+      <div className="min-h-[100dvh] w-full flex items-center justify-center bg-background">
+        <div className="text-center p-8 bg-white/90 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.15)]">
+          <div className="animate-spin rounded-full h-12 w-12 border-[3px] border-primary/30 border-t-primary mx-auto mb-4"></div>
+          <p className="font-sans text-muted-foreground">Cargando tus fotos...</p>
         </div>
       </div>
     );
@@ -444,13 +445,14 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
     const photo = allFiles[index];
     const isServerFile = index < serverFiles.length;
     const isLarge = index === 0;
-    const width = isLarge ? "w-72" : "w-56";
-    const height = isLarge ? "h-96" : "h-44";
+    // Móvil: slots más pequeños para caber en columna | Desktop: tamaños originales grandes
+    const width = isLarge ? "w-64 sm:w-72 lg:w-72" : "w-48 sm:w-52 lg:w-56";
+    const height = isLarge ? "h-80 sm:h-96 lg:h-96" : "h-36 sm:h-40 lg:h-44";
     
     return (
       <div>
         {photo ? (
-          <div className={`${width} ${height} rounded-3xl overflow-hidden shadow-xl relative group transition-transform duration-200 active:scale-[0.98]`}>
+          <div className={`${width} ${height} rounded-2xl overflow-hidden relative group transition-all duration-200 active:scale-[0.98] border-2 border-foreground/10 shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[6px_6px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-1`}>
             <img
               src={photo.preview}
               alt={isLarge ? "Principal" : `Secundaria ${index}`}
@@ -459,40 +461,28 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
             <div className={`absolute ${isLarge ? 'top-4 right-4' : 'top-3 right-3'} flex gap-2`}>
               <button
                 onClick={() => handleSetPrincipal(photo, isServerFile)}
-                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center shadow-lg hover:bg-white transition-all ${
-                  photo.es_principal
-                    ? "opacity-100"
-                    : "opacity-0 group-hover:opacity-100"
-                }`}
+                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center border-2 border-primary/20 shadow-[2px_2px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.2)] transition-all ${photo.es_principal ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}
               >
                 <Star
-                  className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} ${
-                    photo.es_principal
-                      ? "fill-yellow-400 text-yellow-400"
-                      : "text-gray-700"
-                  }`}
+                  className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} ${photo.es_principal ? "fill-yellow-400 text-yellow-400" : "text-foreground"}`}
                 />
               </button>
               <button
                 onClick={() => handleDeleteFile(photo, isServerFile)}
-                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100`}
+                className={`bg-white/95 backdrop-blur-sm rounded-xl ${isLarge ? 'w-11 h-11' : 'w-10 h-10'} flex items-center justify-center border-2 border-destructive/20 shadow-[2px_2px_0px_0px_hsl(var(--destructive)/0.15)] hover:shadow-[3px_3px_0px_0px_hsl(var(--destructive)/0.2)] transition-all opacity-0 group-hover:opacity-100`}
               >
-                <Trash2 className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} text-gray-700`} />
+                <Trash2 className={`${isLarge ? 'w-5 h-5' : 'w-4 h-4'} text-destructive`} />
               </button>
             </div>
             {photo.es_principal && (
-              <div className={`absolute ${isLarge ? 'top-4 left-4' : 'top-3 left-3'} bg-red-500/90 backdrop-blur-md text-white ${isLarge ? 'px-3 py-1 text-sm' : 'px-2 py-1 text-xs'} rounded-full font-semibold shadow-sm border border-white/20`}>
+              <div className={`absolute ${isLarge ? 'top-4 left-4' : 'top-3 left-3'} bg-primary text-primary-foreground ${isLarge ? 'px-3 py-1.5 text-sm' : 'px-2.5 py-1 text-xs'} rounded-xl font-sans font-semibold border-2 border-primary/80 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)]`}>
                 Principal
               </div>
             )}
           </div>
         ) : (
           <label 
-            className={`${width} ${height} rounded-3xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all duration-200 shadow-lg active:scale-[0.98] ${
-              draggingIndex === index 
-                ? "border-red-500 bg-red-50 border-4 scale-[1.02]" 
-                : "border-gray-300 bg-white hover:border-red-400 hover:bg-red-50/30 hover:shadow-xl"
-            }`}
+            className={`${width} ${height} rounded-2xl border-2 border-dashed flex flex-col items-center justify-center cursor-pointer transition-all duration-200 active:scale-[0.98] ${draggingIndex === index ? "border-primary bg-primary/5 border-[3px] scale-[1.02] shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.2)]" : "border-foreground/20 bg-white/90 backdrop-blur-sm hover:border-primary/50 hover:bg-primary/5 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.1)] hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.15)]"}`}
             onDragOver={(e) => handleDragOver(e, index)}
             onDragLeave={(e) => handleDragLeave(e, index)}
             onDrop={(e) => handleDrop(e, index)}
@@ -504,22 +494,19 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
               className="hidden"
               onChange={(e) => handleFileInputChange(e, index)}
             />
-            {/* --- AQUÍ ESTÁ EL CAMBIO --- */}
             <div className={`mb-3 ${isLarge ? 'mb-4' : 'mb-2'}`}>
               <Camera 
                 size={isLarge ? 64 : 48} 
-                color="#C62828"  // Rojo oscuro elegante
-                weight="duotone" // Estilo semitransparente premium
-                className="opacity-80"
+                className="text-primary opacity-70"
+                weight="duotone"
               />
             </div>
-            {/* --------------------------- */}
 
-            <p className={`text-gray-500 ${isLarge ? 'text-base' : 'text-sm'} font-medium`}>
+            <p className={`text-muted-foreground ${isLarge ? 'text-base' : 'text-sm'} font-sans font-medium`}>
               {draggingIndex === index ? "Suelta las imágenes aquí" : "Subir foto"}
             </p>
             {isLarge && (
-              <p className="text-gray-400 text-sm mt-2">
+              <p className="text-muted-foreground/60 text-sm mt-2 font-sans">
                 o arrastra y suelta
               </p>
             )}
@@ -530,80 +517,86 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete }) => {
   };
 
   return (
-    <div className="h-[100dvh] w-full flex relative bg-[#FFF0EC] overflow-y-auto overflow-x-hidden">
-      <div
-        className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3"
-        style={{
-          backgroundImage: `url(${fondo})`,
-          backgroundSize: "contain",
-          backgroundPosition: "bottom center",
-          backgroundRepeat: "no-repeat",
-        }}
-      />
+    <div className="min-h-[100dvh] h-[100dvh] w-full flex flex-col relative bg-background overflow-hidden">
+      {/* Contenedor scrolleable */}
+      <div className="flex-1 overflow-y-auto overflow-x-hidden">
+        <div
+          className="absolute inset-x-0 bottom-0 top-auto z-0 h-2/3 opacity-60 pointer-events-none"
+          style={{
+            backgroundImage: `url(${fondo})`,
+            backgroundSize: "contain",
+            backgroundPosition: "bottom center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
 
-      <button className="absolute top-8 left-8 text-gray-600 hover:text-gray-800 text-2xl z-20">
-        ←
-      </button>
+        {/* Botón de regreso con diseño consistente */}
+        {onBack && (
+          <button 
+            onClick={onBack}
+            className="absolute top-4 sm:top-6 left-4 sm:left-6 z-20 flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 bg-white/90 backdrop-blur-sm rounded-xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[4px_4px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-0.5 transition-all duration-200 group"
+            aria-label="Volver al paso anterior"
+          >
+            <ArrowLeft 
+              size={20} 
+              weight="bold" 
+              className="text-foreground group-hover:text-primary group-hover:-translate-x-0.5 transition-all duration-200" 
+            />
+            <span className="text-sm font-sans font-medium text-foreground group-hover:text-primary hidden sm:inline">
+              Volver
+            </span>
+          </button>
+        )}
 
-      <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10">
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-6 lg:px-12 mt-12 lg:-mt-60">
-          <div className="max-w-md text-center">
-            <div className="flex justify-center mb-6">
-              <img src={logo} alt="Logo" className="w-24 h-24 object-contain" />
+        <div className="flex flex-col lg:flex-row flex-1 w-full relative z-10 min-h-full lg:min-h-[100dvh]">
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-4 sm:px-6 lg:px-12 pt-16 sm:pt-12 lg:pt-0">
+            <div className="max-w-md text-center">
+              <div className="flex justify-center mb-6">
+                <img src={logo} alt="Logo" className="w-20 h-20 sm:w-24 sm:h-24 object-contain" />
+              </div>
+
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-display-md font-bold text-foreground mb-4">
+                Sube tus mejores fotos
+              </h1>
+
+              <p className="font-sans text-muted-foreground text-base sm:text-lg mb-8 leading-relaxed px-2">
+                Puedes subir entre 1 y 3 imágenes para tu perfil.
+              </p>
+
+              <button
+                onClick={handleContinue}
+                disabled={
+                  (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
+                }
+                className="w-full px-8 sm:px-10 py-3 sm:py-4 bg-primary text-primary-foreground rounded-xl font-sans font-semibold border-2 border-primary/80 shadow-[4px_4px_0px_0px_rgba(0,0,0,0.15)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[2px] active:translate-y-[2px] active:shadow-[2px_2px_0px_0px_rgba(0,0,0,0.15)] text-base sm:text-lg"
+              >
+                {isSaving || uploadMutation.isPending
+                  ? "Guardando..."
+                  : "Continuar"}
+              </button>
+            </div>
+          </div>
+
+          <div className="w-full lg:w-1/2 flex flex-col items-center justify-start lg:justify-center px-4 sm:px-6 lg:pr-12 pt-6 sm:pt-8 pb-32 sm:pb-40 lg:pt-0 lg:pb-0">
+            <div className="flex flex-col lg:flex-row gap-4 sm:gap-5 lg:gap-6 mb-6 sm:mb-8 items-center">
+              {renderImageSlot(0)}
+              
+              <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
+                {renderImageSlot(1)}
+                {renderImageSlot(2)}
+              </div>
             </div>
 
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Sube tus mejores fotos
-            </h1>
-
-            <p className="text-gray-700 text-lg mb-8">
-              Puedes subir entre 1 y 3 imágenes para tu perfil.
-            </p>
-
-            <button
-              onClick={handleContinue}
-              disabled={
-                (serverFiles.length + newFiles.length) === 0 || isSaving || uploadMutation.isPending
-              }
-              className="w-full px-10 py-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 text-lg shadow-lg hover:shadow-xl"
-            >
-              {isSaving || uploadMutation.isPending
-                ? "Guardando..."
-                : "Continuar"}
-            </button>
-          </div>
-        </div>
-
-        <div className="w-full lg:w-1/2 flex flex-col items-center justify-center px-6 lg:pr-12 pt-12 pb-48 lg:py-0">
-          <div className="flex flex-col sm:flex-row gap-6 mb-8 items-center">
-            {renderImageSlot(0)}
-            
-            <div className="flex flex-col gap-6">
-              {renderImageSlot(1)}
-              {renderImageSlot(2)}
+            {/* Botón Eliminar Todo */}
+            <div className="flex gap-4 sm:gap-6">
+              <button
+                onClick={handleDeleteAll}
+                disabled={(serverFiles.length + newFiles.length) === 0}
+                className="px-8 sm:px-12 py-3 sm:py-3.5 bg-white/90 backdrop-blur-sm text-foreground rounded-xl font-sans font-semibold border-2 border-foreground/20 shadow-[3px_3px_0px_0px_hsl(var(--foreground)/0.1)] hover:border-destructive/50 hover:text-destructive hover:shadow-[5px_5px_0px_0px_hsl(var(--destructive)/0.15)] hover:-translate-y-0.5 hover:-translate-x-0.5 disabled:bg-muted disabled:border-muted disabled:text-muted-foreground disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed transition-all duration-200 active:translate-x-[1px] active:translate-y-[1px] text-sm sm:text-base"
+              >
+                Eliminar todo
+              </button>
             </div>
-          </div>
-
-          <div className="flex gap-6">
-            <button
-              onClick={() => handleSave()}
-              disabled={
-                newFiles.length === 0 || isSaving || uploadMutation.isPending
-              }
-              className="px-12 py-3.5 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
-            >
-              {isSaving || uploadMutation.isPending
-                ? "Guardando..."
-                : "Guardar"}
-            </button>
-
-            <button
-              onClick={handleDeleteAll}
-              disabled={(serverFiles.length + newFiles.length) === 0}
-              className="px-12 py-3.5 bg-red-400 text-white rounded-xl font-semibold hover:bg-red-500 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all duration-200 active:scale-95 shadow-lg hover:shadow-xl text-base"
-            >
-              Eliminar
-            </button>
           </div>
         </div>
       </div>

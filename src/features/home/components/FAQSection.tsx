@@ -39,31 +39,31 @@ export default function FAQSection() {
   const animationRef = useAnimateOnScroll({ triggerOnce: true });
 
   return (
-    <section id="faq" className="py-20 lg:py-32 bg-white/50" ref={animationRef}>
-      <div className="container mx-auto px-6 lg:px-8">
-        <div className="text-center mb-16 opacity-0" data-animate="animate-fade-in">
-          <h2 className="font-display font-bold text-display-lg text-foreground mb-6">
+    <section id="faq" className="py-12 sm:py-20 lg:py-32 bg-white/50" ref={animationRef}>
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-8 sm:mb-12 lg:mb-16 opacity-0" data-animate="animate-fade-in">
+          <h2 className="font-display font-bold text-2xl sm:text-3xl lg:text-display-lg text-foreground mb-4 sm:mb-6">
             Preguntas{' '}
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-primary">
               frecuentes
             </span>
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-base sm:text-lg lg:text-xl text-muted-foreground max-w-3xl mx-auto px-2">
             Resolvemos las dudas más comunes sobre cUPido y su funcionamiento
           </p>
         </div>
 
         <div className="max-w-3xl mx-auto">
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {faqs.map((faq, index) => (
               <div key={index} className="card-floating overflow-hidden opacity-0" data-animate="animate-slide-up" data-animate-delay={`${index * 150}ms`}>
                 <button
                   onClick={() => toggleFAQ(index)}
-                  className="w-full text-left p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200"
+                  className="w-full text-left p-4 sm:p-6 flex items-center justify-between hover:bg-secondary/20 transition-colors duration-200"
                   aria-expanded={openIndex === index}
                   aria-controls={`faq-answer-${index}`}
                 >
-                  <h3 className="font-display font-semibold text-lg text-foreground pr-4">
+                  <h3 className="font-display font-semibold text-base sm:text-lg text-foreground pr-4">
                     {faq.question}
                   </h3>
                   {openIndex === index ? (

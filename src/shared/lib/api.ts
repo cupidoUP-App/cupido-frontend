@@ -149,6 +149,19 @@ const refreshClient = axios.create({
 });
 
 // --------------------------------------------------------
+// Cliente público para endpoints de autenticación (SIN interceptores)
+// Evita enviar tokens viejos/inválidos en endpoints que no los requieren
+// Esto previene errores 401 → 500 en register, login, verify-email, etc.
+// --------------------------------------------------------
+const publicClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+  withCredentials: true,
+});
+
+// --------------------------------------------------------
 // RESPONSE INTERCEPTOR (mejorado con manejo de race conditions)
 // --------------------------------------------------------
 api.interceptors.response.use(
@@ -242,6 +255,7 @@ api.interceptors.response.use(
 // --------------------------------------------------------
 
 export const authAPI = {
+  // Endpoints públicos usan publicClient (sin interceptor de auth)
   register: async (data: {
     email: string;
     contrasena: string;
@@ -249,12 +263,12 @@ export const authAPI = {
     tyc: boolean;
     firma: string;
   }) => {
-    const response = await api.post("/auth/register/", data);
+    const response = await publicClient.post("/auth/register/", data);
     return response.data;
   },
 
   verifyEmail: async (data: { email: string; code: string }) => {
-    const response = await api.post("/auth/verify-email/", {
+    const response = await publicClient.post("/auth/verify-email/", {
       email: data.email,
       codigo: data.code,
     });
@@ -262,7 +276,7 @@ export const authAPI = {
   },
 
   resendCode: async (data: { email: string }) => {
-    const response = await api.post("/auth/resend-code/", data);
+    const response = await publicClient.post("/auth/resend-code/", data);
     return response.data;
   },
 
@@ -271,7 +285,7 @@ export const authAPI = {
     contrasena: string;
     recaptcha_token: string;
   }) => {
-    const response = await api.post("/auth/login/", data);
+    const response = await publicClient.post("/auth/login/", data);
     const { access, refresh } = response.data;
 
     if (access && refresh) {
@@ -320,8 +334,9 @@ export const authAPI = {
     return response.data;
   },
 
+  // Endpoints públicos (no requieren autenticación)
   resetPasswordRequest: async (data: { email: string }) => {
-    const response = await api.post("/auth/password-reset/", data);
+    const response = await publicClient.post("/auth/password-reset/", data);
     return response.data;
   },
 
@@ -329,7 +344,7 @@ export const authAPI = {
     token: string;
     nueva_contrasena: string;
   }) => {
-    const response = await api.post("/auth/password-reset-confirm/", data);
+    const response = await publicClient.post("/auth/password-reset-confirm/", data);
     return response.data;
   },
 

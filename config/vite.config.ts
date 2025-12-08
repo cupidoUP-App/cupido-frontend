@@ -22,10 +22,32 @@ export default defineConfig(({ mode }) => {
       },
     },
     plugins: [react(), isDev && componentTagger()].filter(Boolean),
-    envDir: path.resolve(__dirname, 'env'),
+    envDir: '.',
     root: path.resolve(__dirname, ".."),
     css: {
       postcss: path.resolve(__dirname, "./postcss.config.cjs"),
+    },
+    // --------------------------------------------------------
+    // Configuración de build optimizada para mejor performance
+    // Divide el bundle en chunks más pequeños y paralelos
+    // --------------------------------------------------------
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            // Chunk principal de React y ReactDOM
+            'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+            // Librerías de UI y componentes
+            'vendor-ui': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-toast', '@radix-ui/react-tooltip', '@radix-ui/react-popover', '@radix-ui/react-tabs'],
+            // Librerías de data fetching y estado
+            'vendor-data': ['axios', '@tanstack/react-query', 'zustand'],
+            // Librerías de animación y efectos
+            'vendor-motion': ['framer-motion'],
+            // Librerías de formularios y validación
+            'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          },
+        },
+      },
     },
     resolve: {
       alias: {

@@ -1,5 +1,5 @@
-// notificationsPage.tsx - Versión simplificada para debugging
-import { useState, useEffect, useRef } from "react";
+// notificationsPage.tsx - Con navegación a chat para notificaciones de chat y match
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppNotification } from "../types/notification.types";
 import "./notificationsPage.css";
@@ -26,53 +26,109 @@ export default function NotificationsPage({
   connected,
 }: NotificationsPageProps) {
   const navigate = useNavigate();
-  const [renderKey, setRenderKey] = useState(0);
-  const prevNotificationsRef = useRef<number>(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [lastClickTime, setLastClickTime] = useState<number>(0);
 
-  // Forzar re-render cuando cambien las notificaciones
-  useEffect(() => {
-    if (notifications.length !== prevNotificationsRef.current) {
-      console.log("🔄 Component: Notifications changed, forcing re-render");
-      console.log("📊 Previous count:", prevNotificationsRef.current);
-      console.log("📊 New count:", notifications.length);
-      console.log("📊 Notifications:", notifications);
-
-      prevNotificationsRef.current = notifications.length;
-      setRenderKey((prev) => prev + 1);
+  // Filtrar notificaciones duplicadas
+  const uniqueNotifications = notifications.filter(
+    (notification, index, self) => {
+      const key = `${notification.id}-${notification.created_at.getTime()}`;
+      const firstIndex = self.findIndex(
+        (n) => `${n.id}-${n.created_at.getTime()}` === key
+      );
+      return index === firstIndex;
     }
-  }, [notifications]);
+  );
 
-  const unreadCount = notifications.filter((n) => !n.read).length;
+  // Manejar click en notificación
+  const handleNotificationClick = useCallback(
+    async (notification: AppNotification) => {
+      console.log("🖱️ Click en notificación ID:", notification.id);
 
-  console.log("🎨 Component render - key:", renderKey, {
-    notificationsCount: notifications.length,
-    loading,
-    error,
-    connected,
-    unreadCount,
-  });
+      // Prevenir clics rápidos (debounce)
+      const now = Date.now();
+      if (now - lastClickTime < 300) {
+        console.log("⏱️ Click demasiado rápido, ignorando");
+        return;
+      }
+      setLastClickTime(now);
+
+      try {
+        // Marcar como leído si no lo está
+        if (!notification.read) {
+          await markAsRead(notification.id);
+        }
+
+        // Navegar al chat si hay chat_id (para notificaciones de chat Y match)
+        if (notification.chat_id) {
+          console.log("Navegando a chat ID:", notification.chat_id);
+
+          const chatIdToNavigate = notification.chat_id;
+
+          // Cerrar panel si está abierto
+          if (onClose) {
+            onClose();
+          }
+
+          // Navegar después de un pequeño delay para permitir que el panel se cierre
+          setTimeout(() => {
+            navigate(`/chat?chatId=${chatIdToNavigate}`);
+          }, 100);
+        } else {
+          console.log("ℹ️ Esta notificación no tiene chat_id");
+        }
+      } catch (err) {
+        console.error("❌ Error al manejar notificación:", err);
+      }
+    },
+    [navigate, onClose, markAsRead, lastClickTime]
+  );
+
+  // Manejar dismiss
+  const handleDismiss = useCallback(
+    async (e: React.MouseEvent, id: string) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      try {
+        await dismissNotification(id);
+      } catch (err) {
+        console.error("Error al eliminar notificación:", err);
+      }
+    },
+    [dismissNotification]
+  );
+
+  const unreadCount = uniqueNotifications.filter((n) => !n.read).length;
 
   if (error) {
     return (
-      <div className="notifications-panel-container">
+      <div className="notifications-panel-container" ref={containerRef}>
         <div className="panel-header">
           <h2>Notificaciones</h2>
           {onClose && (
-            <button className="close-btn" onClick={onClose}>
+            <button
+              className="close-btn"
+              onClick={onClose}
+              type="button"
+              aria-label="Cerrar"
+            >
               ✖
             </button>
           )}
         </div>
         <div className="error-message">
           <p>Error: {error}</p>
-          <button onClick={refresh}>Reintentar</button>
+          <button onClick={refresh} type="button">
+            Reintentar
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="notifications-panel-container" key={renderKey}>
+    <div className="notifications-panel-container" ref={containerRef}>
       <div className="panel-header">
         <h2>Notificaciones</h2>
 
@@ -81,7 +137,12 @@ export default function NotificationsPage({
         )}
 
         {onClose && (
-          <button className="close-btn" onClick={onClose}>
+          <button
+            className="close-btn"
+            onClick={onClose}
+            type="button"
+            aria-label="Cerrar panel"
+          >
             ✖
           </button>
         )}
@@ -92,18 +153,13 @@ export default function NotificationsPage({
           <div className="loading-notifications">
             <p>
               Cargando notificaciones...{" "}
-              {notifications.length > 0
-                ? `(Tengo ${notifications.length} en estado)`
+              {uniqueNotifications.length > 0
+                ? `(${uniqueNotifications.length} cargadas)`
                 : ""}
             </p>
           </div>
-        ) : notifications.length === 0 ? (
-          <p className="empty-notifications">
-            No hay notificaciones{" "}
-            {notifications.length > 0
-              ? `(Pero tengo ${notifications.length} en estado 🤔)`
-              : ""}
-          </p>
+        ) : uniqueNotifications.length === 0 ? (
+          <p className="empty-notifications">No hay notificaciones</p>
         ) : (
           <>
             <div
@@ -115,28 +171,18 @@ export default function NotificationsPage({
                 fontWeight: "bold",
               }}
             >
-              ¡SÍ HAY NOTIFICACIONES! ({notifications.length})
+              ¡Notificaciones! ({uniqueNotifications.length})
             </div>
 
-            {notifications.map((notification, index) => (
+            {uniqueNotifications.map((notification, index) => (
               <div
-                key={`${notification.id}-${index}`}
+                key={`${
+                  notification.id
+                }-${index}-${notification.created_at.getTime()}`}
                 className={`notification-card ${
                   !notification.read ? "unread" : ""
                 }`}
-                onClick={() => {
-                  console.log("Click en:", notification);
-                  markAsRead(notification.id);
-
-                  // Si es una notificación de chat, navegar al chat
-                  if (
-                    notification.title.toLowerCase().includes("chat") &&
-                    notification.chat_id
-                  ) {
-                    onClose?.(); // Cerrar el panel de notificaciones
-                    navigate(`/test-chat?id=${notification.chat_id}`);
-                  }
-                }}
+                onClick={() => handleNotificationClick(notification)}
                 style={{
                   cursor: "pointer",
                   border: "3px solid #3b82f6",
@@ -146,13 +192,16 @@ export default function NotificationsPage({
                   background: "#f0f9ff",
                   position: "relative",
                 }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleNotificationClick(notification);
+                  }
+                }}
               >
-                {/* X button to dismiss - positioned at far right */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    dismissNotification(notification.id);
-                  }}
+                  onClick={(e) => handleDismiss(e, notification.id)}
                   style={{
                     position: "absolute",
                     top: "50%",
@@ -174,6 +223,8 @@ export default function NotificationsPage({
                     zIndex: 10,
                   }}
                   title="Eliminar notificación"
+                  type="button"
+                  aria-label="Eliminar notificación"
                 >
                   ✕
                 </button>
@@ -216,8 +267,9 @@ export default function NotificationsPage({
                       {notification.message}
                     </p>
                     <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                      {notification.read ? "📖 Leída" : "📨 No leída"} |
+                      {notification.read ? "📖 Leída" : "📨 No leída"} |{" "}
                       {formatNotificationTime(notification.created_at)}
+                      {notification.chat_id && " | 💬 Click para ir al chat"}
                     </div>
                   </div>
                 </div>

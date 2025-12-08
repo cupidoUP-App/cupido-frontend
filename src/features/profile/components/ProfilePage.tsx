@@ -38,31 +38,42 @@ const ProfilePage = () => {
           const photosResponse = await photoAPI.getPhotos();
           console.log("🔍 Respuesta CRUDA de imágenes:", photosResponse);
 
-          if (photosResponse && photosResponse.results && Array.isArray(photosResponse.results)) {
-            userPhotos = photosResponse.results.map((photo: any) => {
-              console.log("🔍 Procesando foto:", photo);
-              
-              if (photo.imagen) {
-                const imageUrl = photo.imagen;
-                console.log("🔍 URL de imagen encontrada:", imageUrl);
+          if (
+            photosResponse &&
+            photosResponse.results &&
+            Array.isArray(photosResponse.results)
+          ) {
+            userPhotos = photosResponse.results
+              .map((photo: any) => {
+                console.log("🔍 Procesando foto:", photo);
 
-                if (imageUrl.startsWith('http')) {
-                  return imageUrl; 
-                }
+                if (photo.imagen) {
+                  const imageUrl = photo.imagen;
+                  console.log("🔍 URL de imagen encontrada:", imageUrl);
 
-                if (imageUrl.startsWith('/media/')) {
+                  if (imageUrl.startsWith("http")) {
+                    return imageUrl;
+                  }
+
+                  if (imageUrl.startsWith("/media/")) {
+                    const baseUrl = import.meta.env.VITE_API_BASE_URL;
+                    return `${baseUrl}${imageUrl}`;
+                  }
+
                   const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                  return `${baseUrl}${imageUrl}`;
+                  return `${baseUrl}${
+                    imageUrl.startsWith("/") ? "" : "/"
+                  }${imageUrl}`;
                 }
 
-                const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
-              }
-              
-              return "";
-            }).filter((url: string | null | undefined) => url !== "" && url !== null && url !== undefined);
+                return "";
+              })
+              .filter(
+                (url: string | null | undefined) =>
+                  url !== "" && url !== null && url !== undefined
+              );
           }
-          
+
           console.log("✅ Imágenes procesadas:", userPhotos);
         } catch (photosError) {
           console.error("❌ Error obteniendo imágenes:", photosError);
@@ -70,10 +81,12 @@ const ProfilePage = () => {
         }
 
         if (userPhotos.length === 0) {
-          console.log("⚠️ No se encontraron imágenes, usando imágenes de prueba locales");
+          console.log(
+            "⚠️ No se encontraron imágenes, usando imágenes de prueba locales"
+          );
           userPhotos = [
             "/images/profile1.jpg",
-            "/images/profile2.jpg", 
+            "/images/profile2.jpg",
             "/images/profile3.jpg",
           ];
         }
@@ -85,28 +98,47 @@ const ProfilePage = () => {
             authAPI.getDegrees(),
             authAPI.getLocations(),
           ]);
-          degreesCatalog = Array.isArray(degRes) ? degRes : degRes?.results || [];
-          locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
+          degreesCatalog = Array.isArray(degRes)
+            ? degRes
+            : degRes?.results || [];
+          locationsCatalog = Array.isArray(locRes)
+            ? locRes
+            : locRes?.results || [];
         } catch {}
 
         const birthDate = new Date(userProfile.fechanacimiento);
         const today = new Date();
-        const age = today.getFullYear() - birthDate.getFullYear() -
-          (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()) ? 1 : 0);
+        const age =
+          today.getFullYear() -
+          birthDate.getFullYear() -
+          (today <
+          new Date(
+            today.getFullYear(),
+            birthDate.getMonth(),
+            birthDate.getDate()
+          )
+            ? 1
+            : 0);
 
         const programaObj = profile?.programa_academico;
         const programaId = programaObj?.programa_id ?? programaObj ?? null;
-        const programaDesc = programaObj?.descripcion
-          || degreesCatalog.find((d: any) => (d.programa_id ?? d.id) === programaId)?.descripcion
-          || programaObj?.nombre
-          || "No especificado";
+        const programaDesc =
+          programaObj?.descripcion ||
+          degreesCatalog.find(
+            (d: any) => (d.programa_id ?? d.id) === programaId
+          )?.descripcion ||
+          programaObj?.nombre ||
+          "No especificado";
 
         const ubicacionObj = profile?.ubicacion;
         const ubicacionId = ubicacionObj?.ubicacion_id ?? ubicacionObj ?? null;
-        const ubicacionDesc = ubicacionObj?.descripcion
-          || locationsCatalog.find((l: any) => (l.ubicacion_id ?? l.id) === ubicacionId)?.descripcion
-          || ubicacionObj?.nombre
-          || "No especificado";
+        const ubicacionDesc =
+          ubicacionObj?.descripcion ||
+          locationsCatalog.find(
+            (l: any) => (l.ubicacion_id ?? l.id) === ubicacionId
+          )?.descripcion ||
+          ubicacionObj?.nombre ||
+          "No especificado";
 
         const profileData = {
           name: `${userProfile.nombres} ${userProfile.apellidos}`,
@@ -114,14 +146,16 @@ const ProfilePage = () => {
           age: age,
           location: ubicacionDesc,
           about: userProfile.descripcion || "Sin descripción",
-          interests: profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
+          interests: profile?.hobbies
+            ? profile.hobbies.split(",").map((h: string) => h.trim())
+            : [],
           programa_academico: programaDesc,
           estatura: profile?.estatura || undefined,
         };
 
         console.log("📊 Datos del perfil preparados:", profileData);
         console.log("🖼️ Imágenes del usuario:", userPhotos);
-        
+
         setProfileData(profileData);
         setUserImages(userPhotos);
       } catch (error) {
@@ -139,14 +173,8 @@ const ProfilePage = () => {
     fetchProfile();
   }, [toast]);
 
-
   const handleEditProfile = () => {
-    navigate('/edit-profile');
-  };
-
-  const handleEditPreferences = () => {
-    closeModals();
-    navigate('/');
+    navigate("/edit-profile");
   };
 
   if (loading) {
@@ -178,7 +206,7 @@ const ProfilePage = () => {
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#E74C3C]/5 blur-3xl" />
       </div>
 
-      <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 xl:gap-16">
+      <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 xl:gap-16 mb-20 sm:mb-8">
         {/* Imágenes - Izquierda */}
         <div className="flex justify-center lg:col-span-5 lg:justify-end order-first">
           <ProfileCarousel images={userImages} />
@@ -186,15 +214,15 @@ const ProfilePage = () => {
 
         {/* Información del perfil - Derecha */}
         <div className="w-full lg:col-span-7 order-last lg:order-none">
-          <div className="rounded-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl border border-white/50">
-            <div className="space-y-8">
+          <div className="rounded-3xl bg-white/80 backdrop-blur-md p-4 sm:p-6 md:p-8 lg:p-12 shadow-2xl border border-white/50">
+            <div className="space-y-6 sm:space-y-8">
               <ProfileInfo {...profileData} />
-              
+
               {/* Botones de acción */}
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 border-t border-gray-200/50">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4 border-t border-gray-200/50 pb-2">
                 <button
                   onClick={handleEditProfile}
-                  className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-8 py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-base font-semibold"
+                  className="bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#E74C3C] text-sm sm:text-base font-semibold w-full sm:w-auto"
                   aria-label="Editar perfil"
                 >
                   Editar Perfil
