@@ -34,66 +34,56 @@ export default function NotificationsPage({
     const date = new Date(notification.fecha_envio).getTime();
     const key = `${notification.id}-${date}`;
 
-    const firstIndex = self.findIndex(n => {
+    const firstIndex = self.findIndex((n) => {
       const d = new Date(n.fecha_envio).getTime();
       return `${n.id}-${d}` === key;
     });
 
     return index === firstIndex;
   });
-  
-  // 🟦 Click en notificación (marcar como leída + navegar)
-const handleNotificationClick = useCallback(
-  async (notification: AppNotification) => {
-    console.log("🖱️ Click:", notification.id);
 
-    const now = Date.now();
-    if (now - lastClickTime < 300) return;
-    setLastClickTime(now);
+  // Click en notificación (marcar como leída + navegar)
+  const handleNotificationClick = useCallback(
+    async (notification: AppNotification) => {
+      const now = Date.now();
+      if (now - lastClickTime < 300) return;
+      setLastClickTime(now);
 
-    try {
-      if (!notification.read) {
-        await markAsRead(notification.id);
+      try {
+        if (!notification.read) {
+          await markAsRead(notification.id);
+        }
+
+        if (notification.tipo === "like" && notification.from_user_id) {
+          if (onClose) onClose();
+          setTimeout(() => {
+            navigate(`/other-user-profile/${notification.from_user_id}`);
+          }, 100);
+          return;
+        }
+
+        if (notification.tipo === "match" && notification.chat_id) {
+          if (onClose) onClose();
+          setTimeout(() => {
+            navigate(`/chat?chatId=${notification.chat_id}`);
+          }, 100);
+          return;
+        }
+
+        if (notification.chat_id) {
+          if (onClose) onClose();
+          setTimeout(() => {
+            navigate(`/chat?chatId=${notification.chat_id}`);
+          }, 100);
+          return;
+        }
+      } catch (err) {
+        console.error("Error:", err);
       }
+    },
+    [navigate, onClose, markAsRead, lastClickTime]
+  );
 
-      // ❤️ LIKE → Ir al perfil
-      if (notification.tipo === "like" && notification.from_user_id) {
-        if (onClose) onClose();
-        setTimeout(() => {
-          navigate('/other-user-profile/${notification.from_user_id}');
-        }, 100);
-        return;
-      }
-
-      // ✨ MATCH → Ir al chat del match
-      if (notification.tipo === "match" && notification.chat_id) {
-        if (onClose) onClose();
-        setTimeout(() => {
-          navigate('/chat?chatId=${notification.chat_id}');
-        }, 100);
-        return;
-      }
-
-      // 💬 Notificación con chat → Ir al chat
-      if (notification.chat_id) {
-        if (onClose) onClose();
-        setTimeout(() => {
-          navigate('/chat?chatId=${notification.chat_id}');
-        }, 100);
-        return;
-      }
-
-      console.log("ℹ️ Notificación sin acción asignada.");
-
-    } catch (err) {
-      console.error("❌ Error:", err);
-    }
-  },
-  [navigate, onClose, markAsRead, lastClickTime]
-);
-
-
-  // 🟦 Eliminar notificación
   const handleDismiss = useCallback(
     async (e: React.MouseEvent, id: string) => {
       e.preventDefault();
@@ -110,7 +100,6 @@ const handleNotificationClick = useCallback(
 
   const unreadCount = uniqueNotifications.filter((n) => !n.read).length;
 
-  // 🟥 Error al cargar
   if (error) {
     return (
       <div className="notifications-panel-container" ref={containerRef}>
@@ -165,17 +154,17 @@ const handleNotificationClick = useCallback(
                 fontWeight: "bold",
               }}
             >
-              ¡Notificaciones! ({uniqueNotifications.length})
+              Notificaciones ({uniqueNotifications.length})
             </div>
 
             {uniqueNotifications.map((notification, index) => {
               const dateObj = new Date(notification.fecha_envio);
-              const key = ${notification.id}-${index}-${dateObj.getTime()};
+              const key = `${notification.id}-${index}-${dateObj.getTime()}`;
 
               return (
                 <div
                   key={key}
-                  className={notification-card ${!notification.read ? "unread" : ""}}
+                  className={`notification-card ${!notification.read ? "unread" : ""}`}
                   onClick={() => handleNotificationClick(notification)}
                   style={{
                     cursor: "pointer",
@@ -187,7 +176,6 @@ const handleNotificationClick = useCallback(
                     position: "relative",
                   }}
                 >
-                  {/* ❌ botón eliminar */}
                   <button
                     onClick={(e) => handleDismiss(e, notification.id)}
                     style={{
@@ -213,7 +201,6 @@ const handleNotificationClick = useCallback(
                   </button>
 
                   <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                    {/* Iconos */}
                     <div style={{ fontSize: "24px" }}>
                       {notification.tipo === "like" && "❤️"}
                       {notification.tipo === "match" && "✨"}
@@ -245,9 +232,9 @@ const handleNotificationClick = useCallback(
                       </p>
 
                       <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                        {notification.read ? "📖 Leída" : "📨 No leída"} |{" "}
+                        {notification.read ? "Leída" : "No leída"} |{" "}
                         {formatNotificationTime(dateObj)}
-                        {notification.chat_id && " | 💬 Ir al chat"}
+                        {notification.chat_id && " | Ir al chat"}
                       </div>
                     </div>
                   </div>
@@ -270,9 +257,9 @@ function formatNotificationTime(date: Date): string {
   const days = Math.floor(diff / 86400000);
 
   if (mins < 1) return "Ahora";
-  if (mins < 60) return Hace ${mins} min;
-  if (hours < 24) return Hace ${hours} h;
-  if (days < 7) return Hace ${days} d;
+  if (mins < 60) return `Hace ${mins} min`;
+  if (hours < 24) return `Hace ${hours} h`;
+  if (days < 7) return `Hace ${days} d`;
 
   return date.toLocaleDateString("es-ES", {
     day: "numeric",
