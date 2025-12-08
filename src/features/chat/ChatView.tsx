@@ -1,6 +1,4 @@
 // ChatView.tsx
-// Modificado por Jeison Alexis Rodriguez Angarita
-
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -164,7 +162,7 @@ const ChatView: React.FC<ChatViewProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#FFF6F5]">
+        <div className="flex flex-col h-full bg-[#FFF6F5] w-full pb-16 sm:pb-0">
             {/* Header */}
             <div className="flex items-center justify-between p-3 sm:p-4 bg-white/95 backdrop-blur-sm border-b border-[#F2D6CD] shadow-md relative z-20 flex-shrink-0">
                 <div className="flex items-center flex-1 min-w-0 gap-2 sm:gap-3">
@@ -287,10 +285,10 @@ const ChatView: React.FC<ChatViewProps> = ({
             <div 
                 ref={messagesContainerRef}
                 onScroll={handleScroll}
-                className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 scrollbar-thin scrollbar-thumb-[#E74C3C]/50 scrollbar-track-transparent hover:scrollbar-thumb-[#E74C3C] bg-gradient-to-b from-[#FFF6F5] to-white">
+                className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-2 sm:space-y-3 scrollbar-thin scrollbar-thumb-[#E74C3C]/50 scrollbar-track-transparent hover:scrollbar-thumb-[#E74C3C] bg-gradient-to-b from-[#FFF6F5] to-white pb-20 sm:pb-4">
                 
                 {/* Banner de advertencia */}
-                <div className="text-center mb-3 sm:mb-4 px-2 sm:px-4">
+                <div className="text-center mb-3 sm:mb-4 px-2 sm:px-4 pt-2">
                     <div className="inline-block bg-gray-200 text-gray-600 text-[10px] sm:text-xs px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg shadow-sm max-w-xs">
                         Para el uso de este chat se recomienda: precaución y sentido común.
                         <strong> cUPido </strong> no se hace responsable por la información privada que los usuarios decidan compartir voluntariamente.
@@ -370,8 +368,8 @@ const ChatView: React.FC<ChatViewProps> = ({
             </div>
 
             {/* Input del Chat */}
-            <div className="p-3 sm:p-4 border-t border-[#F2D6CD] bg-white/80 backdrop-blur-sm shadow-lg flex-shrink-0">
-                <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-3 sm:p-4 border-t border-[#F2D6CD] bg-white/95 backdrop-blur-sm shadow-lg flex-shrink-0 w-full fixed bottom-20 left-0 right-0 sm:relative sm:bottom-auto z-30">
+                <div className="flex items-center gap-2 sm:gap-3 w-full max-w-full">
                     <input
                         type="text"
                         className={`flex-1 px-3 sm:px-5 py-2 sm:py-3 rounded-2xl border-2 focus:outline-none transition-all duration-200 text-xs sm:text-sm ${

@@ -2,12 +2,8 @@
 // Modificado por Jeison Alexis Rodriguez Angarita
 
 import React, { useEffect, useState } from "react";
-
-// Importaciones de Componentes
 import ChatListPanel from "./ChatListPanel";
 import ChatView from "./ChatView";
-
-// Importaciones de Hooks y Tipos REALES
 import { useChatSocket } from "@hooks/useChatSocket";
 import { useChatList, ChatListItemReal } from "@hooks/useChatList";
 
