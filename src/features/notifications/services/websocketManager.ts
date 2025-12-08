@@ -105,13 +105,14 @@ class WebSocketManager {
                     const data = JSON.parse(event.data);
                     
                     if (data.tipo && data.mensaje) {
-                        const notification: AppNotification = {
+                         const notification: AppNotification = {
                             id: data.id?.toString() || Date.now().toString(),
-                            title: data.tipo.charAt(0).toUpperCase() + data.tipo.slice(1),
-                            message: data.mensaje,
-                            read: data.estado === 'leido',
-                            created_at: new Date(data.fecha_envio || Date.now()),
-                            chat_id: data.chat_id || null,  // Include chat_id for navigation
+                            tipo: data.tipo,
+                            mensaje: data.mensaje,
+                            read: data.estado === "leido",
+                            fecha_envio: data.fecha_envio || new Date().toISOString(),
+                            from_user_id: data.from_user_id || null,
+                            chat_id: data.chat_id || null,
                         };
                         this.notifyListeners(notification);
                     }
