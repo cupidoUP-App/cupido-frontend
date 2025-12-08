@@ -60,22 +60,29 @@ const handleNotificationClick = useCallback(
         setTimeout(() => navigate(path), 50);
       };
 
+      const type = notification.tipo.toLowerCase();
+
       // ❤️ LIKE → ir al perfil
-      if (notification.tipo === "like" && notification.from_user_id) {
-        return closeAndGo('/other-user-profile/${notification.from_user_id}');
+      if (type === "like" && notification.from_user_id) {
+        return closeAndGo(`/other-user-profile/${notification.from_user_id}`);
       }
 
       // ✨ MATCH
-      if (notification.tipo === "match") {
+      if (type === "match") {
 
         // Prioridad 1: ir al chat si existe
         if (notification.chat_id) {
-          return closeAndGo('/chat?chatId=${notification.chat_id}');
+          return closeAndGo(`/chat?chatId=${notification.chat_id}`);
         }
 
         // Prioridad 2: ir al perfil del match
         if (notification.usuario_match_id) {
-          return closeAndGo('/other-user-profile/${notification.usuario_match_id}');
+          return closeAndGo(`/other-user-profile/${notification.usuario_match_id}`);
+        }
+        
+        // Fallback: Si no hay ID específico, intentar con from_user_id si existe
+        if (notification.from_user_id) {
+             return closeAndGo(`/other-user-profile/${notification.from_user_id}`);
         }
 
         console.warn("⚠️ MATCH sin chat_id ni usuario_match_id", notification);
@@ -83,8 +90,12 @@ const handleNotificationClick = useCallback(
       }
 
       // 💬 CHAT (notificaciones de mensajes)
-      if (notification.chat_id) {
-        return closeAndGo('/chat?chatId=${notification.chat_id}');
+      if (notification.chat_id || type === 'chat') {
+         if (notification.chat_id) {
+            return closeAndGo(`/chat?chatId=${notification.chat_id}`);
+         }
+         // Si es tipo chat pero no tiene chat_id, intentar ir al chat general
+         return closeAndGo('/chat');
       }
 
       console.log("ℹ️ Notificación sin acción asignada.", notification);
@@ -214,11 +225,11 @@ const handleNotificationClick = useCallback(
 
                   <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
                     <div style={{ fontSize: "24px" }}>
-                      {notification.tipo === "like" && "❤️"}
-                      {notification.tipo === "match" && "✨"}
-                      {notification.tipo === "chat" && "💬"}
-                      {notification.tipo === "reporte" && "⚠️"}
-                      {!["like", "match", "chat", "reporte"].includes(notification.tipo) &&
+                      {notification.tipo.toLowerCase() === "like" && "❤️"}
+                      {notification.tipo.toLowerCase() === "match" && "✨"}
+                      {notification.tipo.toLowerCase() === "chat" && "💬"}
+                      {notification.tipo.toLowerCase() === "reporte" && "⚠️"}
+                      {!["like", "match", "chat", "reporte"].includes(notification.tipo.toLowerCase()) &&
                         "🔔"}
                     </div>
 
