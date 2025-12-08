@@ -9,11 +9,41 @@ import MatchLimitDialog from "../components/MatchLimitDialog";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
 import MatchSuccessSlide from "../components/MatchSuccessSlide";
 import { MatchData } from "../types";
+import { photoAPI } from "@lib/api";
 
 const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
   const [matches, setMatches] = useState<MatchData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentUserPhotoUrl, setCurrentUserPhotoUrl] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const fetchUserPhoto = async () => {
+      try {
+        const photosResponse = await photoAPI.getPhotos();
+        if (photosResponse && photosResponse.results && photosResponse.results.length > 0) {
+           const principal = photosResponse.results.find((p: any) => p.es_principal);
+           const photoToUse = principal || photosResponse.results[0];
+           
+           if (photoToUse && photoToUse.imagen) {
+              let imageUrl = photoToUse.imagen;
+              if (!imageUrl.startsWith('http')) {
+                  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+                  if (imageUrl.startsWith('/media/')) {
+                      imageUrl = `${baseUrl}${imageUrl}`;
+                  } else {
+                      imageUrl = `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+                  }
+              }
+              setCurrentUserPhotoUrl(imageUrl);
+           }
+        }
+      } catch (error) {
+        console.error("Error fetching user photo:", error);
+      }
+    };
+    fetchUserPhoto();
+  }, []);
 
   // Función para cargar matches
   const loadMatches = async (showLoading = true) => {
@@ -148,7 +178,7 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       {matchSuccessData && (
         <MatchSuccessSlide
           matchedUser={matchSuccessData}
-          // currentUserPhotoUrl={user?.photoUrl} // TODO: Obtener foto del usuario actual si es posible
+          currentUserPhotoUrl={currentUserPhotoUrl}
           onClose={onCloseMatchSuccess}
         />
       )}
