@@ -1,4 +1,4 @@
-// notificationsPage.tsx - Con navegación a chat para notificaciones de chat y match
+// notificationsPage.tsx
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppNotification } from "../types/notification.types";
@@ -29,62 +29,71 @@ export default function NotificationsPage({
   const containerRef = useRef<HTMLDivElement>(null);
   const [lastClickTime, setLastClickTime] = useState<number>(0);
 
-  // Filtrar notificaciones duplicadas
-  const uniqueNotifications = notifications.filter(
-    (notification, index, self) => {
-      const key = `${notification.id}-${notification.created_at.getTime()}`;
-      const firstIndex = self.findIndex(
-        (n) => `${n.id}-${n.created_at.getTime()}` === key
-      );
-      return index === firstIndex;
-    }
-  );
+  // 🟦 Convertir fecha y filtrar duplicados
+  const uniqueNotifications = notifications.filter((notification, index, self) => {
+    const date = new Date(notification.fecha_envio).getTime();
+    const key = ${notification.id}-${date};
 
-  // Manejar click en notificación
-  const handleNotificationClick = useCallback(
-    async (notification: AppNotification) => {
-      console.log("🖱️ Click en notificación ID:", notification.id);
+    const firstIndex = self.findIndex(n => {
+      const d = new Date(n.fecha_envio).getTime();
+      return ${n.id}-${d} === key;
+    });
 
-      // Prevenir clics rápidos (debounce)
-      const now = Date.now();
-      if (now - lastClickTime < 300) {
-        console.log("⏱️ Click demasiado rápido, ignorando");
+    return index === firstIndex;
+  });
+
+  // 🟦 Click en notificación (marcar como leída + navegar)
+const handleNotificationClick = useCallback(
+  async (notification: AppNotification) => {
+    console.log("🖱️ Click:", notification.id);
+
+    const now = Date.now();
+    if (now - lastClickTime < 300) return;
+    setLastClickTime(now);
+
+    try {
+      if (!notification.read) {
+        await markAsRead(notification.id);
+      }
+
+      // ❤️ LIKE → Ir al perfil
+      if (notification.tipo === "like" && notification.from_user_id) {
+        if (onClose) onClose();
+        setTimeout(() => {
+          navigate(/profile/${notification.from_user_id});
+        }, 100);
         return;
       }
-      setLastClickTime(now);
 
-      try {
-        // Marcar como leído si no lo está
-        if (!notification.read) {
-          await markAsRead(notification.id);
-        }
-
-        // Navegar al chat si hay chat_id (para notificaciones de chat Y match)
-        if (notification.chat_id) {
-          console.log("Navegando a chat ID:", notification.chat_id);
-
-          const chatIdToNavigate = notification.chat_id;
-
-          // Cerrar panel si está abierto
-          if (onClose) {
-            onClose();
-          }
-
-          // Navegar después de un pequeño delay para permitir que el panel se cierre
-          setTimeout(() => {
-            navigate(`/chat?chatId=${chatIdToNavigate}`);
-          }, 100);
-        } else {
-          console.log("ℹ️ Esta notificación no tiene chat_id");
-        }
-      } catch (err) {
-        console.error("❌ Error al manejar notificación:", err);
+      // ✨ MATCH → Ir al chat del match
+      if (notification.tipo === "match" && notification.chat_id) {
+        if (onClose) onClose();
+        setTimeout(() => {
+          navigate(/chat?chatId=${notification.chat_id});
+        }, 100);
+        return;
       }
-    },
-    [navigate, onClose, markAsRead, lastClickTime]
-  );
 
-  // Manejar dismiss
+      // 💬 Notificación con chat → Ir al chat
+      if (notification.chat_id) {
+        if (onClose) onClose();
+        setTimeout(() => {
+          navigate(/chat?chatId=${notification.chat_id});
+        }, 100);
+        return;
+      }
+
+      console.log("ℹ️ Notificación sin acción asignada.");
+
+    } catch (err) {
+      console.error("❌ Error:", err);
+    }
+  },
+  [navigate, onClose, markAsRead, lastClickTime]
+);
+
+
+  // 🟦 Eliminar notificación
   const handleDismiss = useCallback(
     async (e: React.MouseEvent, id: string) => {
       e.preventDefault();
@@ -101,27 +110,22 @@ export default function NotificationsPage({
 
   const unreadCount = uniqueNotifications.filter((n) => !n.read).length;
 
+  // 🟥 Error al cargar
   if (error) {
     return (
       <div className="notifications-panel-container" ref={containerRef}>
         <div className="panel-header">
           <h2>Notificaciones</h2>
           {onClose && (
-            <button
-              className="close-btn"
-              onClick={onClose}
-              type="button"
-              aria-label="Cerrar"
-            >
+            <button className="close-btn" onClick={onClose} type="button">
               ✖
             </button>
           )}
         </div>
+
         <div className="error-message">
           <p>Error: {error}</p>
-          <button onClick={refresh} type="button">
-            Reintentar
-          </button>
+          <button onClick={refresh}>Reintentar</button>
         </div>
       </div>
     );
@@ -137,12 +141,7 @@ export default function NotificationsPage({
         )}
 
         {onClose && (
-          <button
-            className="close-btn"
-            onClick={onClose}
-            type="button"
-            aria-label="Cerrar panel"
-          >
+          <button className="close-btn" onClick={onClose} type="button">
             ✖
           </button>
         )}
@@ -151,12 +150,7 @@ export default function NotificationsPage({
       <div className="notifications-list-panel">
         {loading ? (
           <div className="loading-notifications">
-            <p>
-              Cargando notificaciones...{" "}
-              {uniqueNotifications.length > 0
-                ? `(${uniqueNotifications.length} cargadas)`
-                : ""}
-            </p>
+            <p>Cargando notificaciones...</p>
           </div>
         ) : uniqueNotifications.length === 0 ? (
           <p className="empty-notifications">No hay notificaciones</p>
@@ -174,107 +168,92 @@ export default function NotificationsPage({
               ¡Notificaciones! ({uniqueNotifications.length})
             </div>
 
-            {uniqueNotifications.map((notification, index) => (
-              <div
-                key={`${
-                  notification.id
-                }-${index}-${notification.created_at.getTime()}`}
-                className={`notification-card ${
-                  !notification.read ? "unread" : ""
-                }`}
-                onClick={() => handleNotificationClick(notification)}
-                style={{
-                  cursor: "pointer",
-                  border: "3px solid #3b82f6",
-                  margin: "10px",
-                  padding: "15px",
-                  borderRadius: "10px",
-                  background: "#f0f9ff",
-                  position: "relative",
-                }}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleNotificationClick(notification);
-                  }
-                }}
-              >
-                <button
-                  onClick={(e) => handleDismiss(e, notification.id)}
-                  style={{
-                    position: "absolute",
-                    top: "50%",
-                    right: "-12px",
-                    transform: "translateY(-50%)",
-                    background: "#ef4444",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "50%",
-                    width: "24px",
-                    height: "24px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    padding: 0,
-                    zIndex: 10,
-                  }}
-                  title="Eliminar notificación"
-                  type="button"
-                  aria-label="Eliminar notificación"
-                >
-                  ✕
-                </button>
+            {uniqueNotifications.map((notification, index) => {
+              const dateObj = new Date(notification.fecha_envio);
+              const key = ${notification.id}-${index}-${dateObj.getTime()};
 
+              return (
                 <div
+                  key={key}
+                  className={notification-card ${!notification.read ? "unread" : ""}}
+                  onClick={() => handleNotificationClick(notification)}
                   style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "15px",
+                    cursor: "pointer",
+                    border: "3px solid #3b82f6",
+                    margin: "10px",
+                    padding: "15px",
+                    borderRadius: "10px",
+                    background: "#f0f9ff",
+                    position: "relative",
                   }}
                 >
-                  <div style={{ fontSize: "24px" }}>
-                    {notification.title.toLowerCase().includes("like") && "❤️"}
-                    {notification.title.toLowerCase().includes("match") && "✨"}
-                    {notification.title.toLowerCase().includes("chat") && "💬"}
-                    {notification.title.toLowerCase().includes("reporte") &&
-                      "⚠️"}
-                    {!["like", "match", "chat", "reporte"].some((t) =>
-                      notification.title.toLowerCase().includes(t)
-                    ) && "🔔"}
-                  </div>
+                  {/* ❌ botón eliminar */}
+                  <button
+                    onClick={(e) => handleDismiss(e, notification.id)}
+                    style={{
+                      position: "absolute",
+                      top: "50%",
+                      right: "-12px",
+                      transform: "translateY(-50%)",
+                      background: "#ef4444",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "50%",
+                      width: "24px",
+                      height: "24px",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      fontWeight: "bold",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    ✕
+                  </button>
 
-                  <div style={{ flex: 1 }}>
-                    <h3
-                      style={{
-                        margin: "0 0 5px 0",
-                        color: "#1e40af",
-                        fontSize: "16px",
-                      }}
-                    >
-                      {notification.title} {!notification.read && "🔵"}
-                    </h3>
-                    <p
-                      style={{
-                        margin: "0 0 5px 0",
-                        fontSize: "14px",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {notification.message}
-                    </p>
-                    <div style={{ fontSize: "12px", color: "#6b7280" }}>
-                      {notification.read ? "📖 Leída" : "📨 No leída"} |{" "}
-                      {formatNotificationTime(notification.created_at)}
-                      {notification.chat_id && " | 💬 Click para ir al chat"}
+                  <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+                    {/* Iconos */}
+                    <div style={{ fontSize: "24px" }}>
+                      {notification.tipo === "like" && "❤️"}
+                      {notification.tipo === "match" && "✨"}
+                      {notification.tipo === "chat" && "💬"}
+                      {notification.tipo === "reporte" && "⚠️"}
+                      {!["like", "match", "chat", "reporte"].includes(notification.tipo) &&
+                        "🔔"}
+                    </div>
+
+                    <div style={{ flex: 1 }}>
+                      <h3
+                        style={{
+                          margin: "0 0 5px 0",
+                          color: "#1e40af",
+                          fontSize: "16px",
+                        }}
+                      >
+                        {notification.tipo.toUpperCase()} {!notification.read && "🔵"}
+                      </h3>
+
+                      <p
+                        style={{
+                          margin: "0 0 5px 0",
+                          fontSize: "14px",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {notification.mensaje}
+                      </p>
+
+                      <div style={{ fontSize: "12px", color: "#6b7280" }}>
+                        {notification.read ? "📖 Leída" : "📨 No leída"} |{" "}
+                        {formatNotificationTime(dateObj)}
+                        {notification.chat_id && " | 💬 Ir al chat"}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </>
         )}
       </div>
@@ -284,15 +263,16 @@ export default function NotificationsPage({
 
 function formatNotificationTime(date: Date): string {
   const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMs / 3600000);
-  const diffDays = Math.floor(diffMs / 86400000);
+  const diff = now.getTime() - date.getTime();
 
-  if (diffMins < 1) return "Ahora";
-  if (diffMins < 60) return `Hace ${diffMins} min`;
-  if (diffHours < 24) return `Hace ${diffHours} h`;
-  if (diffDays < 7) return `Hace ${diffDays} d`;
+  const mins = Math.floor(diff / 60000);
+  const hours = Math.floor(diff / 3600000);
+  const days = Math.floor(diff / 86400000);
+
+  if (mins < 1) return "Ahora";
+  if (mins < 60) return Hace ${mins} min;
+  if (hours < 24) return Hace ${hours} h;
+  if (days < 7) return Hace ${days} d;
 
   return date.toLocaleDateString("es-ES", {
     day: "numeric",
