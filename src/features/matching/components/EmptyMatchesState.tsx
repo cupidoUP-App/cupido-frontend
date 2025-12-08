@@ -33,7 +33,7 @@ const EmptyMatchesState: React.FC = () => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2 }}
-        className="text-2xl md:text-3xl font-bold text-white mb-3 drop-shadow-md font-['Poppins']"
+        className="text-2xl md:text-3xl font-bold text-black mb-3 drop-shadow-md font-['Poppins']"
       >
         ¡Ya agotaste todas tus flechas!
       </motion.h2>
@@ -42,7 +42,7 @@ const EmptyMatchesState: React.FC = () => {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3 }}
-        className="text-white/90 text-lg font-medium leading-relaxed drop-shadow-sm"
+        className="text-black/90 text-lg font-medium leading-relaxed drop-shadow-sm"
       >
         Vuelve pronto para obtener mejores y más oportunidades.
       </motion.p>
