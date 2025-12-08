@@ -8,7 +8,6 @@ import ProfileInfo from "./ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 
-
 /**
  * Sanitiza una cadena de texto para prevenir inyecciones XSS
  * Elimina caracteres peligrosos y limita la longitud
@@ -17,19 +16,19 @@ const sanitizeString = (input: unknown, maxLength: number = 1000): string => {
   if (input === null || input === undefined) {
     return "";
   }
-  
+
   let str = String(input);
-  
+
   // Limitar longitud
   if (str.length > maxLength) {
     str = str.substring(0, maxLength);
   }
-  
+
   // Eliminar caracteres de control y caracteres peligrosos para HTML
   str = str
     .replace(/[\x00-\x1F\x7F]/g, "") // Caracteres de control
     .replace(/[<>]/g, ""); // Caracteres HTML básicos
-  
+
   return str.trim();
 };
 
@@ -40,7 +39,7 @@ const sanitizeStringArray = (input: unknown): string[] => {
   if (!Array.isArray(input)) {
     return [];
   }
-  
+
   return input
     .map((item) => sanitizeString(item, 100))
     .filter((item) => item.length > 0);
@@ -53,14 +52,14 @@ const validateUserId = (userId: number | string): number | null => {
   if (typeof userId === "number") {
     return userId > 0 ? userId : null;
   }
-  
+
   if (typeof userId === "string") {
     const parsed = parseInt(userId, 10);
     if (!isNaN(parsed) && parsed > 0) {
       return parsed;
     }
   }
-  
+
   return null;
 };
 
@@ -81,11 +80,11 @@ const OtherUserProfilePage: React.FC = () => {
         description: "No puedes acceder directamente a este perfil.",
         variant: "destructive",
       });
-  
+
       navigate("/", { replace: true });
       return; // <- evita cargar datos innecesarios
     }
-  }, [location.state, toast, navigate]);   
+  }, [location.state, toast, navigate]);
 
   useEffect(() => {
     const fetchOtherUserProfile = async () => {
@@ -102,11 +101,13 @@ const OtherUserProfilePage: React.FC = () => {
         setError(null);
 
         console.log("Cargando datos del perfil ajeno...");
-        
+
         // Obtener el perfil del usuario (similar a ProfilePage pero para otro usuario)
         let profile = null;
         try {
-          const profileResponse = await api.get(`/profile/profileManagement/${validUserId}/`);
+          const profileResponse = await api.get(
+            `/profile/profileManagement/${validUserId}/`
+          );
           profile = profileResponse.data;
           console.log("Perfil obtenido:", profile);
         } catch (profileError: any) {
@@ -124,7 +125,7 @@ const OtherUserProfilePage: React.FC = () => {
         // Obtener los datos del usuario asociado al perfil
         // El backend ahora devuelve los datos completos del usuario en profile.usuario
         let userProfile: any = null;
-        
+
         // El backend devuelve el objeto usuario completo con todos los campos
         if (profile.usuario && typeof profile.usuario === "object") {
           // Verificar si tiene usuario_id (datos completos del usuario)
@@ -158,8 +159,12 @@ const OtherUserProfilePage: React.FC = () => {
             authAPI.getDegrees(),
             authAPI.getLocations(),
           ]);
-          degreesCatalog = Array.isArray(degRes) ? degRes : degRes?.results || [];
-          locationsCatalog = Array.isArray(locRes) ? locRes : locRes?.results || [];
+          degreesCatalog = Array.isArray(degRes)
+            ? degRes
+            : degRes?.results || [];
+          locationsCatalog = Array.isArray(locRes)
+            ? locRes
+            : locRes?.results || [];
         } catch (catalogError) {
           console.warn("No se pudieron cargar los catálogos:", catalogError);
         }
@@ -170,8 +175,17 @@ const OtherUserProfilePage: React.FC = () => {
           try {
             const birthDate = new Date(userProfile.fechanacimiento);
             const today = new Date();
-            age = today.getFullYear() - birthDate.getFullYear() -
-              (today < new Date(today.getFullYear(), birthDate.getMonth(), birthDate.getDate()) ? 1 : 0);
+            age =
+              today.getFullYear() -
+              birthDate.getFullYear() -
+              (today <
+              new Date(
+                today.getFullYear(),
+                birthDate.getMonth(),
+                birthDate.getDate()
+              )
+                ? 1
+                : 0);
           } catch (e) {
             age = 0;
           }
@@ -180,18 +194,24 @@ const OtherUserProfilePage: React.FC = () => {
         // Procesar programa académico (igual que ProfilePage)
         const programaObj = profile?.programa_academico;
         const programaId = programaObj?.programa_id ?? programaObj ?? null;
-        const programaDesc = programaObj?.descripcion
-          || degreesCatalog.find((d: any) => (d.programa_id ?? d.id) === programaId)?.descripcion
-          || programaObj?.nombre
-          || "No especificado";
+        const programaDesc =
+          programaObj?.descripcion ||
+          degreesCatalog.find(
+            (d: any) => (d.programa_id ?? d.id) === programaId
+          )?.descripcion ||
+          programaObj?.nombre ||
+          "No especificado";
 
         // Procesar ubicación (igual que ProfilePage)
         const ubicacionObj = profile?.ubicacion;
         const ubicacionId = ubicacionObj?.ubicacion_id ?? ubicacionObj ?? null;
-        const ubicacionDesc = ubicacionObj?.descripcion
-          || locationsCatalog.find((l: any) => (l.ubicacion_id ?? l.id) === ubicacionId)?.descripcion
-          || ubicacionObj?.nombre
-          || "No especificado";
+        const ubicacionDesc =
+          ubicacionObj?.descripcion ||
+          locationsCatalog.find(
+            (l: any) => (l.ubicacion_id ?? l.id) === ubicacionId
+          )?.descripcion ||
+          ubicacionObj?.nombre ||
+          "No especificado";
 
         // Sanitizar todos los datos antes de usarlos
         const sanitizedName = sanitizeString(
@@ -201,14 +221,20 @@ const OtherUserProfilePage: React.FC = () => {
         );
         const sanitizedStatus = sanitizeString(profile.estado || "", 50);
         const sanitizedLocation = sanitizeString(ubicacionDesc, 100);
-        const sanitizedAbout = sanitizeString(userProfile.descripcion || "Sin descripción", 500);
+        const sanitizedAbout = sanitizeString(
+          userProfile.descripcion || "Sin descripción",
+          500
+        );
         const sanitizedInterests = sanitizeStringArray(
-          profile.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : []
+          profile.hobbies
+            ? profile.hobbies.split(",").map((h: string) => h.trim())
+            : []
         );
         const sanitizedPrograma = sanitizeString(programaDesc, 100);
-        const sanitizedEstatura = typeof profile.estatura === "number" && profile.estatura > 0
-          ? profile.estatura
-          : undefined;
+        const sanitizedEstatura =
+          typeof profile.estatura === "number" && profile.estatura > 0
+            ? profile.estatura
+            : undefined;
 
         // Preparar datos del perfil (igual estructura que ProfilePage)
         const preparedProfileData = {
@@ -220,26 +246,33 @@ const OtherUserProfilePage: React.FC = () => {
           interests: sanitizedInterests,
           programa_academico: sanitizedPrograma,
           estatura: sanitizedEstatura,
-          images: (profile.images && Array.isArray(profile.images) && profile.images.length > 0)
-            ? profile.images.map((img: any) => {
-                const imageUrl = img.imagen;
-                if (imageUrl.startsWith('http')) return imageUrl;
-                const baseUrl = import.meta.env.VITE_API_BASE_URL;
-                return `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
-              })
-            : [
-                "https://ui-avatars.com/api/?name=" + encodeURIComponent(sanitizedName) + "&background=random&size=400",
-              ],
+          images:
+            profile.images &&
+            Array.isArray(profile.images) &&
+            profile.images.length > 0
+              ? profile.images.map((img: any) => {
+                  const imageUrl = img.imagen;
+                  if (imageUrl.startsWith("http")) return imageUrl;
+                  const baseUrl = import.meta.env.VITE_API_BASE_URL;
+                  return `${baseUrl}${
+                    imageUrl.startsWith("/") ? "" : "/"
+                  }${imageUrl}`;
+                })
+              : [
+                  "https://ui-avatars.com/api/?name=" +
+                    encodeURIComponent(sanitizedName) +
+                    "&background=random&size=400",
+                ],
         };
 
         console.log("Datos del perfil preparados:", preparedProfileData);
         setProfileData(preparedProfileData);
       } catch (err: any) {
         console.error("Error fetching other user profile:", err);
-        
+
         // Manejo seguro de errores sin exponer detalles internos
         let errorMessage = "No se pudo cargar el perfil";
-        
+
         if (err.response) {
           // Error de respuesta del servidor
           if (err.response.status === 404) {
@@ -255,7 +288,7 @@ const OtherUserProfilePage: React.FC = () => {
         } else if (err.message) {
           errorMessage = err.message;
         }
-        
+
         setError(errorMessage);
         toast({
           title: "Error",
@@ -289,7 +322,9 @@ const OtherUserProfilePage: React.FC = () => {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#FFF6F5]">
         <div className="text-center">
-          <p className="text-gray-600 text-lg">{error || "No se pudo cargar el perfil"}</p>
+          <p className="text-gray-600 text-lg">
+            {error || "No se pudo cargar el perfil"}
+          </p>
         </div>
       </div>
     );
@@ -298,31 +333,32 @@ const OtherUserProfilePage: React.FC = () => {
   // Renderizar perfil (igual estructura visual que ProfilePage pero sin botón de editar)
   return (
     <div className="relative min-h-screen bg-[#FFF6F5] px-4 sm:px-6 py-8 sm:py-12 md:py-16 lg:py-20 flex items-center justify-center">
-
       {/* BOTÓN REGRESAR */}
       <button
         onClick={() => {
           if (window.history.length > 2) {
-            navigate(-1); // Volver a la página anterior (generalmente el chat)
+            navigate(-1);
           } else {
-            navigate("/", { replace: true }); // Acceso directo → enviar al inicio
+            navigate("/", { replace: true });
           }
         }}
-        className="absolute top-6 left-6 z-50 bg-white/70 backdrop-blur-md border border-white/50 
-                  shadow-lg hover:bg-white text-[#E74C3C] font-semibold px-4 py-2 rounded-full 
-                  transition-all flex items-center gap-2"
+        className="fixed top-5 left-4 sm:left-20 z-50
+             bg-white/70 backdrop-blur-md border border-white/50
+             shadow-lg hover:bg-white text-[#E74C3C] font-semibold
+             px-4 py-2 rounded-full transition-all flex items-center 
+             gap-2 text-lg"
       >
-        <span className="text-lg">←</span> Regresar
+        <span className="text-2xl sm:text-3xl font-bold">←</span>
+        <span className="hidden sm:inline">Regresar</span>
       </button>
 
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-[#E74C3C]/10 blur-3xl" />
+        <div className="absolute -left-15 -top-24 h-72 w-72 rounded-full bg-[#E74C3C]/10 blur-3xl" />
         <div className="absolute -right-24 -bottom-24 h-80 w-80 rounded-full bg-[#E74C3C]/10 blur-3xl" />
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-[#E74C3C]/5 blur-3xl" />
       </div>
 
       <div className="relative w-full max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 lg:gap-12 xl:gap-16">
-        
         {/* Imágenes - Izquierda */}
         <div className="flex justify-center lg:col-span-5 lg:justify-end order-2 lg:order-1">
           <ProfileCarousel images={profileData.images} />
@@ -336,7 +372,6 @@ const OtherUserProfilePage: React.FC = () => {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );

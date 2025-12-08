@@ -18,15 +18,15 @@ const ChatGeneral: React.FC = () => {
 
   // PALETA DE COLORES
   const COLORS = {
-    primary: '#E74C3C',
-    secondary: '#F2D6CD',
-    background: '#FFF6F5',
+    primary: "#E74C3C",
+    secondary: "#F2D6CD",
+    background: "#FFF6F5",
     text: {
-      primary: '#1E293B',
-      secondary: '#64748B',
-      muted: '#94A3B8'
+      primary: "#1E293B",
+      secondary: "#64748B",
+      muted: "#94A3B8",
     },
-    border: '#F2D6CD'
+    border: "#F2D6CD",
   };
 
   // 1. OBTENER LA LISTA DE CHATS REALES
@@ -234,13 +234,13 @@ const ChatGeneral: React.FC = () => {
     };
 
     if (isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener("mousemove", handleMouseMove);
+      document.addEventListener("mouseup", handleMouseUp);
     }
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mouseup", handleMouseUp);
     };
   }, [isResizing, minWidth, maxWidth]);
 
@@ -250,11 +250,14 @@ const ChatGeneral: React.FC = () => {
     bg-white
     border-r border-[#F2D6CD]
     relative
-    ${isMobile
-      ? (isPanelOpen 
-          ? 'fixed left-0 top-0 h-full z-50 w-full' 
-          : 'fixed left-0 top-0 w-0 h-full overflow-hidden opacity-0 z-50')
-      : (isPanelOpen ? '' : 'w-0 overflow-hidden')
+    ${
+      isMobile
+        ? isPanelOpen
+          ? "fixed left-0 top-0 h-full z-50 w-full"
+          : "fixed left-0 top-0 w-0 h-full overflow-hidden opacity-0 z-50"
+        : isPanelOpen
+        ? ""
+        : "w-0 overflow-hidden"
     }
   `;
 
@@ -263,21 +266,36 @@ const ChatGeneral: React.FC = () => {
     if (chat.contacto.imagen_principal) {
       return chat.contacto.imagen_principal;
     }
-    
+
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       `${chat.contacto.nombres} ${chat.contacto.apellidos}`
     )}&background=ec4899&color=fff&size=200`;
   };
 
+  const formatContactName = (chat: ChatListItemReal) => {
+    const nombres = chat.contacto.nombres || "";
+    const apellidos = chat.contacto.apellidos || "";
+
+    // Tomar solo el primer apellido (antes del primer espacio)
+    const primerApellido = apellidos.split(" ")[0];
+
+    // Concatenar nombre(s) con el primer apellido
+    return `${nombres} ${primerApellido}`.trim();
+  };
+
   return (
     <div className="flex h-screen bg-[#FFF6F5] overflow-hidden">
       {/* Panel de la izquierda (Lista de Chats) */}
-      <div 
+      <div
         className={panelClasses}
         style={{
-          width: isMobile 
-            ? (isPanelOpen ? '100%' : '0px')
-            : (isPanelOpen ? `${panelWidth}px` : '0px')
+          width: isMobile
+            ? isPanelOpen
+              ? "100%"
+              : "0px"
+            : isPanelOpen
+            ? `${panelWidth}px`
+            : "0px",
         }}
       >
         <ChatListPanel
@@ -291,7 +309,7 @@ const ChatGeneral: React.FC = () => {
             setSelectedChatId(null);
           }}
         />
-        
+
         {/* Barra de redimensionamiento - Solo visible en desktop cuando el panel está abierto */}
         {!isMobile && isPanelOpen && (
           <div
@@ -305,7 +323,11 @@ const ChatGeneral: React.FC = () => {
       </div>
 
       {/* Panel de la derecha (Vista del Chat Actual) */}
-      <div className={`flex-1 flex flex-col overflow-hidden ${isMobile && isPanelOpen ? 'hidden' : 'flex'}`}>
+      <div
+        className={`flex-1 flex flex-col overflow-hidden ${
+          isMobile && isPanelOpen ? "hidden" : "flex"
+        }`}
+      >
         {/* Contenido principal del Chat */}
         {selectedChatId ? (
           <div className="flex-1 h-full overflow-hidden animate-fadeIn">
@@ -315,11 +337,11 @@ const ChatGeneral: React.FC = () => {
               contactPhotoUrl={
                 selectedChat
                   ? getContactPhotoUrl(selectedChat)
-                  : '/avatar-default.png'
+                  : "/avatar-default.png"
               }
               contactName={
                 selectedChat
-                  ? `${selectedChat.contacto.nombres} ${selectedChat.contacto.apellidos}`
+                  ? formatContactName(selectedChat)
                   : `Conversación #${selectedChatId}`
               }
               contactLastSeen={contactLastSeen}
@@ -383,7 +405,9 @@ const ChatGeneral: React.FC = () => {
         }
         
         /* Prevenir selección de texto durante el redimensionamiento */
-        ${isResizing ? `
+        ${
+          isResizing
+            ? `
           * {
             user-select: none !important;
             -webkit-user-select: none !important;
@@ -391,7 +415,9 @@ const ChatGeneral: React.FC = () => {
             -ms-user-select: none !important;
             cursor: ew-resize !important;
           }
-        ` : ''}
+        `
+            : ""
+        }
       `}</style>
     </div>
   );
