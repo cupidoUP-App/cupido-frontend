@@ -8,6 +8,7 @@ import MatchCard from "../components/MatchCard";
 import MatchLimitDialog from "../components/MatchLimitDialog";
 import MatchOptionsDialog from "../components/MatchOptionsDialog";
 import MatchSuccessSlide from "../components/MatchSuccessSlide";
+import EmptyMatchesState from "../components/EmptyMatchesState";
 import { MatchData } from "../types";
 import { photoAPI } from "@lib/api";
 
@@ -148,11 +149,13 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="text-center">
-          <p className="text-gray-600">
-            {error || "No hay más recomendaciones disponibles por ahora"}
-          </p>
-        </div>
+        {error ? (
+          <div className="text-center">
+            <p className="text-gray-600">{error}</p>
+          </div>
+        ) : (
+          <EmptyMatchesState />
+        )}
       </main>
     );
   }
