@@ -60,9 +60,9 @@ const handleNotificationClick = useCallback(
       // Marcar como leída
       if (!notification.read) await markAsRead(notification.id);
 
-      const closeAndGo = (path: string) => {
+      const closeAndGo = (path: string, state?: any) => {
         if (onClose) onClose();
-        setTimeout(() => navigate(path), 50);
+        setTimeout(() => navigate(path, { state }), 50);
       };
 
       const type = notification.tipo.toLowerCase();
@@ -77,7 +77,7 @@ const handleNotificationClick = useCallback(
                              (notification as any).related_user_id;
 
         if (targetUserId) {
-          return closeAndGo(`/other-user-profile/${targetUserId}`);
+          return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true });
         }
         console.warn("⚠️ LIKE sin ID de usuario válido", notification);
       }
@@ -92,7 +92,7 @@ const handleNotificationClick = useCallback(
 
         // Prioridad 2: ir al perfil del match
         if (notification.usuario_match_id) {
-          return closeAndGo(`/other-user-profile/${notification.usuario_match_id}`);
+          return closeAndGo(`/other-user-profile/${notification.usuario_match_id}`, { allowed: true });
         }
         
         // Fallback: Si no hay ID específico, intentar con from_user_id si existe
@@ -105,7 +105,7 @@ const handleNotificationClick = useCallback(
                              (notification as any).related_user_id;
 
         if (targetUserId) {
-             return closeAndGo(`/other-user-profile/${targetUserId}`);
+             return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true });
         }
 
         console.warn("⚠️ MATCH sin chat_id ni usuario_match_id válido. Keys disponibles:", Object.keys(notification), notification);
