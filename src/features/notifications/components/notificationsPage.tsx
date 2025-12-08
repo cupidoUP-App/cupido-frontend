@@ -60,7 +60,7 @@ const handleNotificationClick = useCallback(
       if (notification.tipo === "like" && notification.from_user_id) {
         if (onClose) onClose();
         setTimeout(() => {
-          navigate(/profile/${notification.from_user_id});
+          navigate('/other-user-profile/${notification.from_user_id}');
         }, 100);
         return;
       }
@@ -69,7 +69,7 @@ const handleNotificationClick = useCallback(
       if (notification.tipo === "match" && notification.chat_id) {
         if (onClose) onClose();
         setTimeout(() => {
-          navigate(/chat?chatId=${notification.chat_id});
+          navigate('/chat?chatId=${notification.chat_id}');
         }, 100);
         return;
       }
@@ -78,7 +78,7 @@ const handleNotificationClick = useCallback(
       if (notification.chat_id) {
         if (onClose) onClose();
         setTimeout(() => {
-          navigate(/chat?chatId=${notification.chat_id});
+          navigate('/chat?chatId=${notification.chat_id}');
         }, 100);
         return;
       }
