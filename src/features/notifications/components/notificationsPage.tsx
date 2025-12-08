@@ -31,12 +31,16 @@ export default function NotificationsPage({
 
   // Convertir fecha y filtrar duplicados
   const uniqueNotifications = notifications.filter((notification, index, self) => {
-    const date = new Date(notification.fecha_envio).getTime();
-    const key = `${notification.id}-${date}`;
+    // Validar fecha
+    const date = new Date(notification.fecha_envio);
+    const time = isNaN(date.getTime()) ? 0 : date.getTime();
+    
+    const key = `${notification.id}-${time}`;
 
     const firstIndex = self.findIndex((n) => {
-      const d = new Date(n.fecha_envio).getTime();
-      return `${n.id}-${d}` === key;
+      const d = new Date(n.fecha_envio);
+      const t = isNaN(d.getTime()) ? 0 : d.getTime();
+      return `${n.id}-${t}` === key;
     });
 
     return index === firstIndex;
@@ -45,7 +49,8 @@ export default function NotificationsPage({
   // Click en notificación (marcar como leída + navegar)
 const handleNotificationClick = useCallback(
   async (notification: AppNotification) => {
-    console.log("🖱️ Click:", notification);
+    console.log("🖱️ Click en notificación:", notification);
+    console.log("Datos de notificación:", JSON.stringify(notification, null, 2));
 
     const now = Date.now();
     if (now - lastClickTime < 300) return;

@@ -9,7 +9,9 @@ const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
         mensaje: djangoNotif.mensaje,
         read: djangoNotif.estado === 'leido', 
         fecha_envio: new Date(djangoNotif.fecha_envio),
-        chat_id: djangoNotif.chat_id || null,  // ID del chat para navegación
+        chat_id: djangoNotif.chat_id || null,
+        from_user_id: djangoNotif.from_user_id || null,
+        usuario_match_id: djangoNotif.usuario_match_id || null,
     };
 };
 
