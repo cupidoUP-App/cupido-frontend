@@ -63,8 +63,18 @@ const handleNotificationClick = useCallback(
       const type = notification.tipo.toLowerCase();
 
       // ❤️ LIKE → ir al perfil
-      if (type === "like" && notification.from_user_id) {
-        return closeAndGo(`/other-user-profile/${notification.from_user_id}`);
+      // ❤️ LIKE → ir al perfil
+      if (type === "like") {
+        const targetUserId = notification.from_user_id || 
+                             (notification as any).user_id || 
+                             (notification as any).userId || 
+                             (notification as any).sender_id ||
+                             (notification as any).related_user_id;
+
+        if (targetUserId) {
+          return closeAndGo(`/other-user-profile/${targetUserId}`);
+        }
+        console.warn("⚠️ LIKE sin ID de usuario válido", notification);
       }
 
       // ✨ MATCH
@@ -81,11 +91,19 @@ const handleNotificationClick = useCallback(
         }
         
         // Fallback: Si no hay ID específico, intentar con from_user_id si existe
-        if (notification.from_user_id) {
-             return closeAndGo(`/other-user-profile/${notification.from_user_id}`);
+        // También intentar buscar otras propiedades comunes de ID por si el backend envía algo diferente
+        const targetUserId = notification.usuario_match_id || 
+                             notification.from_user_id || 
+                             (notification as any).user_id || 
+                             (notification as any).userId || 
+                             (notification as any).sender_id ||
+                             (notification as any).related_user_id;
+
+        if (targetUserId) {
+             return closeAndGo(`/other-user-profile/${targetUserId}`);
         }
 
-        console.warn("⚠️ MATCH sin chat_id ni usuario_match_id", notification);
+        console.warn("⚠️ MATCH sin chat_id ni usuario_match_id válido. Keys disponibles:", Object.keys(notification), notification);
         return;
       }
 
