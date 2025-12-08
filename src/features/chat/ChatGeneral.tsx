@@ -1,34 +1,48 @@
 // ChatGeneral.tsx
+// Modificado por Jeison Alexis Rodriguez Angarita
 
 import React, { useEffect, useState } from "react";
 
-// 🟢 Importaciones de Componentes
-import ChatListPanel from "./ChatListPanel"; // Este componente debe recibir chatList y listLoading
+// Importaciones de Componentes
+import ChatListPanel from "./ChatListPanel";
 import ChatView from "./ChatView";
 
-// 🟢 Importaciones de Hooks y Tipos REALES
-
+// Importaciones de Hooks y Tipos REALES
 import { useChatSocket } from "@hooks/useChatSocket";
-import { useChatList, ChatListItemReal } from "@hooks/useChatList"; // Hook para la lista real
-// Importamos Message y WsStatus si no están ya en useChatSocket (depende de tu estructura)
+import { useChatList, ChatListItemReal } from "@hooks/useChatList";
 
 const ChatGeneral: React.FC = () => {
+  // Hook para detectar móvil
+  const isMobile = window.innerWidth < 901;
+
   // Estado para guardar el ID del chat seleccionado. Inicializamos en null.
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
-  const [isPanelOpen, setIsPanelOpen] = useState(true); // Controla la visibilidad del panel lateral
-  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false); // Menú de 3 puntos del encabezado del chat activo
+  const [isPanelOpen, setIsPanelOpen] = useState(true);
+  const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
 
-  // 🟢 1. OBTENER LA LISTA DE CHATS REALES (Mover la lógica desde ChatListPanel)
+  // PALETA DE COLORES
+  const COLORS = {
+    primary: '#E74C3C',
+    secondary: '#F2D6CD',
+    background: '#FFF6F5',
+    text: {
+      primary: '#1E293B',
+      secondary: '#64748B',
+      muted: '#94A3B8'
+    },
+    border: '#F2D6CD'
+  };
+
+  // 1. OBTENER LA LISTA DE CHATS REALES
   const {
     chatList,
     loading: listLoading,
     error: listError,
     setChatList,
     refetchChats,
-  } = useChatList(); // Asumimos que useChatList se encarga de actualizar/recargar si es necesario
+  } = useChatList();
 
-  // 🟢 2. BUSCAR LA INFORMACIÓN DEL CONTACTO SELECCIONADO
-  // Usamos la lista REAL para obtener el objeto completo, eliminando la dependencia a mock-chat-data
+  // 2. BUSCAR LA INFORMACIÓN DEL CONTACTO SELECCIONADO
   const selectedChat: ChatListItemReal | undefined = chatList.find(
     (chat) => chat.id === selectedChatId
   );
@@ -40,7 +54,6 @@ const ChatGeneral: React.FC = () => {
     ? (() => {
         const lastDate = new Date(rawLastLogin);
         const diffMs = Date.now() - lastDate.getTime();
-        // Si se conectó en los últimos 5 minutos, lo consideramos "En línea"
         contactIsOnline = diffMs < 5 * 60 * 1000;
         return lastDate.toLocaleString("es-ES", {
           day: "2-digit",
@@ -48,12 +61,12 @@ const ChatGeneral: React.FC = () => {
           year: "numeric",
           hour: "2-digit",
           minute: "2-digit",
-          hour12: true, // Formato de 12 horas (con a. m. / p. m.)
+          hour12: true,
         });
       })()
     : undefined;
 
-  // 🟢 3. INTEGRAR LA LÓGICA DEL CHAT SOCKET (Para la vista activa)
+  // 3. INTEGRAR LA LÓGICA DEL CHAT SOCKET
   const {
     messages,
     wsStatus,
@@ -63,22 +76,21 @@ const ChatGeneral: React.FC = () => {
     clearHistory,
   } = useChatSocket(selectedChatId);
 
-  // 🟢 4. DEFINICIONES DE LÓGICA
+  // 4. DEFINICIONES DE LÓGICA
   const handleSelectChat = (chatId: number) => {
     setSelectedChatId(chatId);
-    // Al abrir un chat, marcamos sus notificaciones como leídas en el frontend
     setChatList((prev) =>
       prev.map((chat) =>
         chat.id === chatId ? { ...chat, no_leidos: 0 } : chat
       )
     );
 
-    //setIsPanelOpen(false);
-    // Opcional: setIsMenuOpen(false); si tienes un estado de menú desplegable aquí
+    if (isMobile) {
+      setIsPanelOpen(false);
+    }
   };
 
-  // 🟢 5. NOTIFICAR AL BACKEND CUANDO SE ABRE/CIERRA UN CHAT
-  // Esto evita notificaciones mientras el usuario está viendo el chat
+  // 5. NOTIFICAR AL BACKEND CUANDO SE ABRE/CIERRA UN CHAT
   useEffect(() => {
     if (!selectedChatId) return;
 
@@ -86,10 +98,8 @@ const ChatGeneral: React.FC = () => {
       localStorage.getItem("access_token") || localStorage.getItem("token");
     if (!token) return;
 
-    const API_BASE =
-      import.meta.env.VITE_API_BASE_URL
+    const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
-    // Marcar chat como abierto
     const abrirChat = async () => {
       try {
         await fetch(`${API_BASE}/chat/${selectedChatId}/abrir/`, {
@@ -105,7 +115,6 @@ const ChatGeneral: React.FC = () => {
       }
     };
 
-    // Marcar chat como cerrado
     const cerrarChat = async () => {
       try {
         await fetch(`${API_BASE}/chat/${selectedChatId}/cerrar/`, {
@@ -123,26 +132,26 @@ const ChatGeneral: React.FC = () => {
 
     abrirChat();
 
-    // Cleanup: cerrar el chat cuando el componente se desmonta o cambia de chat
     return () => {
       cerrarChat();
     };
   }, [selectedChatId]);
 
   const togglePanel = () => {
-    setIsPanelOpen((prev) => !prev);
+    if (isMobile) {
+      setIsPanelOpen((prev) => !prev);
+    } else {
+      setIsPanelOpen((prev) => !prev);
+    }
   };
 
   // Estado para rastrear si el usuario cerró intencionalmente el chat
   const [userClosedChat, setUserClosedChat] = useState(false);
 
   useEffect(() => {
-    // Solo auto-seleccionar el primer chat si el usuario no cerró intencionalmente el chat
-    // y si no hay un chat seleccionado
     if (selectedChatId == null && chatList.length > 0 && !userClosedChat) {
       setSelectedChatId(chatList[0].id);
     }
-    // Resetear el flag cuando se selecciona un chat manualmente
     if (selectedChatId !== null) {
       setUserClosedChat(false);
     }
@@ -159,7 +168,7 @@ const ChatGeneral: React.FC = () => {
     }
   }, [selectedChatId]);
 
-  // 🟢 Acciones del menú de 3 puntos en el encabezado del chat activo
+  // Acciones del menú de 3 puntos en el encabezado del chat activo
   const handleHeaderMenuAction = (
     action: "Bloquear" | "Reportar" | "Vaciar" | "Cerrar"
   ) => {
@@ -190,7 +199,6 @@ const ChatGeneral: React.FC = () => {
         break;
       case "Cerrar":
         setUserClosedChat(true);
-        // Al cerrar conversación, volvemos a mostrar la lista de chats
         setIsPanelOpen(true);
         setSelectedChatId(null);
         break;
@@ -199,44 +207,87 @@ const ChatGeneral: React.FC = () => {
     setIsHeaderMenuOpen(false);
   };
 
-  // Solo deshabilitar el input si hay un error crítico (permiso / sesión).
-  // Ya NO lo bloqueamos mientras carga historial o hace polling.
   const isInputDisabled =
     !!wsError &&
     (wsError.includes("No tienes permiso") || wsError.includes("sesión"));
-  // Clases para el panel izquierdo (Lista de Chats)
-  // Móvil: w-full, oculto si hay chat seleccionado
-  // Desktop (md): w-80, siempre visible (o controlado por isPanelOpen)
-  const leftPanelClasses = `
+
+  // Estado para el ancho del panel (redimensionable)
+  const [panelWidth, setPanelWidth] = useState(320);
+  const [isResizing, setIsResizing] = useState(false);
+  const minWidth = 280;
+  const maxWidth = 500;
+
+  // Función para iniciar el redimensionamiento
+  const startResizing = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsResizing(true);
+  };
+
+  // Efecto para manejar el redimensionamiento
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return;
+      const newWidth = e.clientX;
+      if (newWidth >= minWidth && newWidth <= maxWidth) {
+        setPanelWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing, minWidth, maxWidth]);
+
+  // Clases responsive para el panel
+  const panelClasses = `
     transition-all duration-300 ease-in-out
-    ${isPanelOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-0 md:opacity-0 md:overflow-hidden'}
-    ${selectedChatId ? 'hidden md:block' : 'w-full'} 
-    md:w-80 md:relative absolute inset-0 z-20 bg-white
+    bg-white
+    border-r border-[#F2D6CD]
+    relative
+    ${isMobile
+      ? (isPanelOpen 
+          ? 'fixed left-0 top-0 h-full z-50 w-full' 
+          : 'fixed left-0 top-0 w-0 h-full overflow-hidden opacity-0 z-50')
+      : (isPanelOpen ? '' : 'w-0 overflow-hidden')
+    }
   `;
 
-  // Obtener URL de la foto del contacto (Real o Fallback)
+  // Obtener URL de la foto del contacto
   const getContactPhotoUrl = (chat: ChatListItemReal) => {
-    // 1. Usar imagen real del backend si existe
     if (chat.contacto.imagen_principal) {
       return chat.contacto.imagen_principal;
     }
     
-    // 2. Fallback: Generar avatar con iniciales usando ui-avatars
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(
       `${chat.contacto.nombres} ${chat.contacto.apellidos}`
     )}&background=ec4899&color=fff&size=200`;
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-pink-50 via-white to-pink-50 relative overflow-hidden">
-      {/* ⬅️ Panel de la izquierda (Lista de Chats) */}
-      <div className={leftPanelClasses}>
+    <div className="flex h-screen bg-[#FFF6F5] overflow-hidden">
+      {/* Panel de la izquierda (Lista de Chats) */}
+      <div 
+        className={panelClasses}
+        style={{
+          width: isMobile 
+            ? (isPanelOpen ? '100%' : '0px')
+            : (isPanelOpen ? `${panelWidth}px` : '0px')
+        }}
+      >
         <ChatListPanel
-          // 🟢 Pasar la lista REAL
           chatList={chatList}
           listLoading={listLoading}
           listError={listError}
-          // 🟢 Props de Control
           onSelectChat={handleSelectChat}
           selectedChatId={selectedChatId}
           onCloseChat={(chatId: number) => {
@@ -244,19 +295,31 @@ const ChatGeneral: React.FC = () => {
             setSelectedChatId(null);
           }}
         />
+        
+        {/* Barra de redimensionamiento - Solo visible en desktop cuando el panel está abierto */}
+        {!isMobile && isPanelOpen && (
+          <div
+            className="absolute top-0 right-0 w-1 h-full cursor-ew-resize hover:bg-[#E74C3C] transition-colors duration-200 group"
+            onMouseDown={startResizing}
+          >
+            {/* Indicador visual de arrastre */}
+            <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-1 h-12 bg-[#E74C3C] opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-l-full"></div>
+          </div>
+        )}
       </div>
 
-      {/* ➡️ Panel de la derecha (Vista del Chat Actual) */}
-      <div className={`flex-1 flex flex-col overflow-hidden relative ${!selectedChatId ? 'hidden md:flex' : 'w-full'}`}>
+      {/* Panel de la derecha (Vista del Chat Actual) */}
+      <div className={`flex-1 flex flex-col overflow-hidden ${isMobile && isPanelOpen ? 'hidden' : 'flex'}`}>
         {/* Contenido principal del Chat */}
         {selectedChatId ? (
-          <div className="flex-1 overflow-hidden animate-fadeIn w-full">
+          <div className="flex-1 h-full overflow-hidden animate-fadeIn">
             <ChatView
               chatId={selectedChatId}
+              contactId={selectedChat?.contacto?.id || 0}
               contactPhotoUrl={
                 selectedChat
                   ? getContactPhotoUrl(selectedChat)
-                  : `https://ui-avatars.com/api/?name=User&background=random`
+                  : '/avatar-default.png'
               }
               contactName={
                 selectedChat
@@ -270,10 +333,8 @@ const ChatGeneral: React.FC = () => {
               sendMessage={sendMessage}
               wsStatus={wsStatus}
               isInputDisabled={isInputDisabled}
-              contactId={selectedChat?.contacto.id || 0}
               onCloseChat={() => {
                 setUserClosedChat(true);
-                // Al cerrar conversación desde el header del chat, mostrar la lista
                 setIsPanelOpen(true);
                 setSelectedChatId(null);
               }}
@@ -281,12 +342,12 @@ const ChatGeneral: React.FC = () => {
             />
           </div>
         ) : (
-          <div className="flex flex-1 items-center justify-center">
-            <div className="text-center px-8">
+          <div className="flex flex-1 items-center justify-center p-4">
+            <div className="text-center px-4 sm:px-8 max-w-md">
               <div className="mb-6 flex justify-center">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-pink-200 to-pink-300 flex items-center justify-center shadow-lg">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gradient-to-br from-[#F2D6CD] to-[#FFF6F5] flex items-center justify-center shadow-lg">
                   <svg
-                    className="w-12 h-12 text-pink-600"
+                    className="w-10 h-10 sm:w-12 sm:h-12 text-[#E74C3C]"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -300,10 +361,10 @@ const ChatGeneral: React.FC = () => {
                   </svg>
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-800 mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-[#1E293B] mb-2">
                 {listLoading ? "Cargando chats..." : "Selecciona un chat"}
               </h3>
-              <p className="text-gray-500 text-sm">
+              <p className="text-[#64748B] text-xs sm:text-sm">
                 {listLoading
                   ? "Por favor espera..."
                   : "Elige una conversación para empezar a chatear"}
@@ -313,18 +374,29 @@ const ChatGeneral: React.FC = () => {
         )}
       </div>
       <style>{`
-                @keyframes fadeIn {
-                    from {
-                        opacity: 0;
-                    }
-                    to {
-                        opacity: 1;
-                    }
-                }
-                .animate-fadeIn {
-                    animation: fadeIn 0.3s ease-out;
-                }
-            `}</style>
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+        .animate-fadeIn {
+          animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Prevenir selección de texto durante el redimensionamiento */
+        ${isResizing ? `
+          * {
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: ew-resize !important;
+          }
+        ` : ''}
+      `}</style>
     </div>
   );
 };
