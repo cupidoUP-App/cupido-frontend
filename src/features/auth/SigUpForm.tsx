@@ -185,6 +185,8 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         variant: "destructive"
       });
     } finally {
+      setIsCaptchaVerified(false);
+      setRecaptchaToken('');
       setIsVerifyingEmail(false);
     }
   };
