@@ -29,19 +29,19 @@ export default function NotificationsPage({
   const containerRef = useRef<HTMLDivElement>(null);
   const [lastClickTime, setLastClickTime] = useState<number>(0);
 
-  // 🟦 Convertir fecha y filtrar duplicados
+  // Convertir fecha y filtrar duplicados
   const uniqueNotifications = notifications.filter((notification, index, self) => {
     const date = new Date(notification.fecha_envio).getTime();
-    const key = ${notification.id}-${date};
+    const key = `${notification.id}-${date}`;
 
     const firstIndex = self.findIndex(n => {
       const d = new Date(n.fecha_envio).getTime();
-      return ${n.id}-${d} === key;
+      return `${n.id}-${d}` === key;
     });
 
     return index === firstIndex;
   });
-
+  
   // 🟦 Click en notificación (marcar como leída + navegar)
 const handleNotificationClick = useCallback(
   async (notification: AppNotification) => {
