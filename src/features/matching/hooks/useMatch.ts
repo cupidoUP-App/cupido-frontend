@@ -39,7 +39,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   // ⭐ Actualizar matchList cuando lleguen los datos reales (matches cambia)
   useEffect(() => {
     if (matches && matches.length > 0) {
-      console.log("🔄 useMatch: Actualizando matchList con", matches.length, "matches");
       setMatchList(matches);
       setCurrentIndex(0); // Reiniciar al primer match
     }
@@ -49,10 +48,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   
   // 🔍 DEBUG: Ver qué datos está mostrando
   useEffect(() => {
-    console.log("📊 useMatch displayData:", displayData);
-    console.log("📊 displayData.usuario_id:", displayData?.usuario_id);
-    console.log("📊 matchList tiene", matchList.length, "items");
-    console.log("📊 currentIndex:", currentIndex);
   }, [displayData, matchList, currentIndex]);
 
   // Calculate time until midnight reset
@@ -104,7 +99,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const handleLike = async () => {
     // 🔥 NUEVO: Verificar si ya hay una operación en progreso
     if (likeInProgress.current || isAnimating || likesRemaining <= 0) {
-      console.log("⏸️ Like en progreso o ya animando, ignorando...");
       if (likesRemaining <= 0) {
         setShowLimitOverlay(true);
       }
@@ -116,22 +110,17 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     const currentUserId = displayData?.usuario_id;
     
     if (!currentUserId) {
-      console.error("❌ No hay usuario_id en displayData");
-      console.error("displayData completo:", displayData);
       
       // Buscar en otras posibles ubicaciones
       const data = displayData as any;
       const possibleId = data?.id || data?.userId || data?.user_id;
       if (possibleId) {
-        console.log("⚠️  Encontrado en otra propiedad:", possibleId);
       } else {
         alert("Error: No se puede identificar el perfil");
         likeInProgress.current = false; // 🔥 Liberar bloqueo
         return;
       }
     }
-    
-    console.log("🔄 Preparando LIKE para usuario:", currentUserId);
     
     setIsAnimating(true);
     
@@ -148,16 +137,12 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     setOverlayIcon(MatchLike);
 
     try {
-      // Llamar a la API de like
-      console.log("📤 Enviando LIKE a la API para usuario:", currentUserId);
       
       // Asegurar que el ID sea string
       const userIdToSend = String(currentUserId);
       const response = await likeAPI.sendLike(userIdToSend);
-      console.log("✅ Respuesta API (like):", response);
       
       if (response.match_found) {
-        console.log("🎯 ¡MATCH ENCONTRADO!");
         // En lugar de alert, seteamos el estado para mostrar el slide
         const resp = response as any;
         setMatchSuccessData({
@@ -167,11 +152,8 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
         });
       }
       
-      console.log("✅ Like guardado en base de datos");
       
     } catch (error: any) {
-      console.error("❌ Error al enviar like a la API:", error);
-      console.error("Error completo:", error.response?.data || error.message);
       
       // Si hay error, revertir el conteo de likes
       setLikesRemaining(likesRemaining);
@@ -209,7 +191,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
              // Si es el último, incrementamos para que displayData sea undefined/null
              // y la UI pueda mostrar "No hay más perfiles"
              setCurrentIndex((prev) => prev + 1);
-             console.log("🏁 Fin de la lista de matches alcanzado");
           }
         }
         setRotation(-20);
@@ -236,7 +217,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const handleDislike = async () => {
     // 🔥 NUEVO: Verificar si ya hay una operación en progreso
     if (dislikeInProgress.current || isAnimating || likesRemaining <= 0) {
-      console.log("⏸️ Dislike en progreso o ya animando, ignorando...");
       if (likesRemaining <= 0) {
         setShowLimitOverlay(true);
       }
@@ -248,13 +228,10 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     const currentUserId = displayData?.usuario_id;
     
     if (!currentUserId) {
-      console.error("❌ No hay usuario_id en displayData");
-      console.error("displayData completo:", displayData);
       
       const data = displayData as any;
       const possibleId = data?.id || data?.userId || data?.user_id;
       if (possibleId) {
-        console.log("⚠️  Encontrado en otra propiedad:", possibleId);
       } else {
         alert("Error: No se puede identificar el perfil");
         dislikeInProgress.current = false; 
@@ -262,7 +239,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
       }
     }
     
-    console.log("🔄 Preparando DISLIKE para usuario:", currentUserId);
     
     setIsAnimating(true);
     
@@ -278,17 +254,11 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     setOverlayIcon(MatchDislike);
 
     try {
-      console.log("📤 Enviando DISLIKE a la API para usuario:", currentUserId);
       
       const userIdToSend = String(currentUserId);
       const response = await likeAPI.sendDislike(userIdToSend);
-      console.log("✅ Respuesta API (dislike):", response);
-      
-      console.log("✅ Dislike guardado en base de datos");
       
     } catch (error: any) {
-      console.error("❌ Error al enviar dislike a la API:", error);
-      console.error("Error completo:", error.response?.data || error.message);
       
       setLikesRemaining(likesRemaining);
       
@@ -317,7 +287,6 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
              setCurrentIndex((prev) => prev + 1);
           } else {
              setCurrentIndex((prev) => prev + 1);
-             console.log("🏁 Fin de la lista de matches alcanzado (Dislike)");
           }
         }
         setRotation(20);

@@ -60,9 +60,6 @@
       "@chat/*": [
         "../../src/features/chat/*"
       ],
-      "@dashboard/*": [
-        "../../src/features/dashboard/*"
-      ],
       "@filters/*": [
         "../../src/features/filters/*"
       ],

@@ -47,7 +47,6 @@ export const useNotification = (autoConnect = true) => {
                 )
             );
         } catch (err) {
-            console.error('Error marking as read:', err);
             throw err;
         }
     }, []);
@@ -56,8 +55,6 @@ export const useNotification = (autoConnect = true) => {
             await NotificationsServices.deleteNotification(id);
             setNotifications(prev => prev.filter(notif => notif.id !== id));
         } catch (err) {
-            console.error('Error dismissing notification:', err);
-            // Still remove from local list for better UX
             setNotifications(prev => prev.filter(notif => notif.id !== id));
         }
     }, []);

@@ -67,15 +67,12 @@ const EditProfilePage = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        console.log("Cargando datos del perfil para edición...");
 
         // Obtener datos del usuario primero (siempre existen)
         const userResponse = await authAPI.getUserProfile();
-        console.log("Respuesta completa del usuario:", userResponse);
 
         // El backend devuelve { estado, should_complete_profile, user }
         const userProfileData = userResponse.user;
-        console.log("Datos del usuario extraídos:", userProfileData);
 
         if (!userProfileData) {
           throw new Error("No se pudieron obtener los datos del usuario");
@@ -87,9 +84,7 @@ const EditProfilePage = () => {
         let profile = null;
         try {
           profile = await authAPI.getProfile();
-          console.log("Datos del perfil obtenidos:", profile);
         } catch (profileError) {
-          console.log("Perfil no encontrado, usando valores por defecto:", profileError);
           profile = null;
         }
 
@@ -99,13 +94,10 @@ const EditProfilePage = () => {
             authAPI.getDegrees(),
             authAPI.getLocations(),
           ]);
-          console.log("Respuesta completa de degrees:", degreesRes);
           const degreesArray = Array.isArray(degreesRes) ? degreesRes : (degreesRes?.results || []);
-          console.log(`Programas académicos cargados: ${degreesArray.length}`);
           setDegrees(degreesArray);
           setLocations(Array.isArray(locationsRes) ? locationsRes : locationsRes?.results || []);
         } catch (catalogError) {
-          console.log("No se pudieron cargar catálogos:", catalogError);
         }
 
         const programaValue = profile?.programa_academico;
@@ -150,20 +142,8 @@ const EditProfilePage = () => {
         setSelectedInterests(profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : []);
         setSelectedEstado(profile?.estado || "");
 
-        console.log("Datos del formulario preparados:", {
-          telefono: normalizedPhone,
-          nombres: userProfileData.nombres || "",
-          apellidos: userProfileData.apellidos || "",
-          descripcion: userProfileData.descripcion || "",
-          programa_academico: typeof programaValue === 'number' ? String(programaValue) : (programaValue?.programa_id?.toString() || ""),
-          ubicacion: typeof ubicacionValue === 'number' ? String(ubicacionValue) : (ubicacionValue?.ubicacion_id?.toString() || ""),
-          estatura: profile?.estatura || 1.5,
-          hobbies: profile?.hobbies ? profile.hobbies.split(',').map((h: string) => h.trim()) : [],
-          fechanacimiento: userProfileData.fechanacimiento,
-          genero_id: userProfileData.genero_id
-        });
+        
       } catch (error) {
-        console.error("Error fetching profile data:", error);
         toast({
           title: "Error",
           description: "No se pudo cargar los datos del perfil",
@@ -387,7 +367,6 @@ const EditProfilePage = () => {
           setIsTelefonoLocked(true);
         }
       } catch (e) {
-        console.warn("No se pudo refrescar el usuario tras guardar teléfono", e);
       }
 
       // 2) Actualizar datos del perfil (usar nombres de FK del backend)
@@ -407,7 +386,6 @@ const EditProfilePage = () => {
         profileData.estatura = height;
       }
 
-      console.log("Guardando datos del perfil:", profileData);
       await authAPI.updateProfileData(profileData);
 
       // Bloquear programa académico si tiene valor después de guardar
@@ -434,8 +412,6 @@ const EditProfilePage = () => {
 
       navigate('/profile');
     } catch (error: any) {
-      console.error("Error updating profile:", error);
-      console.error("Error response data:", error.response?.data);
 
       let errorMessage = "No se pudo actualizar el perfil";
       if (error.response?.data) {

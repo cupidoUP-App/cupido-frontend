@@ -23,25 +23,19 @@ const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
 
   // Clave de sitio de reCAPTCHA desde variables de entorno
   const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
-  console.log("[DEBUG] siteKey:", RECAPTCHA_SITE_KEY);
 
   const handleVerify = (token: string) => {
-    console.log("reCAPTCHA token:", token);
     setCaptchaError(false);
     onVerify(token);
     onClose();
   };
 
   const handleExpired = () => {
-    console.log("reCAPTCHA expired");
     setCaptchaError(false); // Limpiar error anterior
     onExpired();
   };
 
   const handleError = () => {
-    //console.log('reCAPTCHA error');
-    //setCaptchaError(true);
-    //onError();
   };
 
   const handleClose = () => {

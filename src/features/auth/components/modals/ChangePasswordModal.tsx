@@ -78,7 +78,6 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
       onSuccess?.();
       onClose();
     } catch (error: any) {
-      console.error('Error changing password:', error);
 
       let errorMessage = "No pudimos cambiar tu contraseña. Intenta de nuevo.";
 

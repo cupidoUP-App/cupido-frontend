@@ -37,7 +37,6 @@ class WebSocketManager {
                 const payload = JSON.parse(jsonPayload);
                 return payload.user_id || payload.usuario_id || payload.id || payload.userId || payload.sub;
             } catch (e) {
-                console.error("❌ Error decoding token:", e);
             }
         }
         return null;
@@ -49,12 +48,10 @@ class WebSocketManager {
 
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-            console.log('⚠️ WebSocket already connected');
             return;
         }
 
         if (this.isConnecting) {
-            console.log('⚠️ WebSocket connection already in progress');
             return;
         }
 
@@ -62,7 +59,6 @@ class WebSocketManager {
         const token = this.getAuthToken();
 
         if (!userId) {
-            console.error('❌ No user ID found');
             this.notifyError('No user ID found');
             return;
         }
@@ -89,13 +85,10 @@ class WebSocketManager {
             query: { token },
         });
 
-        console.log('🌐 Connecting WebSocket:', wsUrl);
-
         try {
             this.socket = new WebSocket(wsUrl);
 
             this.socket.onopen = () => {
-                console.log('✅ WebSocket connected');
                 this.isConnecting = false;
                 this.notifyConnection(true);
             };
@@ -117,25 +110,21 @@ class WebSocketManager {
                         this.notifyListeners(notification);
                     }
                 } catch (e) {
-                    console.error('❌ Error parsing message:', e);
                 }
             };
 
             this.socket.onerror = (error) => {
-                console.error('❌ WebSocket error:', error);
                 this.isConnecting = false;
                 this.notifyError(error);
                 this.notifyConnection(false);
             };
 
             this.socket.onclose = (event) => {
-                console.log(`🔌 WebSocket closed: ${event.code} ${event.reason}`);
                 this.isConnecting = false;
                 this.notifyConnection(false);
                 
                 // Reconectar automáticamente solo para errores anormales
                 if (event.code !== 1000 && event.code !== 1001) {
-                    console.log('🔄 Will reconnect in 3 seconds...');
                     this.reconnectTimeout = setTimeout(() => {
                         this.connect();
                     }, 3000);
@@ -143,7 +132,6 @@ class WebSocketManager {
             };
 
         } catch (error) {
-            console.error('❌ Failed to create WebSocket:', error);
             this.isConnecting = false;
             this.notifyError('Failed to create WebSocket');
         }

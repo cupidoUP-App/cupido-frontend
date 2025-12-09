@@ -76,12 +76,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   };
 
   const handleCaptchaVerify = (token: string) => {
-    console.log('=== REGISTRO CAPTCHA VERIFICADO ===');
-    console.log('Token de CAPTCHA:', token);
-    console.log('Longitud del token:', token.length);
-    console.log('Timestamp:', new Date().toISOString());
-    console.log('Email del usuario:', formData.email);
-    console.log('===================================');
 
     setIsCaptchaVerified(true);
     setRecaptchaToken(token);
@@ -130,13 +124,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         throw new Error('Debes completar la verificación de seguridad');
       }
 
-      console.log('=== ENVIANDO REGISTRO AL BACKEND ===');
-      console.log('Email:', formData.email);
-      console.log('Token CAPTCHA a enviar:', recaptchaToken);
-      console.log('Longitud del token:', recaptchaToken.length);
-      console.log('Términos aceptados:', formData.acceptTerms);
-      console.log('Firma:', formData.firma);
-      console.log('====================================');
 
       const response = await authAPI.register({
         email: formData.email,
@@ -146,8 +133,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         firma: formData.firma
       });
 
-      console.log('Registro exitoso:', response);
-
       toast({
         title: "Código enviado",
         description: "Hemos enviado un código de verificación a tu correo electrónico.",
@@ -155,7 +140,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
 
       setCurrentStep('email-verification');
     } catch (error: any) {
-      console.error('Error en registro:', error);
 
       let errorMessage = "No pudimos enviar el código de verificación. Intenta de nuevo.";
 
@@ -197,14 +181,12 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         email: formData.email
       });
 
-      console.log('Código reenviado:', response);
 
       toast({
         title: "Código reenviado",
         description: "Hemos enviado un nuevo código de verificación a tu correo.",
       });
     } catch (error: any) {
-      console.error('Error al reenviar código:', error);
 
       let errorMessage = "No pudimos reenviar el código. Intenta de nuevo.";
 
@@ -229,7 +211,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
         code: code
       });
 
-      console.log('Verificación exitosa:', response);
 
       toast({
         title: "¡Registro completado!",
@@ -240,7 +221,6 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
       onClose();
 
     } catch (error: any) {
-      console.error('Error en verificación:', error);
 
       let errorMessage = "El código de verificación es incorrecto. Intenta de nuevo.";
 

@@ -16,27 +16,20 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      console.log("Cargando datos del perfil...");
       try {
-        console.log("Obteniendo datos del usuario...");
         const userResponse = await authAPI.getUserProfile();
         const userProfile = userResponse.user;
 
-        console.log("Obteniendo perfil del usuario...");
         let profile = null;
         try {
           profile = await authAPI.getProfile();
-          console.log("Perfil obtenido:", profile);
         } catch (profileError) {
-          console.log("Perfil no encontrado:", profileError);
           profile = null;
         }
 
-        console.log("Obteniendo imágenes del usuario...");
         let userPhotos: string[] = [];
         try {
           const photosResponse = await photoAPI.getPhotos();
-          console.log("🔍 Respuesta CRUDA de imágenes:", photosResponse);
 
           if (
             photosResponse &&
@@ -45,11 +38,9 @@ const ProfilePage = () => {
           ) {
             userPhotos = photosResponse.results
               .map((photo: any) => {
-                console.log("🔍 Procesando foto:", photo);
 
                 if (photo.imagen) {
                   const imageUrl = photo.imagen;
-                  console.log("🔍 URL de imagen encontrada:", imageUrl);
 
                   if (imageUrl.startsWith("http")) {
                     return imageUrl;
@@ -74,16 +65,12 @@ const ProfilePage = () => {
               );
           }
 
-          console.log("✅ Imágenes procesadas:", userPhotos);
         } catch (photosError) {
-          console.error("❌ Error obteniendo imágenes:", photosError);
           userPhotos = [];
         }
 
         if (userPhotos.length === 0) {
-          console.log(
-            "⚠️ No se encontraron imágenes, usando imágenes de prueba locales"
-          );
+          
           userPhotos = [
             "/images/profile1.jpg",
             "/images/profile2.jpg",
@@ -153,13 +140,10 @@ const ProfilePage = () => {
           estatura: profile?.estatura || undefined,
         };
 
-        console.log("📊 Datos del perfil preparados:", profileData);
-        console.log("🖼️ Imágenes del usuario:", userPhotos);
 
         setProfileData(profileData);
         setUserImages(userPhotos);
       } catch (error) {
-        console.error("❌ Error fetching profile:", error);
         toast({
           title: "Error",
           description: "No se pudo cargar el perfil",

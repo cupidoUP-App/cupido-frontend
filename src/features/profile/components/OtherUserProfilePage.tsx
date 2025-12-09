@@ -109,8 +109,6 @@ const OtherUserProfilePage: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        console.log("Cargando datos del perfil ajeno...");
-
         // Obtener el perfil del usuario (similar a ProfilePage pero para otro usuario)
         let profile = null;
         try {
@@ -118,9 +116,7 @@ const OtherUserProfilePage: React.FC = () => {
             `/profile/profileManagement/${validUserId}/`
           );
           profile = profileResponse.data;
-          console.log("Perfil obtenido:", profile);
         } catch (profileError: any) {
-          console.log("Perfil no encontrado:", profileError);
           if (profileError.response?.status === 404) {
             throw new Error("Perfil no encontrado");
           }
@@ -140,7 +136,6 @@ const OtherUserProfilePage: React.FC = () => {
           // Verificar si tiene usuario_id (datos completos del usuario)
           if (profile.usuario.usuario_id) {
             userProfile = profile.usuario;
-            console.log("Datos del usuario obtenidos:", userProfile);
           } else {
             // Si no tiene usuario_id, puede ser solo el ID numérico
             userProfile = {
@@ -175,7 +170,6 @@ const OtherUserProfilePage: React.FC = () => {
             ? locRes
             : locRes?.results || [];
         } catch (catalogError) {
-          console.warn("No se pudieron cargar los catálogos:", catalogError);
         }
 
         // Calculate age from birth date (igual que ProfilePage)
@@ -274,10 +268,8 @@ const OtherUserProfilePage: React.FC = () => {
                 ],
         };
 
-        console.log("Datos del perfil preparados:", preparedProfileData);
         setProfileData(preparedProfileData);
       } catch (err: any) {
-        console.error("Error fetching other user profile:", err);
 
         // Manejo seguro de errores sin exponer detalles internos
         let errorMessage = "No se pudo cargar el perfil";
@@ -322,7 +314,6 @@ const OtherUserProfilePage: React.FC = () => {
 
     try {
       const response = await likeAPI.sendLike(userId);
-      console.log("Like response:", response);
 
       if (response.match_found) {
         setMatchSuccessData({
@@ -339,7 +330,6 @@ const OtherUserProfilePage: React.FC = () => {
         // Opcional: Desactivar botones o cambiar estado si solo se permite un like
       }
     } catch (error: any) {
-      console.error("Error sending like:", error);
       toast({
         title: "Error",
         description: error.response?.data?.message || "No se pudo enviar el like",
@@ -358,7 +348,6 @@ const OtherUserProfilePage: React.FC = () => {
       });
       navigate(-1); // Volver atrás después de dislike?
     } catch (error: any) {
-      console.error("Error sending dislike:", error);
       toast({
         title: "Error",
         description: "No se pudo enviar el dislike",

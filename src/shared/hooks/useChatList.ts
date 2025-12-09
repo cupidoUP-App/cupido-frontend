@@ -53,7 +53,6 @@ export const useChatList = () => {
             setChatList(data);
             setError(null);
         } catch (err: any) {
-            console.error('❌ Error al cargar la lista de chats:', err);
             setError(err.message || 'Fallo en la conexión con el servidor.');
         } finally {
             if (!silent) {

@@ -1,5 +1,4 @@
 import React from 'react';
-import FiltersPage from '@filters/components/FiltersPage';
 import { useUserSession } from '@hooks/useUserSession';
 
 // 1. Definir las props del componente
@@ -31,15 +30,6 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({ onComplete }) => {
     );
   }
 
-  return (
-    <div className="w-full h-full bg-white">
-      <FiltersPage
-        userId={user.usuario_id.toString()}
-        onComplete={handlePreferencesComplete}
-        onClose={onComplete} // Si el usuario cierra, también contamos como completado para refrescar el dashboard
-      />
-    </div>
-  );
 };
 
 export default PreferencesPage;

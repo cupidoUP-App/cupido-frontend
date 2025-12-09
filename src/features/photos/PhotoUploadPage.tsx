@@ -42,7 +42,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
   useEffect(() => {
     if (!isSuccess || !serverPhotos) return;
 
-    console.log("Fotos del servidor:", serverPhotos);
 
     const photosArray = serverPhotos.results || serverPhotos;
 
@@ -65,7 +64,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
   useEffect(() => {
     if (!isError || !error) return;
 
-    console.error("Error cargando fotos:", error);
 
     const err: any = error;
 
@@ -77,15 +75,12 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
   const uploadMutation = useMutation({
     mutationFn: photoAPI.uploadPhoto,
     onSuccess: (data) => {
-      console.log(" Subida exitosa:", data);
       queryClient.invalidateQueries({ queryKey: ["userPhotos"] });
     },
     onError: (error: any) => {
-      console.error(" Error en uploadPhoto:", error);
       const errorData = error.response?.data;
 
       if (errorData) {
-        console.log(" Datos del error:", errorData);
 
         // Detectar errores de moderación de contenido (vienen en el campo 'imagen')
         if (errorData.imagen && Array.isArray(errorData.imagen)) {
@@ -314,16 +309,11 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
       setIsSaving(true);
 
       try {
-        console.log(" Iniciando subida de", newFiles.length, "archivos");
 
         // Subir nuevas imágenes
         for (let i = 0; i < newFiles.length; i++) {
           const fileData = newFiles[i];
           if (fileData.file) {
-            console.log(
-              ` Subiendo archivo ${i + 1}/${newFiles.length}:`,
-              fileData.name
-            );
 
             await uploadMutation.mutateAsync(fileData.file);
             await new Promise((resolve) => setTimeout(resolve, 500));
@@ -339,7 +329,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
 
         // Establecer imagen principal si hay una seleccionada
         if (principalNewFile) {
-          console.log(" Buscando imagen principal...");
 
           const updatedPhotosResponse = await queryClient.fetchQuery({
             queryKey: ["userPhotos"],
@@ -357,14 +346,12 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
             });
 
             if (principalServerPhoto) {
-              console.log(" Estableciendo imagen principal:", principalServerPhoto);
               const photoId = principalServerPhoto.imagen_id || principalServerPhoto.id;
               await setPrincipalMutation.mutateAsync(photoId);
             } else if (updatedPhotos.length > 0) {
               // Fallback: establecer primera imagen como principal
               const firstPhoto = updatedPhotos[0];
               const photoId = firstPhoto.imagen_id || firstPhoto.id;
-              console.log(" Estableciendo primera imagen como principal:", firstPhoto);
               await setPrincipalMutation.mutateAsync(photoId);
             }
           }
@@ -382,7 +369,6 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
         toast.success("¡Todas las imágenes se guardaron exitosamente!");
         onSuccess?.();
       } catch (error) {
-        console.error(" Error durante la subida:", error);
         toast.error("Error al guardar las imágenes");
       } finally {
         setIsSaving(false);

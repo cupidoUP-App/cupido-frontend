@@ -83,7 +83,6 @@ const ChatView: React.FC<ChatViewProps> = ({
         if (contactId) {
             navigate(`/other-user-profile/${contactId}`, { state: { allowed: true } });
         } else {
-            console.error("ID de contacto no disponible para la redirección.");
         }
     };
 
@@ -144,7 +143,6 @@ const ChatView: React.FC<ChatViewProps> = ({
                 alert(`Bloqueando a ${contactName}...`);
                 break;
             case 'Reportar':
-                console.log("[TODO] Abrir flujo de reporte para:", contactName);
                 alert(`Aquí debería abrirse la pantalla de reporte para ${contactName}`);
                 break;
             case 'Vaciar':

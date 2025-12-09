@@ -65,7 +65,6 @@ export default defineConfig(({ mode }) => {
         "@admin": path.resolve(__dirname, "../src/features/admin"),
         "@auth": path.resolve(__dirname, "../src/features/auth"),
         "@chat": path.resolve(__dirname, "../src/features/chat"),
-        "@dashboard": path.resolve(__dirname, "../src/features/dashboard"),
         "@filters": path.resolve(__dirname, "../src/features/filters"),
         "@home": path.resolve(__dirname, "../src/features/home"),
         "@matching": path.resolve(__dirname, "../src/features/matching"),

@@ -40,7 +40,6 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
            }
         }
       } catch (error) {
-        console.error("Error fetching user photo:", error);
       }
     };
     fetchUserPhoto();
@@ -56,9 +55,7 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       setMatches(data);
       setError(null);
 
-      console.log("✅ Matches cargados/refrescados:", data.length);
     } catch (err) {
-      console.error("Error loading matches:", err);
       setError("No se pudieron cargar las recomendaciones");
     } finally {
       if (showLoading) {
@@ -84,10 +81,8 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
     ...AutoRefreshPresets.CONSERVATIVE, // 45 minutos
     enabled: true,
     onRefreshSuccess: () => {
-      console.log('✅ Presigned URLs refrescadas exitosamente');
     },
     onRefreshError: (error) => {
-      console.error('❌ Error refrescando presigned URLs:', error);
     },
   });
 

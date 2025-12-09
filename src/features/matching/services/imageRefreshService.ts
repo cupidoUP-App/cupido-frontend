@@ -74,7 +74,6 @@ export const refreshProfileImages = async (usuarioId: number): Promise<{
 
     return response.data;
   } catch (error) {
-    console.error(`Error refrescando imágenes del usuario ${usuarioId}:`, error);
     return { main_image: null, secondary_images: [] };
   }
 };
@@ -124,12 +123,10 @@ export const useImageRefresh = () => {
     onRefresh: (newUrls: { main_image: string | null; secondary_images: string[] }) => void
   ) => {
     if (isExpiredURLError(error)) {
-      console.log(`🔄 URL expirada detectada para usuario ${usuarioId}. Regenerando...`);
 
       const newUrls = await refreshProfileImages(usuarioId);
 
       if (newUrls.main_image || newUrls.secondary_images.length > 0) {
-        console.log(`✅ URLs regeneradas para usuario ${usuarioId}`);
         onRefresh(newUrls);
       }
     }

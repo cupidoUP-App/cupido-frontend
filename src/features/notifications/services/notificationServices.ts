@@ -33,7 +33,6 @@ const getUserIdFromToken = (): string | null => {
             const payload = JSON.parse(jsonPayload);
             return payload.user_id || payload.usuario_id || payload.id;
         } catch (e) {
-            console.error('❌ Error decoding token:', e);
             return null;
         }
     }
@@ -48,7 +47,6 @@ export const NotificationsServices = {
         const token = getAuthToken();
         
         if (!token) {
-            console.error('❌ No authentication token found');
             throw new Error('No authentication token found. Please log in.');
         }
 
@@ -58,23 +56,19 @@ export const NotificationsServices = {
         };
 
         try {
-            console.log('📡 Fetching notifications from:', API_BASE_URL);
             
             const res = await fetch(API_BASE_URL, {
                 credentials: 'include',
                 headers,
             });
 
-            console.log('📊 Response status:', res.status, res.statusText);
             
             if (!res.ok) {
                 const errorText = await res.text();
-                console.error('❌ Error response:', errorText);
                 throw new Error(`Failed to fetch notifications: ${res.status} ${res.statusText}`);
             }
 
             const responseData = await res.json();
-            console.log('📦 Raw API response:', responseData);
             
             // DRF con paginación devuelve { count, next, previous, results }
             let notificationsArray: any[] = [];
@@ -82,28 +76,18 @@ export const NotificationsServices = {
             if (responseData.results && Array.isArray(responseData.results)) {
                 // Caso con paginación
                 notificationsArray = responseData.results;
-                console.log(`📄 Paginated response: ${responseData.count} total notifications`);
-                console.log(`📄 Current page: ${notificationsArray.length} notifications`);
             } else if (Array.isArray(responseData)) {
                 // Caso sin paginación (array directo)
                 notificationsArray = responseData;
-                console.log(`📄 Direct array: ${notificationsArray.length} notifications`);
             } else {
-                console.error('❌ Unexpected response format:', responseData);
                 throw new Error('Unexpected response format from server');
             }
             
-            console.log(`✅ Parsed ${notificationsArray.length} notifications`);
             
-            if (notificationsArray.length > 0) {
-                console.log('📋 First notification:', notificationsArray[0]);
-            } else {
-                console.log('📭 No notifications found');
-            }
+            
             
             return notificationsArray.map(mapDjangoToFrontend);
         } catch (error) {
-            console.error("❌ Network/API error:", error);
             throw error;
         }
     },
@@ -122,7 +106,6 @@ export const NotificationsServices = {
 
         try {
             const markReadUrl = `${API_BASE_URL}${id}/mark_read/`;
-            console.log('📝 Marking as read:', markReadUrl);
             
             const res = await fetch(markReadUrl, {
                 method: 'POST',
@@ -132,15 +115,12 @@ export const NotificationsServices = {
 
             if (!res.ok) {
                 const errorText = await res.text();
-                console.error(`❌ Error marking notification ${id} as read:`, res.status, errorText);
                 throw new Error(`Failed to mark notification as read: ${res.status}`);
             }
             
             const result = await res.json();
-            console.log('✅ Marked as read:', result);
             return result;
         } catch (error) {
-            console.error('❌ Error in markAsRead:', error);
             throw error;
         }
     },
@@ -160,7 +140,6 @@ export const NotificationsServices = {
 
         try {
             const deleteUrl = `${API_BASE_URL}${id}/`;
-            console.log('🗑️ Deleting notification:', deleteUrl);
             
             const res = await fetch(deleteUrl, {
                 method: 'DELETE',
@@ -170,14 +149,11 @@ export const NotificationsServices = {
 
             if (!res.ok) {
                 const errorText = await res.text();
-                console.error(`❌ Error deleting notification ${id}:`, res.status, errorText);
                 throw new Error(`Failed to delete notification: ${res.status}`);
             }
             
-            console.log('✅ Notification deleted:', id);
             return true;
         } catch (error) {
-            console.error('❌ Error in deleteNotification:', error);
             throw error;
         }
     },
@@ -187,10 +163,8 @@ export const NotificationsServices = {
         try {
             const notifications = await this.getNotifications();
             const unreadCount = notifications.filter(notif => !notif.read).length;
-            console.log(`📊 Unread count: ${unreadCount}`);
             return unreadCount;
         } catch (error) {
-            console.error('❌ Error getting unread count:', error);
             return 0;
         }
     },
@@ -200,13 +174,11 @@ export const NotificationsServices = {
         const token = getAuthToken();
         
         if (!token) {
-            console.error('❌ No token for test');
             return false;
         }
 
         const userId = getUserIdFromToken(); // Usar la función auxiliar
         if (!userId) {
-            console.error('❌ No user ID for test');
             return false;
         }
 
@@ -223,7 +195,6 @@ export const NotificationsServices = {
                 estado: 'enviado'
             };
 
-            console.log('🧪 Creating test notification:', testNotification);
             
             const res = await fetch(API_BASE_URL, {
                 method: 'POST',
@@ -234,15 +205,12 @@ export const NotificationsServices = {
 
             if (res.ok) {
                 const result = await res.json();
-                console.log('✅ Test notification created:', result);
                 return true;
             } else {
                 const errorText = await res.text();
-                console.error('❌ Failed to create test notification:', res.status, errorText);
                 return false;
             }
         } catch (error) {
-            console.error('❌ Error creating test notification:', error);
             return false;
         }
     },
@@ -251,13 +219,11 @@ export const NotificationsServices = {
         const token = getAuthToken();
         
         if (!token) {
-            console.error('❌ No token for test');
             return false;
         }
 
         const userId = getUserIdFromToken();
         if (!userId) {
-            console.error('❌ No user ID for test');
             return false;
         }
 
@@ -274,7 +240,6 @@ export const NotificationsServices = {
                 estado: 'enviado'
             };
 
-            console.log('🧪 Sending test notification:', testNotification);
             
             const res = await fetch(API_BASE_URL, {
                 method: 'POST',
@@ -285,15 +250,12 @@ export const NotificationsServices = {
 
             if (res.ok) {
                 const result = await res.json();
-                console.log('✅ Test notification sent:', result);
                 return true;
             } else {
                 const errorText = await res.text();
-                console.error('❌ Failed to send test notification:', res.status, errorText);
                 return false;
             }
         } catch (error) {
-            console.error('❌ Error sending test notification:', error);
             return false;
         }
     },
@@ -305,14 +267,9 @@ export const NotificationsServices = {
                 const token = getAuthToken();
                 
                 if (!token) {
-                    console.error('❌ No token found');
                     resolve({ error: 'No token' });
                     return;
                 }
-
-                console.log('🧪 Testing API...');
-                console.log('🔗 URL:', API_BASE_URL);
-                console.log('🔑 Token (first 30 chars):', token.substring(0, 30) + '...');
                 
                 const res = await fetch(API_BASE_URL, {
                     headers: {
@@ -320,22 +277,12 @@ export const NotificationsServices = {
                     }
                 });
 
-                console.log('📊 Response status:', res.status, res.statusText);
                 
                 const data = await res.json();
-                console.log('📦 Response data:', data);
                 
-                if (res.ok) {
-                    console.log('✅ API test successful!');
-                    console.log(`📊 Total notifications in DB: ${data.count}`);
-                    console.log(`📋 Notifications in this page: ${data.results?.length || 0}`);
-                } else {
-                    console.error('❌ API test failed');
-                }
                 
                 resolve(data);
             } catch (error) {
-                console.error('❌ API test error:', error);
                 resolve({ error: error instanceof Error ? error.message : 'Unknown error' });
             }
         });

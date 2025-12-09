@@ -38,9 +38,6 @@ export const ParticlesComponent = (props: { id?: string }) => {
     });
   }, [shouldInit]);
 
-  const particlesLoaded = async (container?: Container): Promise<void> => {
-    console.log(container);
-  };
 
   const options: ISourceOptions = useMemo(
     () => ({
@@ -133,7 +130,6 @@ export const ParticlesComponent = (props: { id?: string }) => {
     return (
       <Particles
         id={props.id}
-        particlesLoaded={particlesLoaded}
         options={options}
         className="absolute inset-0"
       />

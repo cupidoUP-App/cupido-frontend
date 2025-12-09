@@ -105,9 +105,7 @@ const ChatGeneral: React.FC = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(`✅ Chat ${selectedChatId} marcado como abierto`);
       } catch (error) {
-        console.error("Error al marcar chat como abierto:", error);
       }
     };
 
@@ -120,9 +118,7 @@ const ChatGeneral: React.FC = () => {
             "Content-Type": "application/json",
           },
         });
-        console.log(`✅ Chat ${selectedChatId} marcado como cerrado`);
       } catch (error) {
-        console.error("Error al marcar chat como cerrado:", error);
       }
     };
 
