@@ -5,11 +5,13 @@ import { AppNotification } from "../types/notification.types";
 const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
     return {
         id: djangoNotif.id.toString(),
-        title: djangoNotif.tipo.charAt(0).toUpperCase() + djangoNotif.tipo.slice(1), 
-        message: djangoNotif.mensaje,
+        tipo: djangoNotif.tipo.charAt(0).toUpperCase() + djangoNotif.tipo.slice(1), 
+        mensaje: djangoNotif.mensaje,
         read: djangoNotif.estado === 'leido', 
-        created_at: new Date(djangoNotif.fecha_envio),
-        chat_id: djangoNotif.chat_id || null,  // ID del chat para navegación
+        fecha_envio: new Date(djangoNotif.fecha_envio),
+        chat_id: djangoNotif.chat_id || null,
+        from_user_id: djangoNotif.from_user_id || null,
+        usuario_match_id: djangoNotif.usuario_match_id || null,
     };
 };
 

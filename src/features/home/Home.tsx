@@ -1,5 +1,6 @@
 // Home.tsx - VERSIÓN ORIGINAL
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import Preloader from './components/Preloader';
 import HeroSection from './components/HeroSection';
@@ -23,19 +24,23 @@ const Index = () => {
   const {
     showPreloader,
     hidePreloader,
-    //theme,
-    //setTheme,
-    //isTransitioning,
-    //setIsTransitioning,
     openLogin,
     openSigUp,
     authModal,
     closeModals,
+    isAuthenticated,
   } = useAppStore();
 
-  //useEffect(() => {
-  //  document.documentElement.setAttribute('data-theme', 'femenino');
-  //}, ['femenino']);
+  const navigate = useNavigate();
+
+  // =========================================================================
+  // Redirección si el usuario ya está autenticado
+  // =========================================================================
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/match');
+    }
+  }, [isAuthenticated, navigate]);
 
   // =========================================================================
   // Efecto para detectar si hay un registro pendiente y abrir LoginForm
@@ -53,18 +58,6 @@ const Index = () => {
       }
     }
   }, [authModal, openLogin]);
-  /* 
-    const handleThemeChange = (newTheme: string) => {
-      if (newTheme !== theme) {
-        setIsTransitioning(true);
-        setTimeout(() => {
-          setTheme(newTheme as 'main' | 'about');
-          setTimeout(() => {
-            setIsTransitioning(false);
-          }, 300);
-        }, 300);
-      }
-    }; */
 
   const handleCloseAuthModal = () => {
     closeModals();
