@@ -28,6 +28,21 @@ export default function NotificationsPage({
   const navigate = useNavigate();
   const containerRef = useRef<HTMLDivElement>(null);
   const [lastClickTime, setLastClickTime] = useState<number>(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detectar si es móvil
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   // Convertir fecha y filtrar duplicados
   const uniqueNotifications = notifications.filter((notification, index, self) => {
@@ -146,9 +161,30 @@ const handleNotificationClick = useCallback(
 
   const unreadCount = uniqueNotifications.filter((n) => !n.read).length;
 
+  // Estilos para móvil
+  const mobileStyles: React.CSSProperties = isMobile ? {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '90%',
+    maxWidth: '400px',
+    maxHeight: '80vh',
+    margin: '0',
+    right: 'auto',
+    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
+    borderRadius: '12px',
+    overflow: 'hidden',
+    zIndex: 1000,
+  } : {};
+
   if (error) {
     return (
-      <div className="notifications-panel-container" ref={containerRef}>
+      <div 
+        className="notifications-panel-container" 
+        ref={containerRef}
+        style={mobileStyles}
+      >
         <div className="panel-header">
           <h2>Notificaciones</h2>
           {onClose && (
@@ -167,7 +203,11 @@ const handleNotificationClick = useCallback(
   }
 
   return (
-    <div className="notifications-panel-container" ref={containerRef}>
+    <div 
+      className="notifications-panel-container" 
+      ref={containerRef}
+      style={mobileStyles}
+    >
       <div className="panel-header">
         <h2>Notificaciones</h2>
 
