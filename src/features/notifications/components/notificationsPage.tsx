@@ -64,8 +64,6 @@ export default function NotificationsPage({
   // Click en notificación (marcar como leída + navegar)
 const handleNotificationClick = useCallback(
   async (notification: AppNotification) => {
-    console.log("🖱️ Click en notificación:", notification);
-    console.log("Datos de notificación:", JSON.stringify(notification, null, 2));
 
     const now = Date.now();
     if (now - lastClickTime < 300) return;
@@ -94,7 +92,6 @@ const handleNotificationClick = useCallback(
         if (targetUserId) {
           return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true });
         }
-        console.warn("⚠️ LIKE sin ID de usuario válido", notification);
       }
 
       // ✨ MATCH
@@ -123,7 +120,6 @@ const handleNotificationClick = useCallback(
              return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true });
         }
 
-        console.warn("⚠️ MATCH sin chat_id ni usuario_match_id válido. Keys disponibles:", Object.keys(notification), notification);
         return;
       }
 
@@ -136,10 +132,8 @@ const handleNotificationClick = useCallback(
          return closeAndGo('/chat');
       }
 
-      console.log("ℹ️ Notificación sin acción asignada.", notification);
       
     } catch (err) {
-      console.error("❌ Error:", err);
     }
   },
   [navigate, onClose, markAsRead, lastClickTime]
@@ -153,7 +147,6 @@ const handleNotificationClick = useCallback(
       try {
         await dismissNotification(id);
       } catch (err) {
-        console.error("Error al eliminar notificación:", err);
       }
     },
     [dismissNotification]
@@ -352,3 +345,7 @@ function formatNotificationTime(date: Date): string {
     month: "short",
   });
 }
+
+
+//Creado por Daniel Eduardo Davila Quintero
+//Integrado y Modificado por Jeison Alexis Rodriguez Angarita

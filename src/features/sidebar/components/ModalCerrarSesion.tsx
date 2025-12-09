@@ -14,7 +14,6 @@ export default function ModalCerrarSesion({ onCancel }: ModalCerrarSesionProps) 
   const navigate = useNavigate(); 
 
   if (!modalRoot) {
-    console.error("No se encontró el elemento #modal-root");
     return null;
   }
 

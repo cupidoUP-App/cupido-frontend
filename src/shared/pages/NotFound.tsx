@@ -9,9 +9,6 @@ const NotFound = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
 
   return (
     <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gradient-to-b from-[#F5F5F5] to-[#E7D8D8] p-4 text-center">

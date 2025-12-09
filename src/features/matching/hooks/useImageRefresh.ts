@@ -32,7 +32,6 @@ export const useImageRefresh = () => {
 
       // Verificar si es un error por URL expirada
       if (isExpiredURLError(error.nativeEvent)) {
-        console.log(`🔄 URL expirada detectada para usuario ${usuarioId}. Regenerando...`);
 
         setRefreshing((prev) => new Set(prev).add(usuarioId));
 
@@ -40,13 +39,10 @@ export const useImageRefresh = () => {
           const newUrls = await refreshProfileImages(usuarioId);
 
           if (newUrls.main_image || newUrls.secondary_images.length > 0) {
-            console.log(`✅ URLs regeneradas para usuario ${usuarioId}`);
             onRefresh(newUrls);
           } else {
-            console.warn(`⚠️  No se pudieron regenerar URLs para usuario ${usuarioId}`);
           }
         } catch (error) {
-          console.error(`❌ Error regenerando URLs para usuario ${usuarioId}:`, error);
         } finally {
           setRefreshing((prev) => {
             const next = new Set(prev);

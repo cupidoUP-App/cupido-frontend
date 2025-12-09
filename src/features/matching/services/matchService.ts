@@ -23,36 +23,21 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
   try {
     const response = await api.get("/match/recommendations/");
     
-    // 🔍 DEBUG: Ver la respuesta completa
-    console.log("🔍 RESPUESTA COMPLETA DEL BACKEND:", response.data);
-    console.log("🔍 RESULTS ARRAY:", response.data.results);
     
     const results = response.data.results;
 
     if (!results || !Array.isArray(results)) {
-        console.error("❌ Results no es un array o está vacío");
         return [];
     }
 
-    console.log(`✅ Se encontraron ${results.length} matches`);
 
     return results.map((item: any, index: number) => {
-      // 🔍 DEBUG: Ver CADA PROPIEDAD del item
-      console.log(`\n🔍 ITEM ${index + 1}:`);
-      console.log("  Todas las propiedades:", Object.keys(item));
       
-      // Mostrar TODAS las propiedades para ver qué hay disponible
-      Object.keys(item).forEach(key => {
-        console.log(`  - ${key}:`, item[key]);
-      });
-
+      
       // IMPORTANTE: Buscar el usuario_id - podría tener diferentes nombres
       const usuarioId = item.usuario_id || item.usuarioId || item.user_id || item.userId || item.id;
-      console.log(`  🔑 usuario_id encontrado: ${usuarioId} (tipo: ${typeof usuarioId})`);
       
-      if (!usuarioId) {
-        console.error(`  ⚠️ ADVERTENCIA: Item ${index + 1} no tiene usuario_id identificable`);
-      }
+      
 
       // Construir URLs de imágenes (mismo patrón que profile)
       const baseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -115,14 +100,10 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
         secondaryImages
       };
 
-      // 🔍 DEBUG: Ver el objeto final mapeado
-      console.log(`✅ MATCH DATA MAPEADO ${index + 1}:`, matchData);
-      console.log(`✅ usuario_id incluido: ${matchData.usuario_id}`);
 
       return matchData;
     });
   } catch (error) {
-    console.error("❌ Error fetching matches:", error);
     throw error;
   }
 };

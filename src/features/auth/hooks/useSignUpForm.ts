@@ -77,7 +77,6 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
   };
 
   const handleCaptchaVerify = (token: string) => {
-    console.log('CAPTCHA verificado con token:', token);
     setIsCaptchaVerified(true);
     setCurrentStep('initial'); // Volver al formulario principal
     
@@ -138,11 +137,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     setIsSubmitting(true);
     
     try {
-      // Aquí irías el registro completo con todos los datos
-      console.log('Datos completos del usuario:', {
-        ...formData, // email, password del formulario inicial
-        ...userData  // datos personales del CompleteRegister
-      });
+      
       
       // Simulación de registro completo
       await new Promise(resolve => setTimeout(resolve, 2000));

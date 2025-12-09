@@ -59,30 +59,22 @@ export const useAutoRefresh = (
   }, [refreshCallback, onRefreshSuccess, onRefreshError]);
 
   useEffect(() => {
-    if (!enabled) {
-      console.log('🔄 Auto-refresh deshabilitado');
-      return;
-    }
+    
 
     const intervalMs = intervalMinutes * 60 * 1000;
 
-    console.log(
-      `🔄 Auto-refresh configurado: cada ${intervalMinutes} minutos (${intervalMs / 1000}s)`
-    );
+   
 
     const executeRefresh = async () => {
       const startTime = Date.now();
-      console.log(`🔄 Ejecutando auto-refresh... (${new Date().toLocaleTimeString()})`);
 
       try {
         await callbackRef.current();
 
         const duration = Date.now() - startTime;
-        console.log(`✅ Auto-refresh completado en ${duration}ms`);
 
         onSuccessRef.current?.();
       } catch (error) {
-        console.error('❌ Error en auto-refresh:', error);
         onErrorRef.current?.(error as Error);
       }
     };
@@ -92,7 +84,6 @@ export const useAutoRefresh = (
 
     // Cleanup: limpiar intervalo cuando el componente se desmonte o cambie enabled
     return () => {
-      console.log('🛑 Deteniendo auto-refresh');
       clearInterval(intervalId);
     };
   }, [intervalMinutes, enabled]);

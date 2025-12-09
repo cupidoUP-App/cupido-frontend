@@ -40,10 +40,8 @@ export const useChatSocket = (chatId: number | null) => {
                 ...m,
                 estado: m.es_mio ? (m.leido ? 'read' : 'sent') : undefined,
             }));
-            //console.log("✅ Historial Cargado (REST).");
             setMessages(history); // Carga el historial inicial
         } catch (err: any) {
-            console.error("❌ Error cargando historial:", err);
             setError(err.message);
         } finally {
             setLoadingHistory(false);
@@ -71,8 +69,6 @@ export const useChatSocket = (chatId: number | null) => {
                 }));
                 return; // Éxito, salimos
             } catch (err) {
-                console.warn("Error enviando por WebSocket, intentando REST...", err);
-                // Continuar al fallback REST
             }
         }
 
@@ -102,8 +98,6 @@ export const useChatSocket = (chatId: number | null) => {
             setMessages((prev) => [...prev, newMessage]);
             setError(null); // Limpiar errores previos
         } catch (err: any) {
-            console.error("Error enviando mensaje por REST:", err);
-            setError(err.message || "Error al enviar el mensaje. Intenta de nuevo.");
         }
     }, [wsStatus, chatId]);
 
@@ -159,7 +153,6 @@ export const useChatSocket = (chatId: number | null) => {
 
         // Manejo de Eventos WS
         socket.onopen = () => {
-            console.log("🟢 WS Conexión exitosa.");
             setWsStatus('open');
             setError(null);
         };
@@ -167,7 +160,6 @@ export const useChatSocket = (chatId: number | null) => {
         socket.onmessage = (event) => {
             try {
                 const data = JSON.parse(event.data);
-                //console.log("📩 Mensaje WS recibido:", data);
                 
                 if (data.message) {
                     // El backend nos envía el mensaje completo ya guardado
@@ -185,7 +177,6 @@ export const useChatSocket = (chatId: number | null) => {
                     // un mecanismo de Context/Recoil/Redux para comunicarlo a useChatList.
                 }
             } catch (e) { 
-                console.error("Error al procesar mensaje WS:", e); 
             }
         };
 
@@ -195,11 +186,9 @@ export const useChatSocket = (chatId: number | null) => {
             if (e.code === 4003 || e.code === 1008) { 
                 setError("La conversación no está disponible o tu sesión es inválida.");
             }
-            //console.log(`🔴 Desconectado. Código: ${e.code}`);
         };
         
         socket.onerror = (e) => {
-            //console.error("⚠️ Error en WebSocket:", e);
             setError("Error de conexión en tiempo real.");
             setWsStatus('error');
         };

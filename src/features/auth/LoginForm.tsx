@@ -48,7 +48,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const [currentUserId, setCurrentUserId] = useState<string>("");
 
   const { toast } = useToast();
-  const { openDashboard, login, setLoading } = useAppStore();
+  const { login, setLoading } = useAppStore();
 
   const [registrationStep, setRegistrationStep] = useState<number>(0);
   const navigate = useNavigate();
@@ -72,7 +72,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
       // Validar que el paso sea válido (1-3)
       if (isNaN(step) || step < 1 || step > 3) return;
 
-      console.log(`[LoginForm] Restaurando paso de registro: ${step}`);
 
       try {
         // Verificar que el token sigue siendo válido obteniendo el perfil
@@ -97,8 +96,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
           });
         }
       } catch (error) {
-        // Token inválido o expirado, limpiar estado guardado
-        console.log("[LoginForm] Token inválido, limpiando estado de registro");
         localStorage.removeItem(REGISTRATION_STEP_KEY);
       }
     };
@@ -149,7 +146,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         throw new Error("Debes completar la verificación de seguridad");
       }
 
-      console.log("Intentando login con:", { email, recaptchaToken });
 
       // Llamar al endpoint de login del backend
       const response = await authAPI.login({
@@ -158,21 +154,17 @@ const LoginForm: React.FC<LoginFormProps> = ({
         recaptcha_token: recaptchaToken,
       });
 
-      console.log("Login exitoso - Respuesta completa:", response);
 
       // Verificar el estado de cuenta del usuario
       const estadocuenta = response.estadocuenta;
-      console.log("Estado de cuenta recibido:", estadocuenta);
 
       if (estadocuenta === "1") {
         setRegistrationStep(1);
         setShowCompleteRegister(true);
       } else if (estadocuenta === "2") {
-        console.log("Mostrando Preferences - Estado 2");
 
         try {
           const userData = await authAPI.getUserProfile();
-          console.log("Datos del usuario obtenidos:", userData);
 
           const realUserId =
             userData.id ||
@@ -182,14 +174,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
             response.user?.id ||
             response.user?.usuario_id;
 
-          console.log("ID encontrado:", realUserId, "en:", {
-            userData_id: userData.id,
-            userData_usuario_id: userData.usuario_id,
-            userData_user_id: userData.user?.id,
-            userData_user_usuario_id: userData.user?.usuario_id,
-            response_user_id: response.user?.id,
-            response_user_usuario_id: response.user?.usuario_id,
-          });
+          
 
           if (realUserId) {
             setCurrentUserId(realUserId);
@@ -202,25 +187,13 @@ const LoginForm: React.FC<LoginFormProps> = ({
               description: "Completa tus preferencias para continuar.",
             });
           } else {
-            console.error(
-              "No se pudo encontrar el ID del usuario. Datos completos:",
-              {
-                userData,
-                response,
-              }
-            );
+            
             throw new Error("No se pudo obtener el ID del usuario");
           }
         } catch (error) {
-          console.error("Error al obtener datos del usuario:", error);
-          toast({
-            title: "Error",
-            description: "No se pudo cargar la información de tu cuenta.",
-            variant: "destructive",
-          });
+          
         }
       } else if (estadocuenta === "0") {
-        console.log("Redirigiendo a match - Estado 0");
         login(response.user);
         toast({
           title: "¡Bienvenido!",
@@ -236,7 +209,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         });
         setShowPhotoUpload(true);
       } else {
-        console.log("Estado de cuenta desconocido:", estadocuenta);
         toast({
           title: "Cuenta no disponible",
           description: "Tu cuenta no está disponible para iniciar sesión.",
@@ -244,8 +216,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         });
       }
     } catch (error: any) {
-      console.error("Error completo en login:", error);
-      console.error("Error response data:", error.response?.data);
 
       let errorMessage = "Verifica tus credenciales e intenta de nuevo.";
 
@@ -281,7 +251,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
   };
 
   const handleCaptchaVerify = (token: string) => {
-    console.log("CAPTCHA verificado:", token);
     setIsCaptchaVerified(true);
     setRecaptchaToken(token);
     setShowCaptcha(false);
@@ -326,8 +295,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         estadocuenta: "2",
       });
 
-      console.log("Perfil actualizado:", response);
-
       toast({
         title: "¡Perfil completado!",
         description: "Tu perfil ha sido completado exitosamente.",
@@ -340,7 +307,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
       setRegistrationStep(2);
       setShowPreferences(true);
     } catch (error: any) {
-      console.error("Error al completar perfil:", error);
 
       let errorMessage = "No pudimos completar tu perfil. Intenta de nuevo.";
 
@@ -381,9 +347,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const handlePreferencesComplete = async () => {
     try {
-      console.log(
-        "Preferencias completadas, continuando a la subida de fotos..."
-      );
 
       const userProfile = await authAPI.getUserProfile();
       await authAPI.updateUserProfile({
@@ -404,7 +367,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         description: "Ahora, sube tus mejores fotos.",
       });
     } catch (error) {
-      console.error("Error al completar preferencias:", error);
       toast({
         title: "Error",
         description: "Hubo un problema al guardar las preferencias.",
@@ -441,7 +403,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
         onClose();
       }
     } catch (error) {
-      console.error("Error al regresar:", error);
       toast({
         title: "Error",
         description: "No se pudo regresar al paso anterior.",
@@ -662,7 +623,6 @@ const LoginForm: React.FC<LoginFormProps> = ({
                       "Has completado tu perfil. ¡Bienvenido a Cupido!",
                   });
                 } catch (error) {
-                  console.error("Error al finalizar el registro:", error);
                   toast({
                     title: "Error",
                     description:

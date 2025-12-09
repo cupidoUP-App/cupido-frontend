@@ -102,7 +102,6 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
       // Simular envío de código
       setShowCodeInput(true);
       setError('');
-      console.log('Enviando código al teléfono:', phone);
     }
   };
 
@@ -289,8 +288,6 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
                     onClick={() => {
                       setCode(['', '', '', '']);
                       setError('');
-                      // Lógica para reenviar código
-                      console.log('Reenviando código a:', phone);
                     }}
                   >
                     Reenviar código

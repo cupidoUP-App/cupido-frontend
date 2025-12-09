@@ -17,8 +17,6 @@ export const useEmailVerification = ({
     setSubmitting(true);
     
     try {
-      // Aquí iría la llamada a tu API para enviar el código de verificación
-      console.log('Enviando código de verificación a:', email);
       
       // Simulación de envío de código
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -41,8 +39,6 @@ export const useEmailVerification = ({
 
   const resendVerificationCode = async () => {
     try {
-      // Aquí iría la llamada a tu API para reenviar el código
-      console.log('Reenviando código de verificación a:', email);
       
       await new Promise(resolve => setTimeout(resolve, 1000));
       
@@ -63,8 +59,6 @@ export const useEmailVerification = ({
     setSubmitting(true);
     
     try {
-      // Aquí iría la llamada a tu API para verificar el código
-      console.log('Verificando código:', code, 'para email:', email);
       
       // Simulación de verificación
       await new Promise(resolve => setTimeout(resolve, 1500));

@@ -54,7 +54,6 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
 
     // Función para manejar las acciones del menú
     const handleMenuAction = (action: string, chatId: number, chatName: string) => {
-        console.log(`Acción: ${action} realizada en el Chat ID: ${chatId} (${chatName})`);
         setOpenMenuId(null);
 
         switch (action) {
@@ -62,7 +61,6 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
                 alert(`Bloqueando a ${chatName}...`);
                 break;
             case 'Reportar':
-                console.log("[TODO] Abrir flujo de reporte para usuario:", chatName, "en chat", chatId);
                 alert(`Aquí debería abrirse la pantalla de reporte para ${chatName}`);
                 break;
             case 'Cerrar':

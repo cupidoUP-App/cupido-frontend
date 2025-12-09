@@ -69,7 +69,6 @@ The actual aliases are:
         "@admin"
         "@auth"
         "@chat"
-        "@dashboard"
         "@filters"
         "@home"
         "@matching"
@@ -106,7 +105,6 @@ src/
 |   ├── admin/                 # Admin system
 │   ├── auth/                 # Authentication system
 |   ├── chat/                 # Chat system
-│   ├── dashboard/            # User dashboard
 │   ├── filters/              # Search filters
 |   ├── home/                 # Landing page
 │   ├── matching/             # Matching algorithm

@@ -28,7 +28,6 @@ function decodeJWT(token: string): any {
     );
     return JSON.parse(jsonPayload);
   } catch (error) {
-    console.error('Error decodificando JWT:', error);
     return null;
   }
 }
@@ -78,7 +77,6 @@ api.interceptors.request.use(
     ) {
       // Refresh proactivo: si el token expira pronto, renovarlo antes
       if (isTokenExpiringSoon(token, 5)) {
-        console.log('🔄 Token próximo a expirar, refrescando proactivamente...');
 
         if (!isRefreshing) {
           isRefreshing = true;
@@ -104,11 +102,9 @@ api.interceptors.request.use(
               localStorage.setItem("refresh_token", newRefreshToken);
             }
 
-            console.log('✅ Token refrescado proactivamente');
             onTokenRefreshed(newAccessToken);
             isRefreshing = false;
           } catch (error) {
-            console.error('❌ Error al refrescar token proactivamente:', error);
             isRefreshing = false;
 
             // Si falla el refresh proactivo, limpiar y hacer logout
@@ -191,7 +187,6 @@ api.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newToken}`;
           return api(originalRequest);
         } catch (err) {
-          console.error('❌ Error esperando refresh de token:', err);
           return Promise.reject(err);
         }
       }
@@ -216,7 +211,6 @@ api.interceptors.response.use(
         // Guardar tokens nuevos
         if (newAccessToken) {
           localStorage.setItem("access_token", newAccessToken);
-          console.log('✅ Token refrescado reactivamente (401)');
         }
         if (newRefreshToken) {
           localStorage.setItem("refresh_token", newRefreshToken);
@@ -234,8 +228,6 @@ api.interceptors.response.use(
         isRefreshing = false;
         onTokenRefreshed(''); // Liberar subscribers con error
 
-        // Si falla refresh → logout
-        console.error('❌ Error al refrescar token reactivamente:', refreshError);
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
 

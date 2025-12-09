@@ -71,7 +71,6 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
       onClose();
 
     } catch (error: any) {
-      console.error('Error sending reset code:', error);
 
       let errorMessage = "No pudimos enviar el correo. Intenta de nuevo.";
 
@@ -104,7 +103,6 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
         description: "Hemos enviado un nuevo código a tu correo.",
       });
     } catch (error: any) {
-      console.error('Error resending reset code:', error);
 
       let errorMessage = "No pudimos reenviar el código. Intenta de nuevo.";
 

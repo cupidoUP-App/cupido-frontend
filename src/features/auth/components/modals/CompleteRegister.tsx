@@ -49,7 +49,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   const [currentUserId, setCurrentUserId] = useState<string>("");
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
   const { toast } = useToast();
-  const { openDashboard } = useAppStore();
 
   // Resetear form cuando se abre
   useEffect(() => {
@@ -155,7 +154,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         estadocuenta: "2",
       });
 
-      console.log("Perfil actualizado:", response);
 
       // Verificar el estado del usuario después de actualizar el perfil
       await verifyUserStatusAfterUpdate();
@@ -165,7 +163,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         onComplete();
       }
     } catch (error: any) {
-      console.error("Error al completar perfil:", error);
 
       let errorMessage = "No pudimos completar tu perfil. Intenta de nuevo.";
 
@@ -210,7 +207,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         throw new Error("Datos de usuario no recibidos");
       }
 
-      console.log("Datos del usuario después de actualizar:", userData);
 
       const estado = userData.estado;
       const shouldCompleteProfile = userData.should_complete_profile;
@@ -239,7 +235,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         });
       }
     } catch (error: any) {
-      console.error("Error al verificar estado del usuario:", error);
 
       let errorMessage =
         "No pudimos verificar el estado de tu perfil. Intenta de nuevo.";
@@ -268,7 +263,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         description: "Has cerrado sesión exitosamente.",
       });
     } catch (error) {
-      console.error("Error al cerrar sesión:", error);
       // Continue with closing even if logout fails
     }
 
@@ -291,7 +285,6 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   // ✅ NUEVA FUNCIÓN para manejar cuando se completan las preferencias
   const handlePreferencesComplete = async () => {
     try {
-      console.log("Preferencias completadas, continuando al dashboard...");
 
       setShowPreferences(false);
 
@@ -300,11 +293,8 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
         description: "Tu perfil y preferencias han sido guardados.",
       });
 
-      // Cerrar todo y abrir dashboard
       onClose();
-      openDashboard();
     } catch (error) {
-      console.error("Error al completar preferencias:", error);
       toast({
         title: "Error",
         description: "Hubo un problema al guardar las preferencias.",

@@ -26,8 +26,6 @@ const ResetPasswordPage: React.FC = () => {
     setNewPassword('');
     setConfirmPassword('');
 
-    console.log('--- ResetPasswordPage Mounted ---');
-    console.log('Initiating token check...');
 
     // 1. Check URL Path Params (e.g. /reset-password/:token)
     const paramToken = params.token;
@@ -38,25 +36,19 @@ const ResetPasswordPage: React.FC = () => {
     let foundToken: string | null = null;
 
     if (paramToken) {
-      console.log('Token found in URL Path Params:', paramToken);
       foundToken = paramToken;
     } else if (queryToken) {
-      console.log('Token found in Query Params:', queryToken);
       foundToken = queryToken;
     } else {
-      console.log('No token found in URL.');
     }
 
     if (foundToken) {
       // "Seccionarlo" - assuming this means validating/cleaning if necessary, 
       // for now we just trim it.
       const cleanToken = foundToken.trim();
-      console.log('Token processed/cleaned:', cleanToken);
 
       setToken(cleanToken);
-      console.log('Token saved in memory (state):', cleanToken);
     } else {
-      console.warn('Warning: No token available for password reset.');
     }
 
   }, [params.token, searchParams]);
@@ -82,11 +74,8 @@ const ResetPasswordPage: React.FC = () => {
       return;
     }
 
-    console.log('Submitting password reset...');
     if (token) {
-      console.log('Using token for request:', token);
     } else {
-      console.warn('Submitting without a token!');
     }
 
     setIsSubmitting(true);
@@ -108,7 +97,6 @@ const ResetPasswordPage: React.FC = () => {
       });
       navigate('/'); // Redirect to login or home after success
     } catch (error: any) {
-      console.error('Error changing password:', error);
       let errorMessage = 'No pudimos cambiar tu contraseña. Intenta de nuevo.';
       if (error.response?.data) {
         const data = error.response.data;

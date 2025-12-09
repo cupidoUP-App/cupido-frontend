@@ -17,7 +17,6 @@ export const useUserSession = () => {
         const profileData = await authAPI.getUserProfile();
         return profileData;
       } catch (error) {
-        console.error("Error fetching user profile:", error);
         // This might happen if the token is invalid/expired.
         // The API interceptor should handle logging out.
         return null;

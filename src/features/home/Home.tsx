@@ -53,7 +53,6 @@ const Index = () => {
     if (savedStep && accessToken && authModal === null) {
       const step = parseInt(savedStep, 10);
       if (step >= 1 && step <= 3) {
-        console.log("[Home] Detectado registro pendiente en paso:", step);
         openLogin(); // Abrir LoginForm que restaurará el paso correcto
       }
     }
@@ -73,10 +72,7 @@ const Index = () => {
     openLogin();
   };
 
-  /*   const handleOpenDashboard = () => {
-      closeModals();
-      // El dashboard se abre automáticamente cuando authModal es 'dashboard'
-    }; */
+
 
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">

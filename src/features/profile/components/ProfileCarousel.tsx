@@ -32,8 +32,6 @@ const ProfileCarousel: React.FC<ProfileCarouselProps> = ({ images }) => {
   // 🔥 Función para manejar errores de carga de imágenes
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     const target = e.target as HTMLImageElement;
-    console.error(`Error cargando imagen: ${target.src}`);
-    // Podrías establecer una imagen de fallback aquí si lo deseas
   };
 
   return (

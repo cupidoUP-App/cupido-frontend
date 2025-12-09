@@ -76,7 +76,6 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
           }
         }
       } catch (error) {
-        console.error("Error loading preferences:", error);
       }
     };
 
@@ -97,9 +96,6 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
     if (onBack) {
       onBack(); // Usar la prop onBack si está disponible
     } else {
-      // Comportamiento por defecto si no hay onBack
-      console.log("Retrocediendo...");
-      // Aquí podrías agregar navegación por defecto si es necesario
     }
   };
 
@@ -192,7 +188,6 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
 
       onComplete();
     } catch (error) {
-      console.error("Error saving preferences:", error);
       toast({
         title: "Error al guardar",
         description:
@@ -555,5 +550,9 @@ const PreferencesPage: React.FC<PreferencesPageProps> = ({
     </>
   );
 };
+
+
+//Creado por Leyder Stiven Jaimes
+//Integrado por Jeison Alexis Rodriguez Angarita
 
 export default PreferencesPage;

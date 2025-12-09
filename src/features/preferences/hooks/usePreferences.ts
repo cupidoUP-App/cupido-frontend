@@ -22,7 +22,6 @@ export const usePreferences = (userId: string) => {
       setPreferences(mockPreferences);
     } catch (err) {
       setError('Error cargando preferencias');
-      console.error('Error loading preferences:', err);
     } finally {
       setLoading(false);
     }
@@ -30,8 +29,6 @@ export const usePreferences = (userId: string) => {
 
   const savePreferences = async (newPreferences: Preferences) => {
     try {
-      console.log('Guardando preferencias:', newPreferences);
-      // Simulación temporal - reemplazar con API real
       setPreferences(newPreferences);
       return newPreferences;
     } catch (err) {
