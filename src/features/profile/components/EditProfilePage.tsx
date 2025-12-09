@@ -722,7 +722,7 @@ const EditProfilePage = () => {
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-12">
+                <div className="flex items-center justify-between mb-2">
                   <label className={`block text-sm font-medium ${isHeightLocked ? 'text-gray-500' : 'text-gray-700'}`}>
                     Estatura: <span className="font-semibold text-[#E74C3C]">{height.toFixed(2)}</span> m
                     {isHeightLocked && <span className="text-xs text-gray-500 ml-2">(No modificable)</span>}
@@ -731,26 +731,25 @@ const EditProfilePage = () => {
                     <span className="text-xs text-gray-500">(Solo puedes cambiarla una vez)</span>
                   )}
                 </div>
-                <div className="relative pb-4">
+                {/* Contenedor del slider con overflow hidden para evitar que el tooltip se salga */}
+                <div className="relative pt-16 pb-2 overflow-visible">
                   {/* Indicador visual ampliado para móviles (zoom táctil) */}
-                  {(isDraggingHeight || heightTooltipPosition > 0) && !isHeightLocked && (
+                  {isDraggingHeight && !isHeightLocked && (
                     <div
                       className="absolute z-50 pointer-events-none"
                       style={{
-                        left: `${heightTooltipPosition}%`,
-                        bottom: 'calc(50% + 26px)',
+                        left: `clamp(40px, calc(${heightTooltipPosition}% + 12px - (${heightTooltipPosition} * 0.24px)), calc(100% - 40px))`,
+                        top: '0px',
                         transform: 'translateX(-50%)',
-                        transition: 'none',
                       }}
                     >
-                      <div className="bg-[#E74C3C] text-white px-6 py-3 rounded-xl shadow-2xl text-xl font-bold transform scale-110">
+                      <div className="bg-[#E74C3C] text-white px-4 py-2 rounded-xl shadow-2xl text-lg font-bold">
                         <div className="text-center">
-                          <div className="text-2xl mb-1">{height.toFixed(2)}</div>
-                          <div className="text-sm font-normal opacity-90">metros</div>
+                          <div className="text-xl">{height.toFixed(2)} m</div>
                         </div>
                       </div>
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2">
-                        <div className="w-0 h-0 border-l-[12px] border-r-[12px] border-t-[12px] border-transparent border-t-[#E74C3C]"></div>
+                        <div className="w-0 h-0 border-l-[8px] border-r-[8px] border-t-[8px] border-transparent border-t-[#E74C3C]"></div>
                       </div>
                     </div>
                   )}
@@ -761,39 +760,15 @@ const EditProfilePage = () => {
                     step="0.01"
                     value={height}
                     onChange={(e) => {
-                      if (isHeightLocked) return; // No permitir cambios si está bloqueado
+                      if (isHeightLocked) return;
                       const newHeight = Number(e.target.value);
                       setHeight(newHeight);
 
-                      // Calcular posición del tooltip basado en el valor
-                      const percentage = ((newHeight - 1.3) / (2.1 - 1.3)) * 100;
+                      // Calcular posición del tooltip basado en el valor (clamped 0-100)
+                      const percentage = Math.min(100, Math.max(0, ((newHeight - 1.3) / (2.1 - 1.3)) * 100));
                       setHeightTooltipPosition(percentage);
 
                       // Marcar como modificado si es diferente al inicial
-                      if (initialHeight !== null) {
-                        // Usar comparación con tolerancia para números flotantes
-                        const difference = Math.abs(newHeight - initialHeight);
-                        if (difference > 0.001) {
-                          setHeightHasChanged(true);
-                        } else {
-                          // Si vuelve al valor inicial, no se considera modificado
-                          setHeightHasChanged(false);
-                        }
-                      } else {
-                        // Si no hay estatura inicial (perfil nuevo), siempre permitir cambios
-                        setHeightHasChanged(true);
-                      }
-                    }}
-                    onInput={(e) => {
-                      // Manejar input para actualizar en tiempo real mientras se arrastra
-                      if (isHeightLocked) return;
-                      const target = e.target as HTMLInputElement;
-                      const newHeight = Number(target.value);
-                      setHeight(newHeight);
-                      const percentage = ((newHeight - 1.3) / (2.1 - 1.3)) * 100;
-                      setHeightTooltipPosition(percentage);
-
-                      // Actualizar estado de cambio
                       if (initialHeight !== null) {
                         const difference = Math.abs(newHeight - initialHeight);
                         setHeightHasChanged(difference > 0.001);
@@ -801,51 +776,27 @@ const EditProfilePage = () => {
                         setHeightHasChanged(true);
                       }
                     }}
-                    onMouseDown={(e) => {
+                    onMouseDown={() => {
                       if (!isHeightLocked) {
                         setIsDraggingHeight(true);
-                        const target = e.target as HTMLInputElement;
-                        const percentage = ((Number(target.value) - 1.4) / (2.0 - 1.4)) * 100;
-                        setHeightTooltipPosition(percentage);
-                      }
-                    }}
-                    onMouseMove={(e) => {
-                      if (isDraggingHeight && !isHeightLocked) {
-                        const target = e.target as HTMLInputElement;
-                        const percentage = ((Number(target.value) - 1.4) / (2.0 - 1.4)) * 100;
-                        setHeightTooltipPosition(percentage);
                       }
                     }}
                     onMouseUp={() => {
                       setIsDraggingHeight(false);
-                      setTimeout(() => setHeightTooltipPosition(0), 200);
                     }}
                     onMouseLeave={() => {
                       setIsDraggingHeight(false);
-                      setTimeout(() => setHeightTooltipPosition(0), 200);
                     }}
-                    onTouchStart={(e) => {
+                    onTouchStart={() => {
                       if (!isHeightLocked) {
                         setIsDraggingHeight(true);
-                        const target = e.target as HTMLInputElement;
-                        const percentage = ((Number(target.value) - 1.4) / (2.0 - 1.4)) * 100;
-                        setHeightTooltipPosition(percentage);
-                      }
-                    }}
-                    onTouchMove={(e) => {
-                      if (isDraggingHeight && !isHeightLocked) {
-                        const target = e.target as HTMLInputElement;
-                        // Actualizar posición del tooltip basado en el valor actual del input
-                        const percentage = ((Number(target.value) - 1.4) / (2.0 - 1.4)) * 100;
-                        setHeightTooltipPosition(percentage);
                       }
                     }}
                     onTouchEnd={() => {
                       setIsDraggingHeight(false);
-                      setTimeout(() => setHeightTooltipPosition(0), 400);
                     }}
                     disabled={isHeightLocked}
-                    className={`w-full mt-2 ${isHeightLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+                    className={`w-full ${isHeightLocked ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
                     style={{
                       WebkitAppearance: 'none',
                       appearance: 'none',
@@ -853,20 +804,23 @@ const EditProfilePage = () => {
                       touchAction: 'none',
                     }}
                   />
-                  {heightHasChanged && initialHeight !== null && (
-                    <div className="mt-2 flex items-center gap-2">
+                </div>
+                {/* Indicador de modificación - separado del slider para evitar solapamiento */}
+                {heightHasChanged && initialHeight !== null && (
+                  <div className="mt-3 space-y-1">
+                    <div className="flex items-center gap-2">
                       <div className="flex-1 bg-gray-200 rounded-full h-2">
                         <div
                           className="bg-[#E74C3C] h-2 rounded-full"
-                          style={{ width: `${((height - 1.4) / (2.0 - 1.4)) * 100}%`, transition: 'none' }}
+                          style={{ width: `${Math.min(100, Math.max(0, ((height - 1.3) / (2.1 - 1.3)) * 100))}%` }}
                         ></div>
                       </div>
-                      <span className="text-xs text-[#E74C3C] font-medium">Modificada</span>
                     </div>
-                  )}
-                </div>
+                    <p className="text-xs text-[#E74C3C] font-medium text-right">✓ Modificada</p>
+                  </div>
+                )}
                 {initialHeight !== null && !heightHasChanged && !isHeightLocked && (
-                  <p className="text-xs text-amber-600 mt-2 flex items-center gap-1">
+                  <p className="text-xs text-amber-600 mt-3 flex items-center gap-1">
                     <span>⚠️</span>
                     <span>Mueve la barra para modificar tu estatura (solo una vez)</span>
                   </p>
