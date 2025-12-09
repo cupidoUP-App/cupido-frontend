@@ -7,6 +7,8 @@ import ProfileCarousel from "./ProfileCarousel";
 import ProfileInfo from "./ProfileInfo";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
+import { likeAPI } from "@lib/api";
+import MatchSuccessSlide from "../../matching/components/MatchSuccessSlide";
 
 /**
  * Sanitiza una cadena de texto para prevenir inyecciones XSS
@@ -72,6 +74,13 @@ const OtherUserProfilePage: React.FC = () => {
   const navigate = useNavigate();
 
   const location = useLocation();
+  // Obtener estado de match desde la navegación (default false si no viene)
+  const [isMatch, setIsMatch] = useState<boolean>(location.state?.match || false);
+  const [matchSuccessData, setMatchSuccessData] = useState<{
+    name: string;
+    photoUrl?: string;
+    id: number | string;
+  } | null>(null);
 
   useEffect(() => {
     if (!location.state?.allowed) {
@@ -303,7 +312,60 @@ const OtherUserProfilePage: React.FC = () => {
     if (userId) {
       fetchOtherUserProfile();
     }
+    if (userId) {
+      fetchOtherUserProfile();
+    }
   }, [userId, toast]);
+
+  const handleLike = async () => {
+    if (!profileData || !userId) return;
+
+    try {
+      const response = await likeAPI.sendLike(userId);
+      console.log("Like response:", response);
+
+      if (response.match_found) {
+        setMatchSuccessData({
+          name: profileData.name,
+          photoUrl: profileData.images?.[0],
+          id: (response as any).chat_id || userId
+        });
+        setIsMatch(true); // Ya es match
+      } else {
+        toast({
+          title: "Like enviado",
+          description: "Has dado like a este perfil",
+        });
+        // Opcional: Desactivar botones o cambiar estado si solo se permite un like
+      }
+    } catch (error: any) {
+      console.error("Error sending like:", error);
+      toast({
+        title: "Error",
+        description: error.response?.data?.message || "No se pudo enviar el like",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDislike = async () => {
+    if (!userId) return;
+    try {
+      await likeAPI.sendDislike(userId);
+      toast({
+        title: "Dislike enviado",
+        description: "Has descartado este perfil",
+      });
+      navigate(-1); // Volver atrás después de dislike?
+    } catch (error: any) {
+      console.error("Error sending dislike:", error);
+      toast({
+        title: "Error",
+        description: "No se pudo enviar el dislike",
+        variant: "destructive",
+      });
+    }
+  };
 
   // Estado de carga (igual que ProfilePage)
   if (loading) {
