@@ -27,7 +27,7 @@ const MatchSuccessSlide: React.FC<MatchSuccessSlideProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white p-6 animate-fadeIn">
+    <div className="fixed inset-0 z-[100] h-[100dvh] w-screen flex flex-col items-center justify-center bg-gradient-to-br from-pink-500 via-red-500 to-yellow-500 text-white p-6 animate-fadeIn overflow-y-auto">
       {/* Fondo animado o partículas podrían ir aquí */}
       
       <motion.div
