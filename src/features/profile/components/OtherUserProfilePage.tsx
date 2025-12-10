@@ -348,9 +348,29 @@ const OtherUserProfilePage: React.FC = () => {
       });
       navigate(-1); // Volver atrás después de dislike?
     } catch (error: any) {
+      // Extraer mensaje de error real del backend
+      const errorData = error.response?.data;
+      let errorMessage = "No se pudo enviar el dislike";
+      
+      if (errorData) {
+        if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.detail) {
+          errorMessage = errorData.detail;
+        } else if (typeof errorData === 'object') {
+          // El backend puede enviar errores como { "campo": ["mensaje"] }
+          const firstValue = Object.values(errorData)[0];
+          if (Array.isArray(firstValue)) {
+            errorMessage = firstValue[0] as string;
+          } else if (typeof firstValue === 'string') {
+            errorMessage = firstValue;
+          }
+        }
+      }
+      
       toast({
         title: "Error",
-        description: "No se pudo enviar el dislike",
+        description: errorMessage,
         variant: "destructive",
       });
     }

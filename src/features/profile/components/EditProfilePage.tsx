@@ -552,6 +552,27 @@ const EditProfilePage = () => {
       `}</style>
       <div className="min-h-screen bg-[#FFF6F5] flex flex-col items-center py-10 px-6">
         <div className="w-full max-w-7xl">
+          {/* Navigation Buttons */}
+          <div className="flex justify-between items-center mb-6">
+            <button
+              type="button"
+              onClick={() => navigate('/match')}
+              className="flex items-center gap-2 px-4 py-2 bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg shadow-sm hover:bg-white hover:shadow-md transition-all text-gray-700 font-medium"
+            >
+              <span className="text-xl">←</span>
+              <span>Regresar</span>
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => navigate('/edit-photos')}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#E74C3C] to-[#C0392B] text-white rounded-lg shadow-sm hover:shadow-md transition-all font-medium"
+            >
+              <span className="text-lg">📸</span>
+              <span>Editar Imágenes</span>
+            </button>
+          </div>
+
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold mb-3 bg-gradient-to-r from-[#E74C3C] to-[#C0392B] bg-clip-text text-transparent">
               Editar Perfil
