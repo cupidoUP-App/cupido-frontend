@@ -13,6 +13,7 @@ import ForgotPasswordModal from "./components/modals/ForgotPasswordModal";
 import CompleteRegister, {
   RegistrationData,
 } from "./components/modals/CompleteRegister";
+import WelcomeProfileModal from "./components/modals/WelcomeProfileModal";
 import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@photos/PhotoUploadPage";
@@ -46,6 +47,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
 
   const [showPreferences, setShowPreferences] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const { toast } = useToast();
   const { login, setLoading } = useAppStore();
@@ -614,8 +616,9 @@ const LoginForm: React.FC<LoginFormProps> = ({
                   localStorage.removeItem(REGISTRATION_STEP_KEY);
 
                   setShowPhotoUpload(false);
-                  onClose();
-                  navigate("/match");
+                  
+                  // Mostrar modal de bienvenida antes de navegar
+                  setShowWelcomeModal(true);
 
                   toast({
                     title: "¡Felicidades!",
@@ -648,6 +651,16 @@ const LoginForm: React.FC<LoginFormProps> = ({
           </div>
         </div>
       )}
+
+      {/* Modal de Bienvenida - Se muestra cuando el registro está completo */}
+      <WelcomeProfileModal
+        isOpen={showWelcomeModal}
+        onClose={() => {
+          setShowWelcomeModal(false);
+          onClose();
+          navigate("/match");
+        }}
+      />
     </>
   );
 };

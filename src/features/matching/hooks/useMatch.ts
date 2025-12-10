@@ -324,11 +324,11 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging || likesRemaining <= 0 || likeInProgress.current || dislikeInProgress.current) return;
 
-    let deltaX = e.clientX - dragStart.x;
+    const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
 
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
-    const maxHorizontalMove = Math.min(100, screenThreshold);
+    const maxHorizontalMove = Math.min(150, screenThreshold);
 
     const clampedDeltaX = Math.max(-maxHorizontalMove, Math.min(maxHorizontalMove, deltaX));
 
@@ -340,29 +340,15 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     const rotationValue = (clampedDeltaX / maxHorizontalMove) * maxRotation;
     setSwipeRotation(rotationValue);
 
-    if (Math.abs(clampedDeltaX) > (maxHorizontalMove * 0.5)) {
+    // Mostrar overlay visual cuando se acerca al threshold (50% del máximo)
+    const swipeThreshold = maxHorizontalMove * 0.5;
+    if (Math.abs(clampedDeltaX) > swipeThreshold) {
       setShowOverlay(true);
       setOverlayIcon(clampedDeltaX > 0 ? MatchLike : MatchDislike);
     } else {
       setShowOverlay(false);
     }
-
-    if (Math.abs(deltaX) >= maxHorizontalMove) {
-      if ((deltaX > 0 && likeInProgress.current) || (deltaX < 0 && dislikeInProgress.current)) {
-        return;
-      }
-      
-      setIsDragging(false);
-      setDragOffset({ x: 0, y: 0 });
-      setSwipeRotation(0);
-      setShowOverlay(false);
-
-      if (deltaX > 0) {
-        handleLike();
-      } else {
-        handleDislike();
-      }
-    }
+    // NO disparamos acciones aquí - solo en handlePointerUp
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
@@ -372,13 +358,16 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     const deltaX = e.clientX - dragStart.x;
 
     const screenThreshold = typeof window !== 'undefined' ? window.innerWidth * 0.25 : 100;
-    const threshold = Math.min(100, screenThreshold);
+    const maxHorizontalMove = Math.min(150, screenThreshold);
+    // Threshold para activar acción: 50% del movimiento máximo
+    const actionThreshold = maxHorizontalMove * 0.5;
 
     if (cardRef.current) {
       cardRef.current.style.transition = 'transform 0.3s ease-out';
     }
 
-    if (Math.abs(deltaX) >= threshold && !likeInProgress.current && !dislikeInProgress.current) {
+    // Solo activar acción si se supera el threshold y no hay operaciones en progreso
+    if (Math.abs(deltaX) >= actionThreshold && !likeInProgress.current && !dislikeInProgress.current && likesRemaining > 0) {
       if (deltaX > 0) {
         handleLike();
       } else {
