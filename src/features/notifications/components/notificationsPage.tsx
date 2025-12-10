@@ -80,8 +80,7 @@ const handleNotificationClick = useCallback(
 
       const type = notification.tipo.toLowerCase();
 
-      // ❤️ LIKE → ir al perfil
-      // ❤️ LIKE → ir al perfil
+      // ❤️ LIKE → ir al perfil (verificar si hay match primero)
       if (type === "like") {
         const targetUserId = notification.from_user_id || 
                              (notification as any).user_id || 
@@ -90,7 +89,19 @@ const handleNotificationClick = useCallback(
                              (notification as any).related_user_id;
 
         if (targetUserId) {
-          return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true });
+          try {
+            // Importar dinámicamente para evitar dependencias circulares
+            const { likeAPI } = await import("@lib/api");
+            const matchResult = await likeAPI.checkMatch(String(targetUserId));
+            
+            return closeAndGo(`/other-user-profile/${targetUserId}`, { 
+              allowed: true, 
+              match: matchResult.has_match 
+            });
+          } catch (error) {
+            // Si falla la verificación, navegar sin el estado de match (mostrará botones por defecto)
+            return closeAndGo(`/other-user-profile/${targetUserId}`, { allowed: true, match: false });
+          }
         }
       }
 

@@ -384,6 +384,15 @@ const OtherUserProfilePage: React.FC = () => {
   // Renderizar perfil (igual estructura visual que ProfilePage pero sin botón de editar)
   return (
     <div className="relative min-h-screen bg-[#FFF6F5] px-4 sm:px-6 py-8 sm:py-12 md:py-16 lg:py-20 flex items-center justify-center">
+      {/* Modal de Match Exitoso */}
+      {matchSuccessData && (
+        <MatchSuccessSlide
+          matchedUser={matchSuccessData}
+          currentUserPhotoUrl={profileData?.images?.[0]}
+          onClose={() => setMatchSuccessData(null)}
+        />
+      )}
+
       {/* BOTÓN REGRESAR */}
       <button
         onClick={() => {
@@ -420,6 +429,50 @@ const OtherUserProfilePage: React.FC = () => {
           <div className="rounded-3xl bg-white/80 backdrop-blur-md p-6 sm:p-8 md:p-10 lg:p-12 shadow-2xl border border-white/50">
             <div className="space-y-8">
               <ProfileInfo {...profileData} />
+
+              {/* Botones de Like/Dislike - Solo se muestran si NO hay match */}
+              {!isMatch && (
+                <div className="flex justify-center gap-6 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={handleDislike}
+                    className="w-16 h-16 rounded-full bg-white shadow-lg border-2 border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-all flex items-center justify-center group"
+                    title="Dislike"
+                  >
+                    <svg 
+                      className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                  
+                  <button
+                    onClick={handleLike}
+                    className="w-16 h-16 rounded-full bg-gradient-to-br from-[#E74C3C] to-rose-500 shadow-lg hover:from-rose-500 hover:to-[#E74C3C] transition-all flex items-center justify-center group"
+                    title="Like"
+                  >
+                    <svg 
+                      className="w-8 h-8 text-white group-hover:scale-110 transition-transform" 
+                      fill="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+
+              {/* Mensaje si ya hay match */}
+              {isMatch && (
+                <div className="text-center pt-4 border-t border-gray-200">
+                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-pink-100 to-rose-100 rounded-full">
+                    <span className="text-xl">💕</span>
+                    <span className="text-rose-600 font-medium">¡Ya tienes match con este usuario!</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
