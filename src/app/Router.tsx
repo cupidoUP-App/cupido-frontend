@@ -12,6 +12,7 @@ const ChatGeneral = lazy(() => import("@chat/ChatGeneral"));
 const MainLayout = lazy(() => import("@pages/MainLayout"));
 const ResetPasswordPage = lazy(() => import("@auth/pages/resetPasswordPage"));
 const AboutPage = lazy(() => import("@home/pages/AboutPage"));
+const EditPhotosPage = lazy(() => import("@photos/EditPhotosPage"));
 const TeamPage = lazy(() => import("@home/pages/TeamPage"));
 
 // Fallback mínimo para Suspense - no bloquea el LCP
@@ -28,6 +29,7 @@ export const AppRouter = () => {
         {/* RUTAS SIN SIDEBAR */}
         <Route path="/" element={<Home />} />
         <Route path="/edit-profile" element={<EditProfilePage />} />
+        <Route path="/edit-photos" element={<EditPhotosPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/about" element={<AboutPage />} />
         <Route path="/team" element={<TeamPage />} />
