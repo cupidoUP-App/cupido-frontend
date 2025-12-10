@@ -155,25 +155,43 @@ const MatchCard: React.FC<MatchCardProps> = ({
             <MatchInfo data={data} />
 
             {/* Secondary Images - Solo mostrar las que existen */}
-            <div className="w-full flex flex-col select-none px-4 pb-24">
+            <div className="w-full flex flex-col select-none px-4 pb-24 gap-3">
               {/* Primera imagen secundaria */}
               {data?.secondaryImages?.[0] && !data.secondaryImages[0].includes('MatchPlaceholder') && (
-                <div className="w-full aspect-square overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none">
+                <div className="w-full aspect-[4/5] overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none relative bg-gradient-to-br from-pink-50 to-rose-100">
+                  {/* Fondo blur decorativo */}
+                  <img
+                    src={data.secondaryImages[0]}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover filter blur-xl scale-110 opacity-40 select-none pointer-events-none"
+                    aria-hidden="true"
+                    draggable={false}
+                  />
+                  {/* Imagen principal centrada */}
                   <img
                     src={data.secondaryImages[0]}
                     alt="Secondary image 1"
-                    className="w-full h-full object-cover select-none pointer-events-none"
+                    className="relative w-full h-full object-contain select-none pointer-events-none z-10"
                     draggable={false}
                   />
                 </div>
               )}
               {/* Segunda imagen secundaria */}
               {data?.secondaryImages?.[1] && !data.secondaryImages[1].includes('MatchPlaceholder') && (
-                <div className={`w-full aspect-square overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none ${data?.secondaryImages?.[0] && !data.secondaryImages[0].includes('MatchPlaceholder') ? 'mt-[10px]' : ''}`}>
+                <div className="w-full aspect-[4/5] overflow-hidden rounded-lg shadow-sm shadow-black/50 select-none relative bg-gradient-to-br from-pink-50 to-rose-100">
+                  {/* Fondo blur decorativo */}
+                  <img
+                    src={data.secondaryImages[1]}
+                    alt=""
+                    className="absolute inset-0 w-full h-full object-cover filter blur-xl scale-110 opacity-40 select-none pointer-events-none"
+                    aria-hidden="true"
+                    draggable={false}
+                  />
+                  {/* Imagen principal centrada */}
                   <img
                     src={data.secondaryImages[1]}
                     alt="Secondary image 2"
-                    className="w-full h-full object-cover select-none pointer-events-none"
+                    className="relative w-full h-full object-contain select-none pointer-events-none z-10"
                     draggable={false}
                   />
                 </div>

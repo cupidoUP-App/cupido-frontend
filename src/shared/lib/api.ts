@@ -477,6 +477,18 @@ export const likeAPI = {
     });
     return response.data;
   },
+
+  /**
+   * Verificar si existe un match activo con un usuario
+   * @param userId - ID del usuario a verificar
+   */
+  checkMatch: async (userId: string): Promise<{
+    has_match: boolean;
+    match_id?: number;
+  }> => {
+    const response = await api.get(`/match/check/${userId}/`);
+    return response.data;
+  },
 };
 
 
