@@ -3,6 +3,8 @@ import { lazy, Suspense } from "react";
 
 // Página de fin de producción - Única página disponible
 const SeeYouSoonPage = lazy(() => import("@home/pages/SeeYouSoonPage"));
+// Página del equipo - Accesible desde see-you-soon
+const TeamPage = lazy(() => import("@home/pages/TeamPage"));
 
 // Fallback mínimo para Suspense - no bloquea el LCP
 const PageLoader = () => (
@@ -18,9 +20,13 @@ export const AppRouter = () => {
         {/* PÁGINA DE FIN DE PRODUCCIÓN */}
         <Route path="/see-you-soon" element={<SeeYouSoonPage />} />
         
-        {/* TODAS LAS RUTAS REDIRIGEN A SEE-YOU-SOON */}
+        {/* PÁGINA DEL EQUIPO - Accesible desde see-you-soon */}
+        <Route path="/team" element={<TeamPage />} />
+        
+        {/* TODAS LAS DEMÁS RUTAS REDIRIGEN A SEE-YOU-SOON */}
         <Route path="*" element={<Navigate to="/see-you-soon" replace />} />
       </Routes>
     </Suspense>
   );
 };
+

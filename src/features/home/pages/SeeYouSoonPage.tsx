@@ -187,12 +187,22 @@ export default function SeeYouSoonPage() {
                             <p className="mt-6 text-primary font-semibold text-lg">
                                 Ingenieria del Software II - 2025 - II
                             </p>
+                            <p className="mt-2 text-foreground/50 text-xs">
+                                Toda la información que fue suministrada por nuestros usuarios será eliminada por motivos de seguridad.
+                            </p>
                         </div>
                         </motion.div>
                         {/* Footer message */}
                         <motion.div variants={itemVariants}>
                             <p className="text-foreground/60 text-sm">
-                                Con amor, el equipo de Cupido ❤️
+                                Con amor, el{' '}
+                                <a 
+                                    href="/team" 
+                                    className="text-primary hover:text-primary/80 underline transition-colors"
+                                >
+                                    equipo de Cupido
+                                </a>{' '}
+                                ❤️
                             </p>
                         </motion.div>
                     </motion.div>
