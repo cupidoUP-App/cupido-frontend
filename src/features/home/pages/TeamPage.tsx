@@ -2,15 +2,18 @@ import { SimpleHeader } from '../components/SimpleHeader';
 import { SimpleFooter } from '../components/SimpleFooter';
 import ScrollToTopButton from '../components/ScrollToTopButton';
 import { motion } from 'framer-motion';
+import { lazy, Suspense } from 'react';
 import team1 from '@assets/team1.webp';
 import team2 from '@assets/team2.webp';
-import { ParticlesComponent } from '@home/components/Particles';
-
+// Lazy load particles to reduce initial bundle size
+const ParticlesComponent = lazy(() => import('@home/components/Particles').then(m => ({ default: m.ParticlesComponent })));
 export default function TeamPage() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#F5F5F5] to-[#E7D8D8] overflow-x-hidden flex flex-col relative">
             {/* Background Pattern */}
-            <ParticlesComponent />
+            <Suspense fallback={null}>
+                <ParticlesComponent />
+            </Suspense>
             <div className="absolute inset-0 z-0 opacity-30 pointer-events-none">
                 <div className="absolute top-20 right-0 w-96 h-96 bg-primary/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
                 <div className="absolute bottom-0 left-0 w-96 h-96 bg-accent/10 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>

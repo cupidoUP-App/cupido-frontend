@@ -32,6 +32,14 @@ export default defineConfig(({ mode }) => {
     // Divide el bundle en chunks más pequeños y paralelos
     // --------------------------------------------------------
     build: {
+      // Usar terser para mejor minificación en producción
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
       rollupOptions: {
         output: {
           manualChunks: {
@@ -45,6 +53,10 @@ export default defineConfig(({ mode }) => {
             'vendor-motion': ['framer-motion'],
             // Librerías de formularios y validación
             'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
+            // Iconos (tree-shaken de lucide-react)
+            'vendor-icons': ['lucide-react'],
+            // Partículas (cargado lazy)
+            'vendor-particles': ['@tsparticles/slim', '@tsparticles/react', '@tsparticles/shape-heart'],
           },
         },
       },

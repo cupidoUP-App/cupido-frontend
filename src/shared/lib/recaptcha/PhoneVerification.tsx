@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ParticlesComponent } from '@home/components/Particles';
+import React, { useState, useEffect, useRef, lazy, Suspense } from 'react';
+// Lazy load particles to reduce initial bundle size
+const ParticlesComponent = lazy(() => import('@home/components/Particles').then(m => ({ default: m.ParticlesComponent })));
 
 interface PhoneVerificationProps {
   isOpen: boolean;
@@ -118,7 +119,9 @@ const PhoneVerification: React.FC<PhoneVerificationProps> = ({
     <div className="absolute right-0 top-0 bottom-0 w-1/2 h-full overflow-hidden">
       {/* Efecto de partículas en toda la mitad derecha */}
       <div className="absolute inset-0 z-0">
-        <ParticlesComponent id="phone-verification-particles" />
+        <Suspense fallback={null}>
+          <ParticlesComponent id="phone-verification-particles" />
+        </Suspense>
       </div>
 
       {/* Imagen más grande */}

@@ -1,8 +1,9 @@
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@ui/button';
 import { useAppStore } from '@store/appStore';
-import { useEffect, useState } from 'react';
-import { ParticlesComponent } from './Particles';
+import { useEffect, useState, lazy, Suspense } from 'react';
+// Lazy load particles to reduce initial bundle size (~155KB)
+const ParticlesComponent = lazy(() => import('./Particles').then(m => ({ default: m.ParticlesComponent })));
 // Poster estático para LCP rápido (10KB vs 877KB del animado)
 import heroPoster from '@assets/hero-preloader-poster.webp';
 
@@ -31,7 +32,9 @@ export default function HeroSection() {
       className="relative min-h-screen min-h-[100dvh] flex items-center justify-center overflow-hidden pt-16 md:pt-14 pb-8"
       style={{ backgroundColor: 'hsl(var(--hero-bg))' }}
     >
-      <ParticlesComponent id="tsparticles" />
+      <Suspense fallback={null}>
+        <ParticlesComponent id="tsparticles" />
+      </Suspense>
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full max-w-7xl">
         <div className="grid lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12 items-center">

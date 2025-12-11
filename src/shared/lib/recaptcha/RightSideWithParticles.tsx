@@ -1,5 +1,6 @@
-import React from 'react';
-import { ParticlesComponent } from '@home/components/Particles';
+import React, { lazy, Suspense } from 'react';
+// Lazy load particles to reduce initial bundle size
+const ParticlesComponent = lazy(() => import('@home/components/Particles').then(m => ({ default: m.ParticlesComponent })));
 
 interface RightSideWithParticlesProps {
   children?: React.ReactNode;
@@ -14,7 +15,9 @@ const RightSideWithParticles: React.FC<RightSideWithParticlesProps> = React.memo
     <div className={`fixed inset-0 w-full h-full overflow-hidden ${className}`}>
       {/* Efecto de partículas en toda la pantalla */}
       <div className="absolute inset-0 z-0">
-        <ParticlesComponent id="complete-register-particles" />
+        <Suspense fallback={null}>
+          <ParticlesComponent id="complete-register-particles" />
+        </Suspense>
       </div>
       
       {/* Contenido children */}

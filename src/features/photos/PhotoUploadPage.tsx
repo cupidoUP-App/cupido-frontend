@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Trash2, Star } from "lucide-react";
-import { Camera, ArrowLeft } from "@phosphor-icons/react";
+import { Trash2, Star, Camera, ArrowLeft } from "lucide-react";
 import fondo from "@assets/fondoCargueImagenes-optimized.webp";
 import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
@@ -484,7 +483,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
               <Camera 
                 size={isLarge ? 64 : 48} 
                 className="text-primary opacity-70"
-                weight="duotone"
+                strokeWidth={1.5}
               />
             </div>
 
@@ -525,7 +524,7 @@ const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack })
           >
             <ArrowLeft 
               size={20} 
-              weight="bold" 
+              strokeWidth={2.5} 
               className="text-foreground group-hover:text-primary group-hover:-translate-x-0.5 transition-all duration-200" 
             />
             <span className="text-sm font-sans font-medium text-foreground group-hover:text-primary hidden sm:inline">

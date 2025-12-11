@@ -1,5 +1,4 @@
-import { Heart, ArrowRight } from 'lucide-react';
-import { GraduationCap, ShieldCheck, HeartStraight } from '@phosphor-icons/react';
+import { Heart, ArrowRight, GraduationCap, ShieldCheck } from 'lucide-react';
 import { Button } from '@ui/button';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 
@@ -62,19 +61,19 @@ export default function CTAFinalSection({ onSignupClick }: CTAFinalSectionProps)
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 max-w-2xl mx-auto px-4 sm:px-0">
               <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-300">
                 <div className="flex justify-center mb-2">
-                  <GraduationCap size={36} weight="duotone" className="text-primary" />
+                  <GraduationCap size={36} strokeWidth={1.5} className="text-primary" />
                 </div>
                 <div className="text-sm text-muted-foreground font-medium">Solo jóvenes verificados</div>
               </div>
               <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-300">
                 <div className="flex justify-center mb-2">
-                  <ShieldCheck size={36} weight="duotone" className="text-primary" />
+                  <ShieldCheck size={36} strokeWidth={1.5} className="text-primary" />
                 </div>
                 <div className="text-sm text-muted-foreground font-medium">100% seguro y privado</div>
               </div>
               <div className="text-center p-4 bg-white/80 backdrop-blur-sm rounded-2xl border-2 border-primary/20 shadow-[3px_3px_0px_0px_hsl(var(--primary)/0.15)] hover:shadow-[5px_5px_0px_0px_hsl(var(--primary)/0.2)] hover:-translate-y-1 transition-all duration-300">
                 <div className="flex justify-center mb-2">
-                  <HeartStraight size={36} weight="duotone" className="text-primary" />
+                  <Heart size={36} strokeWidth={1.5} className="text-primary" />
                 </div>
                 <div className="text-sm text-muted-foreground font-medium">Gratis para jóvenes</div>
               </div>
