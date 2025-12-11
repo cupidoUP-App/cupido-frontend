@@ -1,19 +1,8 @@
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import Home from "@home/Home";
 
-// Code splitting - carga lazy de rutas secundarias para mejorar LCP/TTI
-const OtherUserProfilePage = lazy(() => import("@profile/components/OtherUserProfilePage"));
-const ProfilePage = lazy(() => import("@profile/components/ProfilePage"));
-const EditProfilePage = lazy(() => import("@profile/components/EditProfilePage"));
-const NotFound = lazy(() => import("@pages/NotFound"));
-const MatchPage = lazy(() => import("@matching/pages/MatchPage"));
-const ChatGeneral = lazy(() => import("@chat/ChatGeneral"));
-const MainLayout = lazy(() => import("@pages/MainLayout"));
-const ResetPasswordPage = lazy(() => import("@auth/pages/resetPasswordPage"));
-const AboutPage = lazy(() => import("@home/pages/AboutPage"));
-const EditPhotosPage = lazy(() => import("@photos/EditPhotosPage"));
-const TeamPage = lazy(() => import("@home/pages/TeamPage"));
+// Página de fin de producción - Única página disponible
+const SeeYouSoonPage = lazy(() => import("@home/pages/SeeYouSoonPage"));
 
 // Fallback mínimo para Suspense - no bloquea el LCP
 const PageLoader = () => (
@@ -26,24 +15,11 @@ export const AppRouter = () => {
   return (
     <Suspense fallback={<PageLoader />}>
       <Routes>
-        {/* RUTAS SIN SIDEBAR */}
-        <Route path="/" element={<Home />} />
-        <Route path="/edit-profile" element={<EditProfilePage />} />
-        <Route path="/edit-photos" element={<EditPhotosPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/team" element={<TeamPage />} />
-
-        {/* RUTAS CON SIDEBAR */}
-        <Route element={<MainLayout />}>
-          <Route path="/match" element={<MatchPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/chat" element={<ChatGeneral />} />
-          <Route path="/other-user-profile/:userId" element={<OtherUserProfilePage />} />
-        </Route>
-
-        {/* CATCH ALL */}
-        <Route path="*" element={<NotFound />} />
+        {/* PÁGINA DE FIN DE PRODUCCIÓN */}
+        <Route path="/see-you-soon" element={<SeeYouSoonPage />} />
+        
+        {/* TODAS LAS RUTAS REDIRIGEN A SEE-YOU-SOON */}
+        <Route path="*" element={<Navigate to="/see-you-soon" replace />} />
       </Routes>
     </Suspense>
   );
