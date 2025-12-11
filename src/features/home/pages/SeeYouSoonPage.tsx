@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { Heart } from 'lucide-react';
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 // Lista de nombres del equipo
 const teamNames = [
-    "Karen Duque", "Cristian Jaimes", "Valentina Cuevas", "Fabian Gonzales",
+    "Karen Duque", "Cristian Delgado", "Valentina Cuevas", "Fabian Gonzalez",
     "Yan Ortega", "Leyder Castellanos", "Kevin Madrid", "Johan Triana",
-    "Didier Duran", "Gilberth Lizcano", "Andrés Jaimes", "Cristian Valencia",
+    "Didier Tabaco", "Gilberth Lizcano", "Andrés Jaimes", "Cristian Fajardo",
     "David Burbano", "Jeison Rodríguez", "Daniel Silva", "Carlos Rincones",
     "Gerson Villamizar", "César Durán", "Daniel Dávila", "Juan Rodriguez",
     "Jesús González", "Gonzalo Niño", "Jholman Sogamoso", "Jhoan Parra",
@@ -14,44 +14,106 @@ const teamNames = [
     "Alejandro Jaimes", "Fabio Barajas", "Jorge Florez", "Gustavo Gomez"
 ];
 
+const useIsMobile = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
+
+    return isMobile;
+};
+
+interface FloatingItem {
+    name: string;
+    lane: number;
+    delay: number;
+    duration: number;
+    offset: number;
+}
+
 // Componente para un nombre flotante individual
-const FloatingName = ({ name, index, total }: { name: string; index: number; total: number }) => {
-    // Distribuir los nombres en diferentes posiciones horizontales
+const FloatingName = ({ item, isMobile, totalColumns }: { item: FloatingItem; isMobile: boolean; totalColumns: number }) => {
+    // Calculamos la posición para que esté centrada en su carril
     const leftPosition = useMemo(() => {
-        return (index % 6) * 16 + Math.random() * 10;
-    }, [index]);
-    
-    // Diferentes duraciones para variedad
-    const duration = useMemo(() => 20 + (index % 5) * 6, [index]);
-    
-    // Delay escalonado para que no aparezcan todos al mismo tiempo
-    const delay = useMemo(() => (index / total) * 12, [index, total]);
+        const colWidth = 100 / totalColumns;
+        const centerOfLane = item.lane * colWidth + (colWidth / 2);
+        // Desplazamiento limitado entre -20% y +20% del ancho de columna para mantenerlo dentro
+        // item.offset es 0-1, restamos 0.5 para tener -0.5 a 0.5
+        const randomShift = (item.offset - 0.5) * (colWidth * 0.4); 
+        return centerOfLane + randomShift;
+    }, [item, totalColumns]);
 
     return (
         <motion.div
-            className="absolute whitespace-nowrap text-primary/40 font-semibold text-base md:text-lg select-none pointer-events-none"
+            className={`absolute whitespace-nowrap text-primary/40 font-semibold select-none pointer-events-none ${
+                isMobile ? 'text-[10px] opacity-80' : 'text-sm md:text-base'
+            }`}
             style={{
                 left: `${leftPosition}%`,
-                filter: 'blur(0.5px)',
+                transform: 'translateX(-50%)', // Centrar el elemento en su posición
+                filter: isMobile ? 'blur(0px)' : 'blur(0.5px)',
             }}
             initial={{ y: '100vh', opacity: 0 }}
             animate={{ 
                 y: '-100%',
-                opacity: [0, 0.6, 0.6, 0]
+                opacity: [0, isMobile ? 0.9 : 0.7, isMobile ? 0.9 : 0.7, 0]
             }}
             transition={{
-                duration: duration,
+                duration: item.duration,
                 repeat: Infinity,
-                delay: delay,
+                delay: item.delay,
                 ease: 'linear',
             }}
         >
-            {name}
+            {item.name}
         </motion.div>
     );
 };
 
 export default function SeeYouSoonPage() {
+    const isMobile = useIsMobile();
+    const [items, setItems] = useState<FloatingItem[]>([]);
+
+    useEffect(() => {
+        const columns = isMobile ? 3 : 6;
+        // Crear pool de carriles balanceados
+        let lanes: number[] = [];
+        const namesCount = teamNames.length;
+        const minPerLane = Math.floor(namesCount / columns);
+        
+        // Llenar carriles base
+        for (let i = 0; i < columns; i++) {
+            for (let j = 0; j < minPerLane; j++) lanes.push(i);
+        }
+        // Llenar sobrantes
+        const remaining = namesCount - lanes.length;
+        for (let i = 0; i < remaining; i++) lanes.push(i % columns);
+        
+        // Mezclar carriles
+        lanes = lanes.sort(() => Math.random() - 0.5);
+        
+        // Mezclar nombres para asignarles carriles aleatorios
+        const shuffledNames = [...teamNames].sort(() => Math.random() - 0.5);
+        
+        const newItems = shuffledNames.map((name, i) => ({
+            name,
+            lane: lanes[i],
+            delay: Math.random() * 20, // Delay aleatorio entre 0 y 20s
+            duration: 25 + Math.random() * 15, // Duración aleatoria entre 25 y 40s (más lento)
+            offset: Math.random() // Offset aleatorio dentro del carril
+        }));
+        
+        setItems(newItems);
+    }, [isMobile]);
+
     const containerVariants = {
         hidden: { opacity: 0 },
         visible: {
@@ -79,7 +141,7 @@ export default function SeeYouSoonPage() {
             transition: {
                 duration: 1.5,
                 repeat: Infinity,
-                ease: "easeInOut"
+                ease: "easeInOut" as const
             }
         }
     };
@@ -95,12 +157,12 @@ export default function SeeYouSoonPage() {
 
             {/* Floating Credits Background */}
             <div className="absolute inset-0 z-[1] overflow-hidden pointer-events-none">
-                {teamNames.map((name, index) => (
+                {items.map((item, index) => (
                     <FloatingName 
-                        key={name} 
-                        name={name} 
-                        index={index} 
-                        total={teamNames.length} 
+                        key={`${item.name}-${index}`} 
+                        item={item} 
+                        isMobile={isMobile}
+                        totalColumns={isMobile ? 3 : 6}
                     />
                 ))}
             </div>
