@@ -11,6 +11,7 @@ import MatchSuccessSlide from "../components/MatchSuccessSlide";
 import EmptyMatchesState from "../components/EmptyMatchesState";
 import { MatchData } from "../types";
 import { photoAPI } from "@lib/api";
+import AnnouncementBanner from "../components/AnnouncementBanner";
 
 const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
   const [matches, setMatches] = useState<MatchData[]>([]);
@@ -172,6 +173,11 @@ const MatchPage: React.FC<MatchPageProps> = ({ matchData }) => {
       />
 
       <MatchOptionsDialog open={showOptions} onOpenChange={setShowOptions} />
+
+      {/* Banner de anuncio de cierre */}
+      <div className="absolute top-0 left-0 right-0 z-50">
+        <AnnouncementBanner />
+      </div>
 
       {matchSuccessData && (
         <MatchSuccessSlide

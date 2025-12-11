@@ -16,6 +16,7 @@ import ScrollToTopButton from './components/ScrollToTopButton';
 import { useAppStore } from '@store/appStore';
 import SigUpForm from '@auth/SigUpForm';
 import LoginForm from '@auth/LoginForm';
+import AnnouncementBanner from './components/AnnouncementBanner';
 
 // Constante para detectar registro pendiente (debe coincidir con LoginForm)
 const REGISTRATION_STEP_KEY = "cupido_registration_step";
@@ -83,6 +84,7 @@ const Index = () => {
 
       <div className={showPreloader ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}>
         <Header />
+        <AnnouncementBanner />
         <main>
           <HeroSection />
           <FeaturesSection />
