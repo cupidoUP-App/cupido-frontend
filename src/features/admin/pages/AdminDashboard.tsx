@@ -473,10 +473,9 @@ const AdminDashboard = () => {
               onChange={(e) => setGenderPref(e.target.value)}
             >
               <option value="">Seleccionar...</option>
-              <option value="M">Masculino</option>
-              <option value="F">Femenino</option>
-              <option value="O">Otro</option>
-              <option value="T">Todos</option>
+              <option value="Hombre">Hombre</option>
+              <option value="Mujer">Mujer</option>
+              <option value="Otro">Otro</option>
             </select>
           </div>
           <button
