@@ -14,6 +14,8 @@ const ResetPasswordPage = lazy(() => import("@auth/pages/resetPasswordPage"));
 const AboutPage = lazy(() => import("@home/pages/AboutPage"));
 const EditPhotosPage = lazy(() => import("@photos/EditPhotosPage"));
 const TeamPage = lazy(() => import("@home/pages/TeamPage"));
+const AdminGuard = lazy(() => import("@admin/components/AdminGuard"));
+const AdminDashboard = lazy(() => import("@admin/pages/AdminDashboard"));
 
 // Fallback mínimo para Suspense - no bloquea el LCP
 const PageLoader = () => (
@@ -40,6 +42,11 @@ export const AppRouter = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/chat" element={<ChatGeneral />} />
           <Route path="/other-user-profile/:userId" element={<OtherUserProfilePage />} />
+        </Route>
+
+        {/* RUTAS DE ADMIN - Protegidas por AdminGuard */}
+        <Route element={<AdminGuard />}>
+          <Route path="/admin" element={<AdminDashboard />} />
         </Route>
 
         {/* CATCH ALL */}
