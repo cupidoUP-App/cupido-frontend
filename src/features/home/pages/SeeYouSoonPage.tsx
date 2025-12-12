@@ -11,7 +11,8 @@ const teamNames = [
     "Gerson Villamizar", "César Durán", "Daniel Dávila", "Juan Rodriguez",
     "Jesús González", "Gonzalo Niño", "Jholman Sogamoso", "Jhoan Parra",
     "Jhordan Cáceres", "Oscar Gaitán", "Sergio Isidro", "Olga Blanco",
-    "Alejandro Jaimes", "Fabio Barajas", "Jorge Florez", "Gustavo Gomez"
+    "Alejandro Jaimes", "Fabio Barajas", "Jorge Florez", "Gustavo Gomez",
+    "Danna Hernandez"
 ];
 
 const useIsMobile = () => {
