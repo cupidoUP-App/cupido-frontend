@@ -10,6 +10,7 @@ interface User {
   nombres?: string;
   apellidos?: string;
   estadocuenta: string;
+  is_superuser?: boolean;
   // otros campos del usuario
 }
 
