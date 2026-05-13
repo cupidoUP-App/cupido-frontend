@@ -1,8 +1,15 @@
+/** Store global de la aplicación con persistencia en localStorage.
+
+Maneja:
+- Estado del modal de autenticación (login/signup/closed)
+- Sesión del usuario (isAuthenticated, user, login, logout)
+- Estado del preloader de carga inicial
+*/
+
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 type AuthModalState = 'closed' | 'openSigUp' | 'openLogin';
-//type Theme = 'femenino' | 'masculino';
 
 interface User {
   usuario_id: number;
@@ -11,7 +18,6 @@ interface User {
   apellidos?: string;
   estadocuenta: string;
   is_superuser?: boolean;
-  // otros campos del usuario
 }
 
 interface AppState {
@@ -20,7 +26,6 @@ interface AppState {
   openLogin: () => void;
   closeModals: () => void;
 
-  // Authentication State
   isAuthenticated: boolean;
   user: User | null;
   isLoading: boolean;
@@ -28,63 +33,36 @@ interface AppState {
   logout: () => void;
   setLoading: (loading: boolean) => void;
 
-  /*   theme: Theme;
-    setTheme: (newTheme: Theme) => void;
-    isTransitioning: boolean;
-    setIsTransitioning: (isTransitioning: boolean) => void; */
-
   showPreloader: boolean;
   hidePreloader: () => void;
 }
 
 export const useAppStore = create<AppState>()(
   persist(
-    (set, get) => ({
-      // Auth Modal State
+    (set) => ({
       authModal: 'closed',
       openSigUp: () => set({ authModal: 'openSigUp' }),
       closeModals: () => set({ authModal: 'closed' }),
       openLogin: () => set({ authModal: 'openLogin' }),
 
-      // Authentication State
       isAuthenticated: false,
       user: null,
       isLoading: false,
-      login: (userData: User) => set({
-        isAuthenticated: true,
-        user: userData,
-        isLoading: false
-      }),
+      login: (userData: User) => set({ isAuthenticated: true, user: userData, isLoading: false }),
       logout: () => {
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
-        set({
-          isAuthenticated: false,
-          user: null,
-          authModal: 'closed',
-          isLoading: false
-        });
+        set({ isAuthenticated: false, user: null, authModal: 'closed', isLoading: false });
       },
       setLoading: (loading: boolean) => set({ isLoading: loading }),
 
-      // Theme State
-      /* theme: 'femenino', // Default theme
-      setTheme: (newTheme) => set({ theme: newTheme }),
-      isTransitioning: false,
-      setIsTransitioning: (isTransitioning) => set({ isTransitioning }), */
-
-      // Preloader State
       showPreloader: true,
       hidePreloader: () => set({ showPreloader: false }),
     }),
     {
       name: 'app-storage',
       storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        //theme: state.theme,
-        isAuthenticated: state.isAuthenticated,
-        user: state.user
-      }),
+      partialize: (state) => ({ isAuthenticated: state.isAuthenticated, user: state.user }),
     }
   )
 );

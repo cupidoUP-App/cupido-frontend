@@ -1,9 +1,20 @@
+/**
+ * @fileoverview Configuración del cliente Axios para la API de Cupido.
+ * Define la instancia principal con interceptores para renovación automática
+ * de tokens JWT, un cliente separado para refresh, y un cliente público
+ * para endpoints de autenticación. Exporta los objetos authAPI, photoAPI y likeAPI.
+ */
+
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Create axios instance with default config
+/**
+ * Instancia principal de Axios con interceptores de request y response.
+ * - Request interceptor: agrega el token JWT y lo renueva proactivamente si está próximo a expirar.
+ * - Response interceptor: en caso de 401, intenta renovar el token automáticamente.
+ */
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -16,6 +27,12 @@ const api: AxiosInstance = axios.create({
 // --------------------------------------------------------
 // UTILIDAD: Decodificar JWT sin verificar firma
 // --------------------------------------------------------
+/**
+ * Decodifica un token JWT sin verificar la firma.
+ * Extrae el payload de la parte central del token y lo convierte a objeto.
+ * @param token - Token JWT en formato string.
+ * @returns Objeto con los claims del payload, o null si ocurre un error.
+ */
 function decodeJWT(token: string): any {
   try {
     const base64Url = token.split('.')[1];
@@ -35,6 +52,12 @@ function decodeJWT(token: string): any {
 // --------------------------------------------------------
 // UTILIDAD: Verificar si el token está próximo a expirar
 // --------------------------------------------------------
+/**
+ * Verifica si un token JWT expirará dentro de los minutos de margen indicados.
+ * @param token - Token JWT a evaluar.
+ * @param bufferMinutes - Minutos de anticipación para considerar que "expira pronto" (por defecto 5).
+ * @returns true si el token expira dentro del margen, false en caso contrario.
+ */
 function isTokenExpiringSoon(token: string, bufferMinutes: number = 5): boolean {
   const decoded = decodeJWT(token);
   if (!decoded || !decoded.exp) return true;
@@ -136,6 +159,10 @@ api.interceptors.request.use(
 // --------------------------------------------------------
 // Cliente separado para refresh token (SIN interceptores)
 // --------------------------------------------------------
+/**
+ * Instancia de Axios para las llamadas de refresh de token.
+ * No tiene interceptores para evitar bucles infinitos al renovar el JWT.
+ */
 const refreshClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -149,6 +176,11 @@ const refreshClient = axios.create({
 // Evita enviar tokens viejos/inválidos en endpoints que no los requieren
 // Esto previene errores 401 → 500 en register, login, verify-email, etc.
 // --------------------------------------------------------
+/**
+ * Instancia de Axios para endpoints que no requieren autenticación.
+ * Usada por register, login, verifyEmail, resendCode, resetPasswordRequest y resetPasswordConfirm.
+ * No tiene interceptores de auth para evitar errores 401 en estos endpoints.
+ */
 const publicClient = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -246,6 +278,11 @@ api.interceptors.response.use(
 // API Endpoints
 // --------------------------------------------------------
 
+/**
+ * Objeto con métodos para interactuar con los endpoints de autenticación y perfil.
+ * - Métodos públicos (register, login, verifyEmail, etc.) usan publicClient sin interceptor.
+ * - Métodos autenticados (logout, changePassword, getUserProfile, etc.) usan la instancia api con interceptores.
+ */
 export const authAPI = {
   // Endpoints públicos usan publicClient (sin interceptor de auth)
   register: async (data: {
@@ -420,6 +457,10 @@ export const authAPI = {
   },
 };
 
+/**
+ * Objeto con métodos para la gestión de fotos de perfil.
+ * Cada método se comunica con los endpoints de /profile/photos/.
+ */
 export const photoAPI = {
   getPhotos: async () => {
     const response = await api.get("/profile/photos/");
@@ -447,6 +488,10 @@ export const photoAPI = {
   },
 };
 
+/**
+ * Objeto con métodos para la interacción de "me gusta" entre usuarios.
+ * Incluye envío de like, dislike y verificación de match.
+ */
 export const likeAPI = {
   /**
    * Enviar un like a un usuario

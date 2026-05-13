@@ -1,3 +1,12 @@
+/**
+ * Componente selector de intereses para las preferencias de búsqueda.
+ * Muestra una cuadrícula de intereses predefinidos y permite seleccionar hasta un máximo configurable.
+ *
+ * @interface InterestsSelectorProps
+ * @property {string[]} selectedInterests - Lista de intereses seleccionados.
+ * @property {(interests: string[]) => void} onInterestsChange - Callback al modificar la selección.
+ * @property {number} [maxSelection=3] - Número máximo de intereses que se pueden seleccionar.
+ */
 import React from 'react';
 
 interface InterestsSelectorProps {

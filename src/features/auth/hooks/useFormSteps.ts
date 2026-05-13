@@ -1,6 +1,20 @@
+/**
+ * Módulo de hook personalizado que maneja los pasos del flujo de registro.
+ * Controla la navegación entre las distintas etapas del formulario
+ * (inicial, captcha, verificación de email, registro completo, finalizado).
+ *
+ * @module useFormSteps
+ */
+
 import { useState } from 'react';
 import { FormStep, FormStepState } from '../types';
 
+/**
+ * Hook que administra los pasos del flujo de registro de usuario.
+ *
+ * @returns Objeto con el estado actual de los pasos y funciones
+ *          para modificar cada propiedad del estado.
+ */
 export const useFormSteps = () => {
   const [stepState, setStepState] = useState<FormStepState>({
     currentStep: 'initial',

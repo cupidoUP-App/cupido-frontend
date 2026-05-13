@@ -5,6 +5,15 @@ const easeOutExpo = (t: number) => {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 };
 
+/**
+ * @function useCountUp
+ * @description Animación de conteo progresivo desde 0 hasta un valor final.
+ * Se activa cuando el elemento entra en el viewport (IntersectionObserver al 50%).
+ * Usa una función de easing "exponential out" para una animación más natural.
+ * @param {number} end - Valor numérico final al que se debe llegar.
+ * @param {number} [duration=2000] - Duración de la animación en milisegundos.
+ * @returns {{ count: number, ref: React.RefObject<HTMLDivElement> }} El valor actual animado y la ref para adjuntar al elemento.
+ */
 export function useCountUp(end: number, duration: number = 2000) {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLDivElement>(null);

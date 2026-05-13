@@ -1,3 +1,12 @@
+/**
+ * Menú desplegable de opciones dentro de la barra lateral.
+ * Se cierra al hacer clic fuera del menú (usa un ref y event listener).
+ * Ofrece las acciones de "Cerrar Sesión" y "Bloquear Cuenta" (deshabilitada).
+ *
+ * @interface OpcionesProps
+ * @property {() => void} onClose - Callback para cerrar el menú.
+ * @property {() => void} abrirModalCerrar - Callback para abrir el modal de confirmación de cierre de sesión.
+ */
 import React, { useRef, useEffect } from "react";
 import "./Opciones.css";
 

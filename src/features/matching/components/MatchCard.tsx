@@ -1,3 +1,10 @@
+/**
+ * @module MatchCard
+ * Componente que renderiza la tarjeta principal de un perfil para hacer matching.
+ * Muestra la imagen principal, información del usuario, imágenes secundarias,
+ * overlay de acción (like/dislike) y botones de acción fijos en la parte inferior.
+ * Soporta interacción por swipe táctil y mouse.
+ */
 import React from "react";
 import { Card } from "@ui/card";
 import { ScrollArea } from "@ui/scroll-area";
@@ -8,6 +15,23 @@ import { MatchData } from "../types";
 import MatchInfo from "./MatchInfo";
 import MatchActionButtons from "./MatchActionButtons";
 
+/**
+ * Props del componente MatchCard.
+ *
+ * @param data - Datos del perfil a mostrar.
+ * @param cardRef - Referencia al elemento DOM de la tarjeta para animaciones.
+ * @param handlers - Manejadores de eventos táctiles/mouse para el swipe.
+ * @param style - Estilos CSS dinámicos para la animación de swipe.
+ * @param isAtTop - Indica si el scroll está en la parte superior.
+ * @param setShowOptions - Función para mostrar/ocultar el menú de opciones.
+ * @param showOverlay - Controla la visibilidad del overlay de acción.
+ * @param overlayIcon - URL del ícono del overlay (like/dislike).
+ * @param likesRemaining - Cantidad de likes disponibles en el día.
+ * @param timeUntilReset - Tiempo restante para el reinicio de likes.
+ * @param handleLike - Callback al dar like.
+ * @param handleDislike - Callback al dar dislike.
+ * @param isAnimating - Indica si hay una animación en curso.
+ */
 interface MatchCardProps {
   data: MatchData;
   cardRef: React.RefObject<HTMLDivElement>;

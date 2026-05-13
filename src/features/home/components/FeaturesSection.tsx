@@ -1,3 +1,8 @@
+/**
+ * Sección de características destacadas de la landing page.
+ * Muestra una cuadrícula de 4 tarjetas (Swipe intuitivo, Rápido con Hotwire,
+ * Privacidad primero, En tu campus) con animaciones al hacer scroll.
+ */
 import { Heart, Zap, Shield, MapPin } from 'lucide-react';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 import AnimatedStat from './AnimatedStat';

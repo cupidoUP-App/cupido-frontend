@@ -1,4 +1,22 @@
-// hooks/useNotifications.ts - Con flag mejorado
+/**
+ * Hook personalizado para la gestión de notificaciones en Cupido.
+ * Proporciona el listado de notificaciones, estado de carga/error,
+ * estado de conexión WebSocket y funciones para marcar como leídas,
+ * eliminar, refrescar y controlar la conexión.
+ *
+ * @param autoConnect Si es true (por defecto), conecta automáticamente
+ *                    el WebSocket y carga las notificaciones iniciales.
+ * @returns notifications - Lista de notificaciones del usuario.
+ * @returns loading - Indica si las notificaciones están cargando.
+ * @returns error - Mensaje de error si ocurrió alguno.
+ * @returns connected - Estado de la conexión WebSocket.
+ * @returns refresh - Recarga las notificaciones desde el servidor.
+ * @returns markAsRead - Marca una notificación como leída por ID.
+ * @returns dismissNotification - Elimina una notificación por ID.
+ * @returns connectWebSocket - Conecta manualmente el WebSocket.
+ * @returns disconnectWebSocket - Desconecta manualmente el WebSocket.
+ */
+
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { AppNotification } from '../types/notification.types';
 import { NotificationsServices } from '../services/notificationServices';

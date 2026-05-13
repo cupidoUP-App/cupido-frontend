@@ -1,3 +1,13 @@
+/**
+ * Página principal de configuración de preferencias de búsqueda dentro de la experiencia de onboarding.
+ * Permite al usuario definir rango de edad, género, estatura, intereses y ubicación.
+ * Incluye un carrusel visual y versiones responsive (móvil y escritorio).
+ *
+ * @interface PreferencesPageProps
+ * @property {string} userId - ID del usuario para cargar/guardar sus preferencias.
+ * @property {() => void} onComplete - Callback ejecutado al guardar exitosamente las preferencias.
+ * @property {() => void} [onBack] - Callback opcional para retroceder en el flujo.
+ */
 import React, { useState, useEffect } from "react";
 import GenderSelector from "./GenderSelector";
 import HeightSelector from "./HeightSelector";

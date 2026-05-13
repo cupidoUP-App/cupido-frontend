@@ -1,9 +1,19 @@
-// services/websocketManager.ts
+/**
+ * Módulo de gestión de conexiones WebSocket para notificaciones en tiempo real.
+ * Implementa el patrón Singleton para mantener una única conexión activa
+ * y expone un sistema de listeners para notificaciones, errores y estado de conexión.
+ */
+
 import { AppNotification } from "../types/notification.types";
 import { buildWsUrl } from "../../../shared/utils/ws";
 
 const WS_NOTI_BASE_URL = import.meta.env.VITE_WSNOTI_BASE_URL;
 
+/**
+ * Administrador de conexiones WebSocket.
+ * Gestiona el ciclo de vida de la conexión, reconexión automática ante errores
+ * y la distribución de eventos a los listeners registrados.
+ */
 class WebSocketManager {
     private static instance: WebSocketManager;
     private socket: WebSocket | null = null;
@@ -13,10 +23,15 @@ class WebSocketManager {
     private errorListeners: Set<(error: Event | string) => void> = new Set();
     private connectionListeners: Set<(connected: boolean) => void> = new Set();
 
+    /** Constructor privado para forzar el uso del singleton. */
     private constructor() {
         // Constructor privado para singleton
     }
 
+    /**
+     * Retorna la única instancia de WebSocketManager.
+     * La crea si aún no ha sido inicializada.
+     */
     static getInstance(): WebSocketManager {
         if (!WebSocketManager.instance) {
             WebSocketManager.instance = new WebSocketManager();
@@ -24,6 +39,10 @@ class WebSocketManager {
         return WebSocketManager.instance;
     }
 
+    /**
+     * Extrae el ID del usuario desde el token JWT almacenado en localStorage.
+     * Intenta distintas claves comunes (user_id, usuario_id, id, userId, sub).
+     */
     private getUserId(): string | null {
         const token = localStorage.getItem('access_token');
         if (token) {
@@ -42,10 +61,16 @@ class WebSocketManager {
         return null;
     }
 
+    /** Obtiene el token de autenticación desde localStorage. */
     private getAuthToken(): string | null {
         return localStorage.getItem('access_token') || localStorage.getItem('token');
     }
 
+    /**
+     * Inicia la conexión WebSocket hacia el servidor de notificaciones.
+     * Si ya hay una conexión abierta o una en progreso, la operación se omite.
+     * En caso de cierre anormal, se programa una reconexión automática a los 3 segundos.
+     */
     connect() {
         if (this.socket && this.socket.readyState === WebSocket.OPEN) {
             return;
@@ -137,6 +162,10 @@ class WebSocketManager {
         }
     }
 
+    /**
+     * Cierra la conexión WebSocket de forma controlada.
+     * Cancela cualquier reconexión pendiente y notifica a los listeners.
+     */
     disconnect() {
         if (this.reconnectTimeout) {
             clearTimeout(this.reconnectTimeout);
@@ -151,45 +180,73 @@ class WebSocketManager {
         this.notifyConnection(false);
     }
 
-    // Métodos para suscribirse a eventos
+    /**
+     * Registra un listener que se invocará al recibir una nueva notificación.
+     * @param listener Función callback que recibe la notificación entrante.
+     */
     addNotificationListener(listener: (notification: AppNotification) => void) {
         this.listeners.add(listener);
     }
 
+    /**
+     * Elimina un listener de notificaciones previamente registrado.
+     * @param listener La misma referencia de función usada al registrarlo.
+     */
     removeNotificationListener(listener: (notification: AppNotification) => void) {
         this.listeners.delete(listener);
     }
 
+    /**
+     * Registra un listener para errores de la conexión WebSocket.
+     * @param listener Función callback que recibe el error (Event o string).
+     */
     addErrorListener(listener: (error: Event | string) => void) {
         this.errorListeners.add(listener);
     }
 
+    /**
+     * Elimina un listener de errores previamente registrado.
+     * @param listener La misma referencia de función usada al registrarlo.
+     */
     removeErrorListener(listener: (error: Event | string) => void) {
         this.errorListeners.delete(listener);
     }
 
+    /**
+     * Registra un listener para cambios en el estado de conexión.
+     * @param listener Función callback que recibe true si está conectado, false en caso contrario.
+     */
     addConnectionListener(listener: (connected: boolean) => void) {
         this.connectionListeners.add(listener);
     }
 
+    /**
+     * Elimina un listener de conexión previamente registrado.
+     * @param listener La misma referencia de función usada al registrarlo.
+     */
     removeConnectionListener(listener: (connected: boolean) => void) {
         this.connectionListeners.delete(listener);
     }
 
-    // Métodos para notificar a los listeners
+    /** Notifica a todos los listeners registrados sobre una nueva notificación. */
     private notifyListeners(notification: AppNotification) {
         this.listeners.forEach(listener => listener(notification));
     }
 
+    /** Notifica a todos los listeners registrados sobre un error. */
     private notifyError(error: Event | string) {
         this.errorListeners.forEach(listener => listener(error));
     }
 
+    /** Notifica a todos los listeners registrados sobre el estado de la conexión. */
     private notifyConnection(connected: boolean) {
         this.connectionListeners.forEach(listener => listener(connected));
     }
 
-    // Estado actual
+    /**
+     * Indica si actualmente hay una conexión WebSocket activa.
+     * @returns true si el socket está en estado OPEN.
+     */
     isConnected(): boolean {
         return this.socket?.readyState === WebSocket.OPEN;
     }

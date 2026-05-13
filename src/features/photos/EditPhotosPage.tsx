@@ -2,8 +2,9 @@ import PhotoUploadPage from "./PhotoUploadPage";
 import { useNavigate } from "react-router-dom";
 
 /**
- * EditPhotosPage - Wrapper component for editing profile photos
- * Uses PhotoUploadPage which automatically loads existing photos
+ * Página de edición de fotos de perfil.
+ * Componente wrapper que utiliza PhotoUploadPage para cargar y editar
+ * las fotos existentes del usuario, redirigiendo al perfil al finalizar.
  */
 const EditPhotosPage = () => {
   const navigate = useNavigate();

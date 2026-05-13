@@ -1,3 +1,11 @@
+/**
+ * Componente selector de intereses para el perfil.
+ * Muestra una cuadrícula de intereses y permite seleccionarlos/deseleccionarlos
+ * solo cuando el modo de edición está activo.
+ *
+ * @interface InterestSelectorProps
+ * @property {boolean} isEditing - Indica si el selector está en modo edición.
+ */
 import React, { useState } from 'react';
 import { interests } from '../data/interests';
 

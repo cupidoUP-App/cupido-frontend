@@ -1,6 +1,11 @@
-// ChatGeneral.tsx
-// Modificado por Jeison Alexis Rodriguez Angarita
-
+/**
+ * @module ChatGeneral
+ * Componente principal de la sección de chats.
+ * Orquesta el panel de lista de chats (ChatListPanel) y la vista de conversación (ChatView).
+ * Gestiona la selección de chats, la conexión WebSocket, el redimensionamiento del panel
+ * y las acciones del menú de conversación (bloquear, reportar, vaciar, cerrar).
+ * Soporta diseño responsive: en móvil alterna entre lista y conversación.
+ */
 import React, { useEffect, useState } from "react";
 import ChatListPanel from "./ChatListPanel";
 import ChatView from "./ChatView";

@@ -1,3 +1,10 @@
+/**
+ * @module useChatSocket
+ * @description Hook para la comunicación en tiempo real de un chat específico mediante WebSocket.
+ * Gestiona la conexión WebSocket, el historial de mensajes (carga REST inicial), el envío de mensajes
+ * (con fallback a REST si WS no está disponible) y el polling periódico como respaldo.
+ */
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Message } from './types'; // Importa la interfaz Message
 import { buildWsUrl } from '../utils/ws';
@@ -7,6 +14,14 @@ const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/chat/`;
 
 type WsStatus = 'connecting' | 'open' | 'closed' | 'error';
 
+/**
+ * @function useChatSocket
+ * @description Establece una conexión WebSocket para un chat, carga el historial de mensajes,
+ * y expone funciones para enviar mensajes y vaciar el historial.
+ * @param {number | null} chatId - ID del chat al que conectarse. Si es null, limpia el estado.
+ * @returns {{ messages: Message[], wsStatus: WsStatus, error: string | null, loadingHistory: boolean, sendMessage: (content: string) => Promise<void>, clearHistory: () => Promise<void> }}
+ * Estado del chat, estado de la conexión, errores, y funciones de acción.
+ */
 export const useChatSocket = (chatId: number | null) => {
     // ESTADOS
     const [messages, setMessages] = useState<Message[]>([]);
@@ -21,6 +36,11 @@ export const useChatSocket = (chatId: number | null) => {
     // FUNCIONES DE CARGA Y ENVÍO
     // ==========================================================
 
+    /**
+     * @function fetchHistory
+     * @description Carga el historial de mensajes del chat vía REST y los mapea al formato Message.
+     * @param {string} token - Token JWT de autenticación.
+     */
     const fetchHistory = useCallback(async (token: string) => {
         if (!chatId) return;
         try {
@@ -48,6 +68,11 @@ export const useChatSocket = (chatId: number | null) => {
         }
     }, [chatId]);
 
+    /**
+     * @function sendMessage
+     * @description Envía un mensaje de texto. Intenta primero por WebSocket; si falla, usa REST como fallback.
+     * @param {string} content - Contenido del mensaje a enviar.
+     */
     const sendMessage = useCallback(async (content: string) => {
         if (!content.trim()) return;
         if (!chatId) {
@@ -101,6 +126,10 @@ export const useChatSocket = (chatId: number | null) => {
         }
     }, [wsStatus, chatId]);
 
+    /**
+     * @function clearHistory
+     * @description Vacía el historial de mensajes del chat llamando al endpoint correspondiente.
+     */
     const clearHistory = useCallback(async () => {
         if (!chatId) return;
         try {

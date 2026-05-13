@@ -1,3 +1,9 @@
+/**
+ * @module MatchLimitDialog
+ * Componente de diálogo modal que informa al usuario que ha alcanzado
+ * el límite diario de "Me Gusta". Muestra el tiempo restante hasta
+ * que se reinicien los likes disponibles.
+ */
 import React from "react";
 import {
   Dialog,
@@ -5,6 +11,13 @@ import {
   DialogClose,
 } from "@ui/dialog";
 
+/**
+ * Props del componente MatchLimitDialog.
+ *
+ * @param open - Controla la visibilidad del diálogo.
+ * @param onOpenChange - Callback para cambiar el estado de visibilidad.
+ * @param timeUntilReset - Tiempo restante formateado para el reinicio de likes.
+ */
 interface MatchLimitDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;

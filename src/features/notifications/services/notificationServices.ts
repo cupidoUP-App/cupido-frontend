@@ -1,7 +1,16 @@
+/**
+ * Servicio de notificaciones para Cupido.
+ * Proporciona métodos para obtener, marcar como leídas, eliminar
+ * y crear notificaciones desde la API REST de Django.
+ */
 
-// services/notificationServices.ts
 import { AppNotification } from "../types/notification.types";
 
+/**
+ * Mapea una notificación del formato de Django (snake_case) al
+ * formato interno de la aplicación (camelCase).
+ * @param djangoNotif Objeto de notificación proveniente del backend.
+ */
 const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
     return {
         id: djangoNotif.id.toString(),
@@ -15,11 +24,15 @@ const mapDjangoToFrontend = (djangoNotif: any): AppNotification => {
     };
 };
 
+/** Obtiene el token de autenticación desde localStorage. */
 const getAuthToken = (): string | null => {
     return localStorage.getItem('access_token') || localStorage.getItem('token');
 };
 
-// Función auxiliar para obtener user_id del token (fuera del objeto)
+/**
+ * Extrae el ID del usuario desde el token JWT almacenado en localStorage.
+ * Función auxiliar independiente del objeto NotificationsServices.
+ */
 const getUserIdFromToken = (): string | null => {
     const token = getAuthToken();
     if (token) {
@@ -42,7 +55,16 @@ const getUserIdFromToken = (): string | null => {
 const VITE_API_BASE = import.meta.env.VITE_API_BASE_URL;  
 let API_BASE_URL = `${VITE_API_BASE}/notificaciones/`;
 
+/**
+ * Servicio de notificaciones que agrupa las operaciones CRUD
+ * contra la API REST de notificaciones del backend Django.
+ */
 export const NotificationsServices = {
+    /**
+     * Obtiene todas las notificaciones del usuario autenticado.
+     * Soporta tanto respuestas paginadas como arrays directos.
+     * @throws Error si no hay token o el formato de respuesta es inesperado.
+     */
     async getNotifications(): Promise<AppNotification[]> {
         const token = getAuthToken();
         
@@ -92,6 +114,11 @@ export const NotificationsServices = {
         }
     },
 
+    /**
+     * Marca una notificación como leída en el servidor.
+     * @param id Identificador único de la notificación.
+     * @throws Error si no hay token o la solicitud falla.
+     */
     async markAsRead(id: string) {
         const token = getAuthToken();
         
@@ -126,6 +153,12 @@ export const NotificationsServices = {
     },
 
 
+    /**
+     * Elimina una notificación del servidor.
+     * @param id Identificador único de la notificación a eliminar.
+     * @returns true si la eliminación fue exitosa.
+     * @throws Error si no hay token o la solicitud falla.
+     */
     async deleteNotification(id: string): Promise<boolean> {
         const token = getAuthToken();
         
@@ -158,7 +191,10 @@ export const NotificationsServices = {
         }
     },
 
-    // Obtener conteo de no leídas
+    /**
+     * Calcula la cantidad de notificaciones no leídas.
+     * @returns Número de notificaciones sin leer. Retorna 0 si hay error.
+     */
     async getUnreadCount(): Promise<number> {
         try {
             const notifications = await this.getNotifications();
@@ -169,7 +205,11 @@ export const NotificationsServices = {
         }
     },
 
-    // Función para crear una notificación de prueba
+    /**
+     * Crea una notificación de prueba en el servidor.
+     * Utiliza el ID del usuario extraído del token JWT.
+     * @returns true si la notificación se creó correctamente, false en caso contrario.
+     */
     async createTestNotification(): Promise<boolean> {
         const token = getAuthToken();
         
@@ -215,6 +255,11 @@ export const NotificationsServices = {
         }
     },
 
+    /**
+     * Envía una notificación de prueba al servidor.
+     * Funcionalmente idéntica a createTestNotification.
+     * @returns true si la notificación se envió correctamente, false en caso contrario.
+     */
     async sendTestNotification(): Promise<boolean> {
         const token = getAuthToken();
         
@@ -260,7 +305,10 @@ export const NotificationsServices = {
         }
     },
 
-    // Función para probar la API manualmente
+    /**
+     * Función de utilidad para probar la conectividad con la API de notificaciones.
+     * @returns Una promesa que resuelve con los datos de la respuesta o un objeto de error.
+     */
     testApi(): Promise<any> {
         return new Promise(async (resolve) => {
             try {

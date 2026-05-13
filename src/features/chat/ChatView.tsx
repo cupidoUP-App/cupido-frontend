@@ -1,11 +1,32 @@
-// ChatView.tsx
+/**
+ * @module ChatView
+ * Componente que renderiza la vista de una conversación de chat.
+ * Muestra el encabezado con información del contacto, la lista de mensajes
+ * con estados (enviado, leído, fallido), y un campo de entrada para enviar mensajes.
+ * Incluye menú de opciones de conversación, scroll automático y detección de presencia.
+ */
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// ASUNCIÓN DE IMPORTS DE TIPOS
 import { Message } from '@hooks/types'; 
 
-// INTERFAZ COMPLETA DE PROPS
+/**
+ * Props del componente ChatView.
+ *
+ * @param chatId - ID del chat activo.
+ * @param contactId - ID del contacto con quien se chatea.
+ * @param contactPhotoUrl - URL de la foto de perfil del contacto.
+ * @param contactName - Nombre del contacto.
+ * @param contactLastSeen - Última vez visto formateado del contacto.
+ * @param contactIsOnline - Indica si el contacto está en línea.
+ * @param mensajes - Lista de mensajes de la conversación.
+ * @param sendMessage - Función para enviar un mensaje.
+ * @param wsStatus - Estado de la conexión WebSocket.
+ * @param isInputDisabled - Deshabilita el input si hay error de sesión/permiso.
+ * @param onTogglePanel - Callback para mostrar/ocultar el panel de lista.
+ * @param onCloseChat - Callback para cerrar la conversación.
+ * @param onClearHistory - Callback para vaciar el historial de mensajes.
+ */
 interface ChatViewProps {
     chatId: number;
     contactId: number;

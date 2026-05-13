@@ -1,13 +1,24 @@
 import React from 'react';
 import { TrashIcon, StarIcon } from '@radix-ui/react-icons';
-import { Button } from '@ui/button'; // Shadcn/ui button
+import { Button } from '@ui/button';
 
+/** Propiedades del componente PhotoSlot. */
 interface PhotoSlotProps {
-  file: File & { preview: string }; // File object with a preview URL
+  /** Archivo de imagen con una URL de previsualización. */
+  file: File & { preview: string };
+  /** Callback para eliminar la foto. */
   onDelete: (file: File) => void;
+  /** Callback para establecer la foto como principal. */
   onSetPrincipal: (file: File) => void;
+  /** Indica si esta foto es la principal del perfil. */
   isPrincipal: boolean;
 }
+
+/**
+ * Componente que renderiza un slot individual de foto con vista previa.
+ * Muestra overlay con acciones al hacer hover: eliminar y establecer como principal.
+ * Si es la foto principal, muestra una etiqueta distintiva.
+ */
 
 const PhotoSlot: React.FC<PhotoSlotProps> = ({ file, onDelete, onSetPrincipal, isPrincipal }) => {
   return (

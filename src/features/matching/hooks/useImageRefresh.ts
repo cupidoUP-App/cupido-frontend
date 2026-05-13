@@ -12,6 +12,12 @@ export interface ImageURLs {
   secondary_images: string[];
 }
 
+/**
+ * Hook que detecta errores de carga en imágenes causados por URLs expiradas
+ * y las regenera automáticamente solicitando nuevas al backend.
+ *
+ * @returns Objeto con funciones handleImageError y cacheImageURL, y el método isRefreshing.
+ */
 export const useImageRefresh = () => {
   const [refreshing, setRefreshing] = useState<Set<number>>(new Set());
 

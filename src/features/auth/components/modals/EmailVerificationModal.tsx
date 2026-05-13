@@ -1,3 +1,12 @@
+/**
+ * Modal de verificación de correo electrónico.
+ * Permite al usuario ingresar un código de 6 dígitos enviado a su correo,
+ * con funcionalidad de auto-enfoque, pegado, reenvío con temporizador
+ * y envío automático al completar los dígitos.
+ *
+ * @component
+ */
+
 import React, { useState, useRef, useEffect } from 'react';
 import backgroundImage from '@assets/background_verification.webp';
 

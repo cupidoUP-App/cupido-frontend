@@ -1,9 +1,16 @@
+/**
+ * @module matchService
+ * Servicio para obtener recomendaciones de perfiles desde la API de matching.
+ * Transforma la respuesta del backend al formato interno MatchData,
+ * construyendo URLs de imágenes y normalizando los datos de cada perfil.
+ */
 import api from "@lib/api";
 import MatchPlaceholder1 from "@assets/MatchPlaceholder1.jpeg";
 import MatchPlaceholder2 from "@assets/MatchPlaceholder2.webp";
 import MatchPlaceholder3 from "@assets/MatchPlaceholder3.jpg";
 import { MatchData } from "../types";
 
+/** Lista de datos mock para desarrollo y pruebas locales. */
 export const mockMatchDataList: MatchData[] = [
   {
     mainImage: MatchPlaceholder1,
@@ -19,6 +26,12 @@ export const mockMatchDataList: MatchData[] = [
   // ... otros datos mock
 ];
 
+/**
+ * Obtiene las recomendaciones de perfiles desde la API.
+ * Construye URLs de imágenes, normaliza nombres, descripciones y datos del perfil.
+ *
+ * @returns Promesa con un arreglo de perfiles tipados como MatchData.
+ */
 export const fetchMatches = async (): Promise<MatchData[]> => {
   try {
     const response = await api.get("/match/recommendations/");
@@ -108,6 +121,12 @@ export const fetchMatches = async (): Promise<MatchData[]> => {
   }
 };
 
+/**
+ * Retorna una lista vacía de matches.
+ * Actualmente solo se usa fetchMatches para obtener datos reales.
+ *
+ * @returns Arreglo vacío de MatchData.
+ */
 export const getMatches = (): MatchData[] => {
   return []; // Ya no usar datos mock, siempre usar fetchMatches
 };

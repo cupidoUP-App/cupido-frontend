@@ -1,9 +1,10 @@
 /**
- * Servicio para manejar la regeneración automática de presigned URLs.
+ * @module imageRefreshService
+ * Servicio para manejar la regeneración automática de presigned URLs de MinIO.
  *
- * Las presigned URLs de MinIO expiran después de 1 hora. Este servicio
- * detecta URLs expiradas y las regenera automáticamente sin que el usuario
- * lo note.
+ * Las presigned URLs expiran después de 1 hora. Este servicio detecta URLs
+ * expiradas, las regenera automáticamente y mantiene un caché con tiempos
+ * de expiración para evitar solicitudes innecesarias.
  */
 import api from "@lib/api";
 

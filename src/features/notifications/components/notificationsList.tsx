@@ -1,7 +1,17 @@
 import NotificationItem from "./notificationItem";
 import { Notification } from "../types/notification.types";
 
-export default function NotificationsList({notifications, visible}: {notifications: Notification[]; visible: boolean}) {
+interface NotificationsListProps {
+  notifications: Notification[];
+  visible: boolean;
+}
+
+/**
+ * Componente que renderiza un panel desplegable con la lista de notificaciones.
+ * Solo se muestra cuando la prop `visible` es true.
+ * Muestra un mensaje de "No hay notificaciones" si el listado está vacío.
+ */
+export default function NotificationsList({notifications, visible}: NotificationsListProps) {
     if (!visible) {
         return null;
     }

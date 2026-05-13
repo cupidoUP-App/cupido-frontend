@@ -1,3 +1,13 @@
+/**
+ * Barra lateral de navegación principal de la aplicación.
+ * Contiene enlaces a Match, Chat, Notificaciones y Perfil.
+ * Incluye un menú de opciones (configuración/cierre de sesión) y
+ * el panel de notificaciones con contador de no leídas.
+ *
+ * @interface SidebarProps
+ * @property {() => void} abrirModalCerrar - Función para abrir el modal de cierre de sesión.
+ * @property {string} userId - ID del usuario autenticado.
+ */
 import React, { useState } from "react";
 import "./Sidebar.css";
 import { NavLink } from "react-router-dom";

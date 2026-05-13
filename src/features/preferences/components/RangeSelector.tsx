@@ -1,3 +1,16 @@
+/**
+ * Componente de rango deslizante (slider de doble thumb) para seleccionar rangos de edad o estatura.
+ * Soporta entrada mediante arrastre de thumbs y también mediante inputs numéricos editables.
+ *
+ * @interface RangeSelectorProps
+ * @property {'age' | 'height'} type - Tipo de rango (define el formato de visualización).
+ * @property {[number, number]} value - Tupla [mínimo, máximo] del rango seleccionado.
+ * @property {(value: [number, number]) => void} onChange - Callback al cambiar el rango.
+ * @property {number} minValue - Valor mínimo del rango total.
+ * @property {number} maxValue - Valor máximo del rango total.
+ * @property {string} minLabel - Etiqueta para el extremo inferior.
+ * @property {string} maxLabel - Etiqueta para el extremo superior.
+ */
 // src/features/preferences/components/RangeSelector.tsx
 import React, { useRef, useEffect } from 'react';
 

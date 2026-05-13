@@ -1,7 +1,21 @@
+/**
+ * @module MatchActionButtons
+ * Componente que renderiza los botones flotantes de like y dislike
+ * en la parte inferior de la tarjeta de matching.
+ * Los botones cambian de tamaño y posición según el estado del scroll.
+ */
 import React from "react";
 import MatchDislike from "@assets/MatchDislike.png";
 import MatchLike from "@assets/MatchLike.png";
 
+/**
+ * Props del componente MatchActionButtons.
+ *
+ * @param handleLike - Callback al presionar el botón de like.
+ * @param handleDislike - Callback al presionar el botón de dislike.
+ * @param isAnimating - Deshabilita los botones durante una animación.
+ * @param isAtTop - Cambia el tamaño/posición de los botones según el scroll.
+ */
 interface MatchActionButtonsProps {
   handleLike: () => void;
   handleDislike: () => void;

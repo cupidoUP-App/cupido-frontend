@@ -1,3 +1,11 @@
+/**
+ * Componente de campo de entrada para correo electrónico institucional.
+ * Valida el formato y muestra los requisitos del correo electrónico
+ * en tiempo real mediante el subcomponente EmailRequirements.
+ *
+ * @component
+ */
+
 import React from 'react';
 import EmailRequirements from './EmailRequirements';
 

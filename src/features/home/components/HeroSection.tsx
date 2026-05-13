@@ -1,3 +1,9 @@
+/**
+ * Sección hero de la landing page.
+ * Muestra el título principal, descripción, botones de "Crear cuenta" e "Ingresar",
+ * indicadores de "Solo jóvenes" y "Verificado", y una imagen animada con carga diferida.
+ * Incluye partículas decorativas de fondo.
+ */
 import { Heart, Sparkles, Users } from 'lucide-react';
 import { Button } from '@ui/button';
 import { useAppStore } from '@store/appStore';

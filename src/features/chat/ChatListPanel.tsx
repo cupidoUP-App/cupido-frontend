@@ -1,18 +1,34 @@
-// Modificado por Jeison Alexis Rodriguez Angarita
-
+/**
+ * @module ChatListPanel
+ * Panel lateral que muestra la lista de conversaciones del usuario.
+ * Incluye búsqueda, indicador de mensajes no leídos, foto de perfil
+ * y un menú de acciones por cada chat. Maneja estados de carga y error.
+ */
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChatList, ChatListItemReal } from '@hooks/useChatList';
 import { getPresenceFromLastLogin } from './utils/presence';
 
+/**
+ * Props del componente ChatListPanel.
+ *
+ * @param onSelectChat - Callback al seleccionar un chat de la lista.
+ * @param selectedChatId - ID del chat actualmente seleccionado.
+ * @param onCloseChat - Callback para cerrar un chat.
+ * @param chatList - Lista de conversaciones del usuario.
+ * @param listLoading - Indica si la lista está cargando.
+ * @param listError - Mensaje de error si falló la carga.
+ */
 interface ChatListPanelProps {
     onSelectChat: (chatId: number) => void;
     selectedChatId: number | null;
     onCloseChat: (chatId: number) => void;
 
-    // NUEVAS PROPIEDADES RECIBIDAS DEL PADRE (ChatGeneral)
+    /** Lista de conversaciones del usuario. */
     chatList: ChatListItemReal[];
+    /** Indica si la lista está cargando. */
     listLoading: boolean;
+    /** Mensaje de error si falló la carga de la lista. */
     listError: string | null;
 }
 

@@ -1,4 +1,12 @@
-// WelcomeProfileModal.tsx - Modal de bienvenida para nuevos usuarios
+/**
+ * Modal de bienvenida para nuevos usuarios.
+ * Se muestra cuando el usuario completa todo el flujo de registro,
+ * animándolo a editar su perfil para mejorar sus posibilidades
+ * de encontrar pareja.
+ *
+ * @component
+ */
+
 import React from "react";
 
 interface WelcomeProfileModalProps {

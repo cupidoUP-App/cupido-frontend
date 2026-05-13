@@ -1,3 +1,8 @@
+/**
+ * Sección "¿Cómo funciona cUPido?" de la landing page.
+ * Describe en 3 pasos (Verificación .edu, Perfil real, Match & chat)
+ * el flujo de uso de la aplicación, con tarjetas animadas al hacer scroll.
+ */
 import { CheckCircle, UserCheck, MessageSquare } from 'lucide-react';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';
 

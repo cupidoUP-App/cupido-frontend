@@ -1,14 +1,26 @@
 import React from 'react';
-import { Button } from '@ui/button'; // Shadcn/ui button
+import { Button } from '@ui/button';
 import { TrashIcon, CheckIcon, ArrowRightIcon } from '@radix-ui/react-icons';
 
+/** Propiedades del componente ActionButtons. */
 interface ActionButtonsProps {
+  /** Indica si hay archivos disponibles para las acciones. */
   hasFiles: boolean;
+  /** Callback para guardar las fotos. */
   onSave: () => void;
+  /** Callback para eliminar todas las fotos. */
   onDeleteAll: () => void;
+  /** Callback para continuar al siguiente paso. */
   onContinue: () => void;
+  /** Indica si actualmente se está guardando. */
   isSaving: boolean;
 }
+
+/**
+ * Componente de botones de acción para la gestión de fotos.
+ * Proporciona botones para eliminar todo, guardar y continuar,
+ * inhabilitándolos según el estado de carga y disponibilidad de archivos.
+ */
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   hasFiles,

@@ -1,3 +1,11 @@
+/**
+ * Página envoltorio de preferencias que obtiene la sesión del usuario y delega
+ * el formulario de preferencias al componente PreferencesPage.
+ * Muestra estados de carga y error si no se puede obtener la información del usuario.
+ *
+ * @interface PreferencesPageProps
+ * @property {() => void} onComplete - Callback al completar la configuración de preferencias.
+ */
 import React from 'react';
 import { useUserSession } from '@hooks/useUserSession';
 

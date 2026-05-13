@@ -1,3 +1,10 @@
+/**
+ * Componente modal de autenticación que permite alternar entre las vistas
+ * de inicio de sesión, registro y cambio de contraseña.
+ *
+ * @component
+ */
+
 import React, { useState } from 'react';
 import LoginForm from './LoginForm';
 import SigUpForm from './SigUpForm';

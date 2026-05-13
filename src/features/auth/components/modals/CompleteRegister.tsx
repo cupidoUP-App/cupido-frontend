@@ -1,4 +1,13 @@
-// CompleteRegister.tsx - RESPONSIVE
+/**
+ * Modal de finalización de registro.
+ * Recolecta datos personales del usuario (nombre, apellidos, género,
+ * fecha de nacimiento, descripción) y los envía al backend para
+ * completar el perfil. Incluye validación de campos y un flujo
+ * hacia la página de preferencias.
+ *
+ * @component
+ */
+
 import React, { useState, useEffect } from "react";
 import RightSideWithParticles from "@lib/recaptcha/RightSideWithParticles";
 import { authAPI } from "@lib/api";

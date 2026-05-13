@@ -1,4 +1,11 @@
-// ForgotPasswordModal.tsx
+/**
+ * Modal de recuperación de contraseña.
+ * Solicita el correo electrónico institucional del usuario y envía
+ * un enlace de restablecimiento de contraseña al backend.
+ *
+ * @component
+ */
+
 import React, { useState } from 'react';
 import { useToast } from '@hooks/use-toast';
 import EmailField from '../forms/EmailField';

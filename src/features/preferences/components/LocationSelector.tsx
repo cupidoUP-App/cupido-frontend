@@ -1,3 +1,11 @@
+/**
+ * Componente selector de ubicación para las preferencias de búsqueda.
+ * Permite seleccionar una o varias ubicaciones de una lista predefinida.
+ *
+ * @interface LocationSelectorProps
+ * @property {string[]} selectedLocations - Lista de ubicaciones seleccionadas.
+ * @property {(selected: string[]) => void} onChange - Callback al cambiar la selección.
+ */
 // src/features/preferences/components/LocationSelector.tsx
 import React, { useState } from 'react';
 

@@ -1,3 +1,11 @@
+/**
+ * Módulo de hook personalizado para la verificación de correo electrónico.
+ * Proporciona funciones para enviar, reenviar y verificar códigos
+ * de verificación enviados al correo del usuario.
+ *
+ * @module useEmailVerification
+ */
+
 import { useToast } from '@hooks/use-toast';
 
 interface UseEmailVerificationProps {
@@ -6,6 +14,14 @@ interface UseEmailVerificationProps {
   setSubmitting: (value: boolean) => void;
 }
 
+/**
+ * Hook que gestiona el envío y verificación de códigos de verificación por correo.
+ *
+ * @param props.email - Correo electrónico del usuario al que se enviará el código.
+ * @param props.onVerifySuccess - Callback ejecutado cuando la verificación es exitosa.
+ * @param props.setSubmitting - Función para actualizar el estado de envío.
+ * @returns Objeto con funciones para enviar, reenviar y verificar el código.
+ */
 export const useEmailVerification = ({
   email,
   onVerifySuccess,

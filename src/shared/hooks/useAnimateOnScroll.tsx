@@ -6,6 +6,16 @@ interface AnimateOnScrollOptions {
   triggerOnce?: boolean;
 }
 
+/**
+ * @function useAnimateOnScroll
+ * @description Activa animaciones CSS en elementos hijo cuando el contenedor entra en el viewport.
+ * Lee atributos `data-animate` (nombre de la animación) y `data-animate-delay` (retraso) de los elementos hijo.
+ * @param {AnimateOnScrollOptions} [options] - Opciones de configuración del IntersectionObserver.
+ * @param {string} [options.rootMargin='0px'] - Margen adicional para el viewport.
+ * @param {number} [options.threshold=0.1] - Porcentaje de visibilidad para disparar la animación.
+ * @param {boolean} [options.triggerOnce=false] - Si `true`, la animación se ejecuta solo una vez.
+ * @returns {React.RefObject<HTMLDivElement>} Ref que debe asignarse al contenedor cuyos hijos se animarán.
+ */
 export function useAnimateOnScroll(options?: AnimateOnScrollOptions) {
   const ref = useRef<HTMLDivElement>(null);
 

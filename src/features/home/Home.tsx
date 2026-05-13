@@ -1,4 +1,11 @@
-// Home.tsx - VERSIÓN ORIGINAL
+/**
+ * Página principal (landing) de Cupido.
+ * Muestra las secciones de la landing: Hero, Features, HowItWorks, Safety,
+ * Testimonials, FAQ, CTA Final y Footer.
+ * Gestiona la apertura de modales de inicio de sesión y registro,
+ * y redirige a /match si el usuario ya está autenticado.
+ * También restaura el paso de registro si hay uno pendiente guardado en localStorage.
+ */
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';

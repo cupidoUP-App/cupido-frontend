@@ -1,3 +1,9 @@
+/**
+ * Encabezado principal de la landing page.
+ * Muestra el logo, navegación con scroll suave a las secciones,
+ * y botones de Ingresar/Crear cuenta o información del usuario autenticado.
+ * Incluye menú responsive para móviles.
+ */
 import { useState, useEffect } from 'react';
 import { Menu, X, User, LogOut } from 'lucide-react';
 import { Button } from '@ui/button';
@@ -6,6 +12,11 @@ import { useAppStore } from '@store/appStore';
 import logofemdark from '@assets/logofemdark.webp';
 //import logomascdark from '@/assets/logomascdark.webp';
 
+/**
+ * Hook que detecta si la página ha sido scrolleada más allá de un umbral.
+ * @param threshold - Número de píxeles para considerar que se ha scrolleado (por defecto 10).
+ * @returns true si el scroll vertical supera el umbral.
+ */
 const useScroll = (threshold = 10) => {
   const [scrolled, setScrolled] = useState(false);
 

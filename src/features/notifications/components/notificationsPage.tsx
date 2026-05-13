@@ -1,19 +1,34 @@
-// notificationsPage.tsx
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppNotification } from "../types/notification.types";
 import "./notificationsPage.css";
 
+/** Propiedades del componente NotificationsPage. */
 interface NotificationsPageProps {
+  /** Función opcional para cerrar el panel. */
   onClose?: () => void;
+  /** Lista completa de notificaciones del usuario. */
   notifications: AppNotification[];
+  /** Marca una notificación como leída dado su ID. */
   markAsRead: (id: string) => Promise<void>;
+  /** Elimina una notificación dado su ID. */
   dismissNotification: (id: string) => Promise<void>;
+  /** Recarga las notificaciones desde el servidor. */
   refresh: () => Promise<void>;
+  /** Indica si las notificaciones están cargando. */
   loading: boolean;
+  /** Mensaje de error si ocurrió alguna falla. */
   error: string | null;
+  /** Indica si la conexión WebSocket está activa. */
   connected: boolean;
 }
+
+/**
+ * Página/panel principal de notificaciones.
+ * Muestra el listado de notificaciones del usuario, permite marcar como leídas,
+ * eliminar, y navegar según el tipo (like → perfil, match → chat/perfil, chat → chat).
+ * Soporta diseño responsive para escritorio y móvil.
+ */
 
 export default function NotificationsPage({
   onClose,

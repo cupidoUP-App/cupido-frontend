@@ -1,7 +1,21 @@
+/**
+ * @module MatchSuccessSlide
+ * Componente que muestra una animación de celebración cuando dos usuarios
+ * hacen match. Incluye confeti animado, fotos de perfil de ambos usuarios,
+ * botón para ir al chat y opción para seguir explorando perfiles.
+ * Tiene un tiempo mínimo de visualización de 3 segundos.
+ */
 import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Props del componente MatchSuccessSlide.
+ *
+ * @param matchedUser - Datos del usuario con quien se hizo match (nombre, foto, id).
+ * @param currentUserPhotoUrl - URL opcional de la foto del usuario actual.
+ * @param onClose - Callback para cerrar el slide de éxito.
+ */
 interface MatchSuccessSlideProps {
   matchedUser: {
     name: string;

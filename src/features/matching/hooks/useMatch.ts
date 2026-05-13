@@ -1,3 +1,9 @@
+/**
+ * @module useMatch
+ * Hook principal para la funcionalidad de matching (like/dislike/swipe).
+ * Gestiona el estado de la lista de perfiles, animaciones, límite diario de likes
+ * y la interacción táctil/mouse para deslizar tarjetas.
+ */
 import { useState, useEffect, useRef } from "react";
 import MatchDislike from "@assets/MatchDislike.png";
 import MatchLike from "@assets/MatchLike.png";
@@ -5,6 +11,13 @@ import { MatchData } from "../types";
 import { getMatches } from "../services/matchService";
 import { likeAPI } from "../../../shared/lib/api"; 
 
+/**
+ * Hook que controla el flujo completo del sistema de matching.
+ *
+ * @param initialMatchData - Datos iniciales de un perfil opcional.
+ * @param matches - Lista completa de perfiles disponibles para hacer match.
+ * @returns Estado y controladores para manejar likes, dislikes, swipe, animaciones y límite diario.
+ */
 export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) => {
   const [matchList, setMatchList] = useState<MatchData[]>(matches || getMatches());
   const [currentIndex, setCurrentIndex] = useState(0);

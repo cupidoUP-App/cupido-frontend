@@ -35,6 +35,14 @@ export interface AutoRefreshOptions {
   onRefreshError?: (error: Error) => void;
 }
 
+/**
+ * Hook que ejecuta un callback de refresco en intervalos periódicos.
+ * Útil para mantener vigentes las presigned URLs de MinIO.
+ *
+ * @param refreshCallback - Función asíncrona que refresca las URLs.
+ * @param options - Opciones de configuración (intervalo, habilitado, callbacks).
+ * @returns Objeto con la configuración actual de intervalo y estado habilitado.
+ */
 export const useAutoRefresh = (
   refreshCallback: () => Promise<void>,
   options: AutoRefreshOptions = {}

@@ -1,3 +1,8 @@
+/**
+ * @module EmptyMatchesState
+ * Componente que se muestra cuando no hay más perfiles disponibles para hacer matching.
+ * Incluye una animación decorativa y un mensaje informativo para el usuario.
+ */
 import React from "react";
 import { motion } from "framer-motion";
 

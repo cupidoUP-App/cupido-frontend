@@ -1,3 +1,11 @@
+/**
+ * Modal de confirmación para cerrar sesión.
+ * Se renderiza mediante un portal en el elemento `#modal-root`.
+ * Al confirmar, ejecuta el logout global y redirige a la página de inicio.
+ *
+ * @interface ModalCerrarSesionProps
+ * @property {() => void} onCancel - Callback al cancelar o al cerrar el modal.
+ */
 import React from "react";
 import { createPortal } from "react-dom";
 import "./ModalCerrarSesion.css";

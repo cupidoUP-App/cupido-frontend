@@ -1,3 +1,22 @@
+/**
+ * @fileoverview Servicio para la gestión de preferencias de usuario.
+ * Proporciona métodos para guardar, obtener y verificar preferencias
+ * mediante llamadas fetch directas a la API.
+ */
+
+/**
+ * Interfaz que define la estructura de las preferencias de un usuario.
+ * @property {number} [id] - ID único de la preferencia (asignado por el backend).
+ * @property {string} genero_preferido - Género preferido del usuario.
+ * @property {string} hobbies_preferidos - Hobbies en formato string (JSON si es array).
+ * @property {string} ubicacion - Ubicación preferida.
+ * @property {number} rango_edad_min - Edad mínima del rango de búsqueda.
+ * @property {number} rango_edad_max - Edad máxima del rango de búsqueda.
+ * @property {number} rango_estatura_min - Estatura mínima del rango de búsqueda.
+ * @property {number} rango_estatura_max - Estatura máxima del rango de búsqueda.
+ * @property {string} [fecha_creacion] - Fecha de creación del registro.
+ * @property {string} [user_id] - ID del usuario asociado.
+ */
 // services/preferencesService.ts
 
 // Primero define la interfaz
@@ -17,7 +36,18 @@ export interface UserPreferences {
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL;
   
+  /**
+   * Objeto con métodos para operaciones CRUD de preferencias de usuario.
+   */
   export const preferencesService = {
+    /**
+     * Guarda o actualiza las preferencias de un usuario.
+     * Si ya existe una preferencia para el usuario, la actualiza vía PUT.
+     * De lo contrario, crea una nueva vía POST.
+     * @param userId - ID del usuario.
+     * @param preferences - Datos de preferencia (excluyendo id y fecha_creacion).
+     * @returns La preferencia guardada según la respuesta del backend.
+     */
     async savePreferences(userId: string, preferences: Omit<UserPreferences, 'id' | 'fecha_creacion'>) {
       try {
         
@@ -67,6 +97,12 @@ const API_BASE_URL =
       }
     },
   
+    /**
+     * Obtiene las preferencias de un usuario por su ID.
+     * Intenta múltiples URLs de búsqueda por si alguna falla.
+     * @param userId - ID del usuario.
+     * @returns Las preferencias encontradas o null si no existen.
+     */
     async getPreferencesByUserId(userId: string): Promise<UserPreferences | null> {
       try {
         
@@ -102,6 +138,12 @@ const API_BASE_URL =
       }
     },
   
+    /**
+     * Verifica si un usuario ha completado sus preferencias de búsqueda.
+     * Se considera completado si tiene definido un rango de edad (mínimo y máximo no nulos).
+     * @param userId - ID del usuario.
+     * @returns true si el usuario tiene preferencias completas, false en caso contrario.
+     */
     async hasCompletedPreferences(userId: string): Promise<boolean> {
       try {
         const preferences = await this.getPreferencesByUserId(userId);

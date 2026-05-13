@@ -1,4 +1,8 @@
-// types/notification.types.ts
+/**
+ * Representa una notificación dentro de la aplicación Cupido.
+ * Contiene la información necesaria para mostrar y gestionar
+ * notificaciones de tipo like, match, chat o reporte.
+ */
 export interface AppNotification {
    id: string;
    tipo: 'like' | 'match' | 'chat' | 'reporte';
@@ -11,9 +15,10 @@ export interface AppNotification {
    chat_id?: number | null;
 }
 
-// También exporta otros tipos relacionados
+/** Respuesta del servidor que contiene un listado de notificaciones. */
 export interface NotificationResponse {
     notifications: AppNotification[];
 }
 
+/** Tipos válidos de notificación en el sistema. */
 export type NotificationType = 'like' | 'match' | 'chat' | 'reporte';

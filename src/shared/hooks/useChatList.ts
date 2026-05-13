@@ -1,3 +1,9 @@
+/**
+ * @module useChatList
+ * @description Hook para obtener y mantener actualizada la lista de chats del usuario.
+ * Incluye polling cada 15 segundos para mantener presencia y conteos de no leídos actualizados.
+ */
+
 import { useState, useEffect, useCallback } from 'react';
 // Importa la función para obtener el token, asumiendo que es global
 // import { getAccessToken } from '../auth/authService'; 
@@ -27,6 +33,13 @@ export interface ChatListItemReal {
 
 const API_BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/chat/`;
 
+/**
+ * @function useChatList
+ * @description Obtiene la lista de chats del usuario autenticado desde la API.
+ * Realiza una carga inicial y luego polling silencioso cada 15 segundos.
+ * @returns {{ chatList: ChatListItemReal[], loading: boolean, error: string | null, setChatList: React.Dispatch<React.SetStateAction<ChatListItemReal[]>>, refetchChats: () => void }}
+ * Lista de chats, estado de carga, error, y funciones para actualizar la lista.
+ */
 export const useChatList = () => {
     const [chatList, setChatList] = useState<ChatListItemReal[]>([]);
     const [loading, setLoading] = useState(true);

@@ -1,3 +1,9 @@
+/**
+ * Página de edición de perfil del usuario autenticado.
+ * Permite modificar número de teléfono, descripción, programa académico,
+ * ubicación, estatura (una sola vez), estado actual e intereses (máximo 3).
+ * Incluye validaciones, bloqueo de campos irreversibles y confirmación mediante AlertDialog.
+ */
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@store/appStore";

@@ -1,3 +1,11 @@
+/** Utilidad para construir URLs de WebSocket con paths y query params.
+
+Resuelve la URL base automáticamente:
+- Usa VITE_WS_BASE_URL / VITE_WSNOTI_BASE_URL si están configurados
+- Fallback a ws/wss según protocolo de la página
+- Normaliza barras y fuerza wss en HTTPS
+*/
+
 export interface BuildWsUrlOptions {
     baseUrl?: string | null;
     fallbackPath?: string;
@@ -25,7 +33,6 @@ export const resolveWsBaseUrl = (
         candidate = `${protocol}${window.location.host}${normalizedFallback}`;
     }
 
-    // Si llega como ruta relativa (ej. /ws/chat), completar con host actual
     if (!candidate.startsWith("ws://") && !candidate.startsWith("wss://")) {
         if (!hasWindow) {
             throw new Error("WebSocket base URL must be absolute in non-browser contexts");
@@ -35,7 +42,6 @@ export const resolveWsBaseUrl = (
         candidate = `${protocol}${window.location.host}${normalizedPath}`;
     }
 
-    // Forzar wss si la página está en HTTPS
     if (hasWindow && window.location.protocol === "https:" && candidate.startsWith("ws://")) {
         candidate = `wss://${candidate.slice(5)}`;
     }

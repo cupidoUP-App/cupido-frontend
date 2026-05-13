@@ -1,3 +1,12 @@
+/**
+ * Componente de formulario de registro de usuario.
+ * Maneja el ingreso de datos personales, aceptación de términos,
+ * verificación CAPTCHA, verificación de correo electrónico y
+ * el envío de la solicitud de registro al backend.
+ *
+ * @component
+ */
+
 import React, { useState } from 'react';
 import { useToast } from '@hooks/use-toast';
 import EmailField from './components/forms/EmailField';

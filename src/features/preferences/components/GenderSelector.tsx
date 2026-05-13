@@ -1,3 +1,11 @@
+/**
+ * Componente selector de género para las preferencias de búsqueda.
+ * Permite al usuario seleccionar uno o varios géneros de una lista de opciones predefinidas.
+ *
+ * @interface GenderSelectorProps
+ * @property {string[]} selectedGenders - Lista de géneros actualmente seleccionados.
+ * @property {(selected: string[]) => void} onChange - Callback al cambiar la selección.
+ */
 // src/features/preferences/components/GenderSelector.tsx
 import React, { useState } from 'react';
 

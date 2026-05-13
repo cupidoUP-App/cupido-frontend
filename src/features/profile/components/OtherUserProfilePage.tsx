@@ -1,3 +1,9 @@
+/**
+ * Página de perfil de otro usuario (vista pública).
+ * Muestra la información del perfil, imágenes, e incluye botones de Like/Dislike.
+ * Si se produce un match, muestra el componente MatchSuccessSlide.
+ * Incluye funciones de sanitización de datos para prevenir XSS.
+ */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useToast } from "@hooks/use-toast";

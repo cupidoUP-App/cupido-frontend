@@ -3,11 +3,21 @@ import { InfoCircledIcon } from '@radix-ui/react-icons';
 import { Heart } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@ui/tooltip';
 
+/** Propiedades del componente BannerInfo. */
 interface BannerInfoProps {
+  /** Título principal del banner. */
   title: string;
+  /** Descripción informativa secundaria. */
   description: string;
+  /** Contenido del tooltip que se muestra al hacer clic en el ícono de información. */
   tooltipContent: string;
 }
+
+/**
+ * Componente de banner informativo con icono decorativo y tooltip de ayuda.
+ * Muestra un título, descripción y un ícono de información con tooltip interactivo.
+ * Utiliza un diseño con gradiente de fondo rosa/rojo.
+ */
 
 const BannerInfo: React.FC<BannerInfoProps> = ({ title, description, tooltipContent }) => {
   return (

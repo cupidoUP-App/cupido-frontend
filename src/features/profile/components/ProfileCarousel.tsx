@@ -1,3 +1,11 @@
+/**
+ * Carrusel de imágenes de perfil con navegación lateral, indicadores de puntos
+ * y vista previa de imágenes adyacentes con efecto de desenfoque.
+ * Muestra hasta 5 imágenes; si no hay imágenes reales, usa fallbacks predefinidos.
+ *
+ * @interface ProfileCarouselProps
+ * @property {string[]} images - Lista de URLs de las imágenes del perfil.
+ */
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 

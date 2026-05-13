@@ -1,4 +1,14 @@
-// src/utils/validations.ts
+/**
+ * Utilidades de validación para el formulario de registro.
+ * Contiene funciones para validar correo electrónico institucional,
+ * contraseñas seguras y el formulario completo.
+ *
+ * @module Validations
+ */
+
+/**
+ * Datos del formulario de registro con firma de términos.
+ */
 export interface FormData {
   email: string;
   password: string;
@@ -14,11 +24,24 @@ export interface FormErrors {
   terms?: string;
 }
 
+/**
+ * Valida que el correo electrónico pertenezca al dominio institucional.
+ *
+ * @param email - Correo electrónico a validar.
+ * @returns `true` si el correo termina en @unipamplona.edu.co.
+ */
 export const validateEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@unipamplona\.edu\.co$/;
   return emailRegex.test(email);
 };
 
+/**
+ * Valida que la contraseña cumpla con los requisitos de seguridad:
+ * mínimo 8 caracteres, mayúsculas, minúsculas, números y caracteres especiales.
+ *
+ * @param password - Contraseña a validar.
+ * @returns `true` si la contraseña cumple todos los requisitos.
+ */
 export const validatePassword = (password: string): boolean => {
   const minLength = 8;
   const hasUpperCase = /[A-Z]/.test(password);
@@ -35,6 +58,12 @@ export const validatePassword = (password: string): boolean => {
   );
 };
 
+/**
+ * Valida todos los campos del formulario de registro.
+ *
+ * @param formData - Objeto con los datos del formulario.
+ * @returns Objeto con los errores encontrados por campo.
+ */
 export const validateForm = (formData: FormData): FormErrors => {
   const errors: FormErrors = {};
 

@@ -2,9 +2,17 @@ import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { UploadIcon } from '@radix-ui/react-icons';
 
+/** Propiedades del componente UploadDropzone. */
 interface UploadDropzoneProps {
+  /** Callback que se ejecuta con los archivos seleccionados o arrastrados. */
   onFilesAccepted: (files: File[]) => void;
 }
+
+/**
+ * Componente de zona de carga de imágenes con soporte para arrastrar y soltar.
+ * Acepta archivos JPEG y PNG, y permite selección múltiple.
+ * Cambia su apariencia visual cuando el usuario arrastra archivos sobre él.
+ */
 
 const UploadDropzone: React.FC<UploadDropzoneProps> = ({ onFilesAccepted }) => {
   const onDrop = useCallback((acceptedFiles: File[]) => {

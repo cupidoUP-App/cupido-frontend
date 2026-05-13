@@ -1,3 +1,11 @@
+/**
+ * Componente de campo de entrada para contraseña.
+ * Incluye un botón para mostrar/ocultar la contraseña y muestra
+ * los requisitos de seguridad en tiempo real mediante PasswordRequirements.
+ *
+ * @component
+ */
+
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import PasswordRequirements from './PasswordRequirements';

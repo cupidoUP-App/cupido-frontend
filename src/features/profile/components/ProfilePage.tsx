@@ -1,3 +1,9 @@
+/**
+ * Página de perfil del usuario autenticado.
+ * Carga y muestra los datos del perfil, fotos, ubicación, programa académico,
+ * edad e intereses. Incluye un botón para navegar a la edición del perfil.
+ * Utiliza ProfileCarousel para las imágenes y ProfileInfo para la información.
+ */
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppStore } from "@store/appStore";

@@ -1,3 +1,18 @@
+/**
+ * Componente que muestra la información detallada de un perfil de usuario.
+ * Renderiza nombre, estado, edad, estatura, ubicación, programa académico,
+ * intereses y la sección "Sobre mí".
+ *
+ * @interface ProfileInfoProps
+ * @property {string} name - Nombre completo del usuario.
+ * @property {string} [status] - Estado actual del usuario.
+ * @property {number} age - Edad del usuario.
+ * @property {string} location - Ubicación del usuario.
+ * @property {string} about - Descripción o "Sobre mí".
+ * @property {string[]} interests - Lista de intereses del usuario.
+ * @property {string} [programa_academico] - Programa académico del usuario.
+ * @property {number} [estatura] - Estatura del usuario en metros.
+ */
 import { Music, Gamepad2, BookText, MapPin, Calendar, Ruler, GraduationCap } from "lucide-react";
 
 interface ProfileInfoProps {

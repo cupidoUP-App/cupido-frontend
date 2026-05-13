@@ -1,3 +1,12 @@
+/**
+ * Componente de formulario de inicio de sesión.
+ * Gestiona la autenticación del usuario, la verificación mediante CAPTCHA,
+ * el flujo de registro incompleto (completar perfil, preferencias, fotos)
+ * y la recuperación de contraseña.
+ *
+ * @component
+ */
+
 import React, { useState, useEffect } from "react";
 import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";

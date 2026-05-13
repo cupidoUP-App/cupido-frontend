@@ -1,6 +1,16 @@
+/**
+ * @module MatchInfo
+ * Componente que muestra la información detallada de un perfil:
+ * descripción personal ("Acerca de mí"), ubicación y lista de intereses/preferencias.
+ */
 import React from "react";
 import { MatchData } from "../types";
 
+/**
+ * Props del componente MatchInfo.
+ *
+ * @param data - Datos del perfil cuyo detalle se mostrará.
+ */
 interface MatchInfoProps {
   data: MatchData;
 }

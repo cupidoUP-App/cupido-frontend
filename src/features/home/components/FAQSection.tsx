@@ -1,3 +1,8 @@
+/**
+ * Sección de preguntas frecuentes (FAQ) de la landing page.
+ * Renderiza un acordeón con preguntas y respuestas expandibles.
+ * La primera pregunta aparece abierta por defecto.
+ */
 import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useAnimateOnScroll } from '@hooks/useAnimateOnScroll';

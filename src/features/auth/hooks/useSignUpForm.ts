@@ -1,3 +1,11 @@
+/**
+ * Módulo de hook personalizado para el formulario de registro de usuario.
+ * Gestiona el estado del formulario, los pasos del flujo de registro,
+ * la verificación de correo electrónico y el envío de datos al backend.
+ *
+ * @module useSignUpForm
+ */
+
 import { useState } from 'react';
 import { useToast } from '@hooks/use-toast';
 import { useAppStore } from '@store/appStore';
@@ -10,6 +18,13 @@ interface UseSignUpFormProps {
   onClose: () => void;
 }
 
+/**
+ * Hook que gestiona el flujo completo de registro de usuario.
+ *
+ * @param props.onClose - Función para cerrar el modal de registro.
+ * @returns Objeto con el estado del formulario, el estado de los pasos y
+ *          los manejadores para cada interacción del usuario.
+ */
 export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
   const { toast } = useToast();
   const { openLogin } = useAppStore();

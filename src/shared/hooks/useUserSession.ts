@@ -1,8 +1,22 @@
+/**
+ * @module useUserSession
+ * @description Hook para gestionar la sesión del usuario autenticado.
+ * Obtiene el perfil del usuario desde la API y lo sincroniza con el store global (Zustand).
+ * Utiliza react-query para caching, reintentos y actualización en segundo plano.
+ */
+
 import { useQuery } from '@tanstack/react-query';
 import { authAPI } from '@lib/api';
 import { useAppStore } from '@store/appStore';
 import { useEffect } from 'react';
 
+/**
+ * @function useUserSession
+ * @description Obtiene y sincroniza los datos de la sesión del usuario.
+ * Prioriza los datos frescos de react-query; si falla, usa los datos almacenados en el store.
+ * @returns {{ user: object | null, estado: string | undefined, isLoading: boolean, isError: boolean, refetchUser: () => void }}
+ * Un objeto con el usuario, su estado, indicadores de carga/error y una función para recargar.
+ */
 export const useUserSession = () => {
   const { login, user: storedUser } = useAppStore();
 

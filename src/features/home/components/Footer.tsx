@@ -1,3 +1,9 @@
+/**
+ * Pie de página de la landing page.
+ * Muestra enlaces a secciones (Acerca de, Equipo, Blog),
+ * enlaces legales (Advertencia, Privacidad, Términos), Soporte (Ayuda, Contacto),
+ * y un modal de Términos y Condiciones.
+ */
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
 //import { useAppStore } from '@store/appStore';

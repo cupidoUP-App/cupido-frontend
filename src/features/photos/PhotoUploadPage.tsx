@@ -7,6 +7,7 @@ import logo from "@assets/logo-login.webp";
 import { toast } from "sonner";
 import { photoAPI } from "@lib/api";
 
+/** Representa un archivo de foto, ya sea del servidor o local (nuevo). */
 interface PhotoFile {
   id?: number;
   name: string;
@@ -16,10 +17,20 @@ interface PhotoFile {
   file?: File;
 }
 
+/** Propiedades del componente PhotoUploadPage. */
 interface PhotoUploadPageProps {
+  /** Callback ejecutado al completar exitosamente la carga de fotos. */
   onComplete: () => void;
+  /** Callback opcional para retroceder al paso anterior. */
   onBack?: () => void;
 }
+
+/**
+ * Página de carga y gestión de fotos de perfil.
+ * Permite subir entre 1 y 3 imágenes, establecer una como principal,
+ * eliminar imágenes existentes y guardar los cambios en el servidor.
+ * Incluye detección de errores de moderación de contenido.
+ */
 
 const PhotoUploadPage: React.FC<PhotoUploadPageProps> = ({ onComplete, onBack }) => {
   const queryClient = useQueryClient();

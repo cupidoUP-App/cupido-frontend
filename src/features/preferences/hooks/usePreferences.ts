@@ -1,3 +1,10 @@
+/**
+ * Hook personalizado para gestionar las preferencias de búsqueda de un usuario.
+ * Carga las preferencias existentes al montarse y provee una función para guardar cambios.
+ *
+ * @param userId - ID del usuario cuyas preferencias se gestionan.
+ * @returns Estado con las preferencias, indicadores de carga/error y función savePreferences.
+ */
 import { useState, useEffect } from 'react';
 import { Preferences } from '../types/preferences.types';
 
