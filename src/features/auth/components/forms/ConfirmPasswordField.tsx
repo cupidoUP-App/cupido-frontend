@@ -1,6 +1,9 @@
+/** Campo de confirmación de contraseña con indicador visual de coincidencia. */
+
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
+/** Props del campo de confirmación de contraseña. */
 interface ConfirmPasswordFieldProps {
   value: string;
   onChange: (value: string) => void;
@@ -12,6 +15,7 @@ const ConfirmPasswordField: React.FC<ConfirmPasswordFieldProps> = ({
   onChange, 
   originalPassword 
 }) => {
+  /** Estado: controla visibilidad del texto (mostrar/ocultar). */
   const [showConfirm, setShowConfirm] = useState(false);
 
   const showMatchIndicator = value.length > 0 && originalPassword.length > 0;

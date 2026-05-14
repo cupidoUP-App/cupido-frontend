@@ -62,6 +62,7 @@ const COLORS = {
     }
 };
 
+/** Componente que renderiza el ícono de estado del mensaje (leído o no leído). */
 const MessageStatusIcon: React.FC<{ leido: boolean }> = ({ leido }) => {
     if (leido) {
         return (
@@ -95,11 +96,15 @@ const ChatView: React.FC<ChatViewProps> = ({
 }) => {
     const messagesEndRef = useRef<HTMLDivElement>(null);
     const messagesContainerRef = useRef<HTMLDivElement>(null);
+    /** Estado interno: texto del mensaje que el usuario está escribiendo. */
     const [inputMessage, setInputMessage] = useState('');
+    /** Estado interno: muestra/oculta el menú de opciones del encabezado. */
     const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
+    /** Estado interno: indica si el scroll del chat está al final. */
     const [isAtBottom, setIsAtBottom] = useState(true);
     const navigate = useNavigate();
 
+    /** Navega al perfil público del contacto. */
     const handleOpenProfile = () => {
         if (contactId) {
             navigate(`/other-user-profile/${contactId}`, { state: { allowed: true } });
@@ -108,6 +113,7 @@ const ChatView: React.FC<ChatViewProps> = ({
     };
 
     // Función que detecta si el usuario está cerca del fondo del chat
+    /** Detecta si el usuario está cerca del final del chat y actualiza isAtBottom. */
     const handleScroll = () => {
         const container = messagesContainerRef.current;
         if (!container) return;
@@ -118,6 +124,7 @@ const ChatView: React.FC<ChatViewProps> = ({
     };
 
     // Función para hacer scroll al final del chat
+    /** Desplaza el contenedor de mensajes hasta el último mensaje. */
     const scrollToBottom = () => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
@@ -129,6 +136,7 @@ const ChatView: React.FC<ChatViewProps> = ({
         }
     }, [mensajes]);
 
+    /** Envía el mensaje escrito y vacía el campo de entrada. */
     const handleSend = () => {
         if (inputMessage.trim() !== '') {
             sendMessage(inputMessage.trim());
@@ -138,12 +146,14 @@ const ChatView: React.FC<ChatViewProps> = ({
         }
     };
 
+    /** Envía el mensaje al presionar Enter. */
     const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter' && !isInputDisabled) {
             handleSend();
         }
     };
 
+    /** Devuelve un elemento con el mensaje de estado de la conexión WebSocket. */
     const getConnectionStatusMessage = () => {
         switch (wsStatus) {
             case 'open':
@@ -158,6 +168,7 @@ const ChatView: React.FC<ChatViewProps> = ({
         }
     }
 
+    /** Ejecuta la acción seleccionada del menú de opciones del encabezado. */
     const handleHeaderMenuAction = (action: 'Bloquear' | 'Reportar' | 'Vaciar' | 'Cerrar') => {
         switch (action) {
             case 'Bloquear':

@@ -10,6 +10,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import backgroundImage from '@assets/background_verification.webp';
 
+/** Props del modal de verificación de correo electrónico. */
 interface EmailVerificationModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -27,8 +28,11 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
   userEmail,
   isSubmitting = false
 }) => {
+  /** Estado: dígitos del código de verificación. */
   const [code, setCode] = useState(['', '', '', '', '', '']);
-  const [timeLeft, setTimeLeft] = useState(60); // 60 segundos para reenviar
+  /** Estado: segundos restantes para poder reenviar el código. */
+  const [timeLeft, setTimeLeft] = useState(60);
+  /** Estado: indica si ya puede reenviarse el código. */
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -54,6 +58,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }
   }, [timeLeft]);
 
+  /** Maneja el ingreso de un dígito y auto-enfoca el siguiente input. */
   const handleChange = (value: string, index: number) => {
     if (!/^\d?$/.test(value)) return; // Solo números
 
@@ -72,6 +77,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }
   };
 
+  /** Retrocede al input anterior al presionar Backspace. */
   const handleKeyDown = (e: React.KeyboardEvent, index: number) => {
     if (e.key === 'Backspace' && !code[index] && index > 0) {
       // Mover al input anterior al borrar
@@ -79,6 +85,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }
   };
 
+  /** Maneja el pegado de un código completo de 6 dígitos. */
   const handlePaste = (e: React.ClipboardEvent) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData('text');
@@ -94,6 +101,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }
   };
 
+  /** Envía el código de verificación al componente padre. */
   const handleSubmit = (verificationCode?: string) => {
     const finalCode = verificationCode || code.join('');
     if (finalCode.length === 6) {
@@ -101,6 +109,7 @@ const EmailVerificationModal: React.FC<EmailVerificationModalProps> = ({
     }
   };
 
+  /** Reenvía el código y reinicia el temporizador. */
   const handleResendCode = () => {
     if (canResend) {
       setTimeLeft(60);

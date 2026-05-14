@@ -33,6 +33,7 @@ interface ChatListPanelProps {
 }
 
 // Helper para formatear la fecha/hora
+/** Formatea una fecha ISO a hora local de Colombia (hh:mm). */
 const formatTime = (isoString: string | undefined): string => {
     if (!isoString) return '';
     try {
@@ -59,7 +60,9 @@ const COLORS = {
 const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedChatId, onCloseChat, chatList, listLoading, listError }) => {
     const navigate = useNavigate();
     
+    /** Estado interno: término de búsqueda para filtrar la lista de chats. */
     const [searchTerm, setSearchTerm] = useState('');
+    /** Estado interno: ID del chat cuyo menú de acciones está abierto. */
     const [openMenuId, setOpenMenuId] = useState<number | null>(null);
 
     const filteredChats = chatList.filter((chat: ChatListItemReal) => {
@@ -69,6 +72,7 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
     });
 
     // Función para manejar las acciones del menú
+    /** Ejecuta la acción seleccionada (bloquear, reportar, cerrar, vaciar) sobre un chat. */
     const handleMenuAction = (action: string, chatId: number, chatName: string) => {
         setOpenMenuId(null);
 
@@ -96,6 +100,7 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
     };
 
     // Función para la URL de la foto
+    /** Devuelve la URL de la foto de perfil del contacto o un avatar por defecto. */
     const getContactPhotoUrl = (chat: ChatListItemReal) => {
         if (chat.contacto.imagen_principal) {
             return chat.contacto.imagen_principal;
@@ -107,6 +112,7 @@ const ChatListPanel: React.FC<ChatListPanelProps> = ({ onSelectChat, selectedCha
     };
 
     // Navegar al perfil del contacto
+    /** Navega al perfil público del contacto desde la lista de chats. */
     const handleOpenProfile = (e: React.MouseEvent, chat: ChatListItemReal) => {
         e.stopPropagation();
         navigate(`/other-user-profile/${chat.contacto.id}`, { state: { allowed: true } });

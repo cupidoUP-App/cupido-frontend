@@ -10,12 +10,14 @@ import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import PasswordRequirements from './PasswordRequirements';
 
+/** Props del campo de contraseña. */
 interface PasswordFieldProps {
   value: string;
   onChange: (value: string) => void;
 }
 
 const PasswordField: React.FC<PasswordFieldProps> = ({ value, onChange }) => {
+  /** Estado: controla si la contraseña se muestra en texto plano. */
   const [showPassword, setShowPassword] = useState(false);
 
   return (

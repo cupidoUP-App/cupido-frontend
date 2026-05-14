@@ -19,19 +19,31 @@ import { likeAPI } from "../../../shared/lib/api";
  * @returns Estado y controladores para manejar likes, dislikes, swipe, animaciones y límite diario.
  */
 export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) => {
+  /** Estado interno: lista de perfiles disponibles para hacer match. */
   const [matchList, setMatchList] = useState<MatchData[]>(matches || getMatches());
+  /** Estado interno: índice del perfil actual en la lista. */
   const [currentIndex, setCurrentIndex] = useState(0);
+  /** Estado interno: indica si el scroll está en la parte superior. */
   const [isAtTop, setIsAtTop] = useState(true);
+  /** Estado interno: ángulo de rotación de la tarjeta durante la animación de like/dislike. */
   const [rotation, setRotation] = useState(0);
+  /** Estado interno: indica si hay una animación en curso. */
   const [isAnimating, setIsAnimating] = useState(false);
+  /** Estado interno: muestra/oculta el overlay de like/dislike sobre la tarjeta. */
   const [showOverlay, setShowOverlay] = useState(false);
+  /** Estado interno: ícono del overlay actual (like o dislike). */
   const [overlayIcon, setOverlayIcon] = useState<string>("");
+  /** Estado interno: muestra/oculta el menú de opciones adicionales. */
   const [showOptions, setShowOptions] = useState(false);
-  const [likesRemaining, setLikesRemaining] = useState(50); // Aumentado a 50
+  /** Estado interno: cantidad de likes disponibles en el día. */
+  const [likesRemaining, setLikesRemaining] = useState(50);
+  /** Estado interno: tiempo restante hasta el reset de likes. */
   const [timeUntilReset, setTimeUntilReset] = useState<string>("");
+  /** Estado interno: muestra/oculta el overlay de límite de likes alcanzado. */
   const [showLimitOverlay, setShowLimitOverlay] = useState(false);
   
   // Estado para el slide de éxito de match
+  /** Estado interno: datos del match exitoso para mostrar el slide de celebración. */
   const [matchSuccessData, setMatchSuccessData] = useState<{
     name: string;
     photoUrl?: string;
@@ -39,14 +51,20 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   } | null>(null);
 
   // Swipe states
+  /** Estado interno: indica si el usuario está arrastrando la tarjeta. */
   const [isDragging, setIsDragging] = useState(false);
+  /** Estado interno: posición inicial del puntero al iniciar el arrastre. */
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  /** Estado interno: desplazamiento actual del arrastre. */
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
+  /** Estado interno: rotación de la tarjeta durante el swipe. */
   const [swipeRotation, setSwipeRotation] = useState(0);
+  /** Referencia al elemento DOM de la tarjeta para aplicar transformaciones. */
   const cardRef = useRef<HTMLDivElement>(null);
 
-  // 🔥 NUEVO: Variables para controlar llamadas duplicadas
+  /** Ref para evitar llamadas duplicadas a handleLike. */
   const likeInProgress = useRef(false);
+  /** Ref para evitar llamadas duplicadas a handleDislike. */
   const dislikeInProgress = useRef(false);
 
   // ⭐ Actualizar matchList cuando lleguen los datos reales (matches cambia)
@@ -108,7 +126,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     };
   }, []);
 
-  // ✅ MODIFICADA: handleLike con protección contra múltiples llamadas
+  /** Envía un like al perfil actual y avanza al siguiente. */
   const handleLike = async () => {
     // 🔥 NUEVO: Verificar si ya hay una operación en progreso
     if (likeInProgress.current || isAnimating || likesRemaining <= 0) {
@@ -227,6 +245,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     }, 0);
   };
 
+  /** Envía un dislike al perfil actual y avanza al siguiente. */
   const handleDislike = async () => {
     // 🔥 NUEVO: Verificar si ya hay una operación en progreso
     if (dislikeInProgress.current || isAnimating || likesRemaining <= 0) {
@@ -324,6 +343,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
   };
 
   // Swipe handler - MEJORADO con protección
+  /** Inicia el arrastre táctil/mouse para el swipe de la tarjeta. */
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isAnimating || likesRemaining <= 0 || likeInProgress.current || dislikeInProgress.current) return;
 
@@ -334,6 +354,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     }
   };
 
+  /** Actualiza la posición y rotación de la tarjeta durante el arrastre. */
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging || likesRemaining <= 0 || likeInProgress.current || dislikeInProgress.current) return;
 
@@ -364,6 +385,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     // NO disparamos acciones aquí - solo en handlePointerUp
   };
 
+  /** Finaliza el arrastre y dispara like o dislike según la dirección del swipe. */
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!isDragging) return;
 
@@ -394,6 +416,7 @@ export const useMatch = (initialMatchData?: MatchData, matches?: MatchData[]) =>
     setSwipeRotation(0);
   };
 
+  /** Cancela el arrastre y restablece la tarjeta a su posición inicial. */
   const handlePointerCancel = () => {
     setIsDragging(false);
     setDragOffset({ x: 0, y: 0 });

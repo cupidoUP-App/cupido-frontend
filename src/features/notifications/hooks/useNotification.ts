@@ -23,10 +23,15 @@ import { NotificationsServices } from '../services/notificationServices';
 import { websocketManager } from '../services/websocketManager';
 
 export const useNotification = (autoConnect = true) => {
+    /** Estado interno: lista de notificaciones del usuario. */
     const [notifications, setNotifications] = useState<AppNotification[]>([]);
+    /** Estado interno: indica si las notificaciones están cargando. */
     const [loading, setLoading] = useState(true);
+    /** Estado interno: mensaje de error si ocurrió un fallo. */
     const [error, setError] = useState<string | null>(null);
+    /** Estado interno: indica si la conexión WebSocket está activa. */
     const [connected, setConnected] = useState(false);
+    /** Ref que indica si el componente sigue montado para evitar actualizaciones después del desmontaje. */
     const componentMounted = useRef(true);
 
     useEffect(() => {
@@ -36,6 +41,7 @@ export const useNotification = (autoConnect = true) => {
         };
     }, []);
 
+    /** Carga la lista de notificaciones desde el servidor. */
     const loadNotifications = useCallback(async () => {
         try {
             setLoading(true);
@@ -56,6 +62,7 @@ export const useNotification = (autoConnect = true) => {
         }
     }, []);
 
+    /** Marca una notificación como leída por su ID. */
     const markAsRead = useCallback(async (id: string) => {
         try {
             await NotificationsServices.markAsRead(id);
@@ -68,6 +75,7 @@ export const useNotification = (autoConnect = true) => {
             throw err;
         }
     }, []);
+    /** Elimina una notificación por su ID. */
     const dismissNotification = useCallback(async (id: string) => {
         try {
             await NotificationsServices.deleteNotification(id);
@@ -137,14 +145,17 @@ export const useNotification = (autoConnect = true) => {
         }
     }, [autoConnect, loadNotifications]);
 
+    /** Recarga manualmente las notificaciones desde el servidor. */
     const refresh = useCallback(async () => {
         await loadNotifications();
     }, [loadNotifications]);
 
+    /** Conecta manualmente el WebSocket de notificaciones. */
     const connectWebSocket = useCallback(() => {
         websocketManager.connect();
     }, []);
 
+    /** Desconecta manualmente el WebSocket de notificaciones. */
     const disconnectWebSocket = useCallback(() => {
         websocketManager.disconnect();
     }, []);

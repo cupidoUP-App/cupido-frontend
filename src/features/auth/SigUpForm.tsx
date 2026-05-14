@@ -20,6 +20,7 @@ import { FormData, FormErrors, validateForm } from './utils/Validations';
 import { useAppStore } from '@store/appStore';
 import { authAPI } from '@lib/api';
 
+/** Props del formulario de registro. */
 interface RegistroProps {
   onClose: () => void;
   onSwitchToLogin?: () => void;
@@ -30,6 +31,7 @@ type FormStep = 'initial' | 'captcha' | 'email-verification' | 'completed';
 
 const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
   const { openLogin } = useAppStore();
+  /** Estado: datos del formulario (email, contraseña, términos, firma). */
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -38,15 +40,22 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     firma: ''
   });
 
+  /** Estado: paso actual del flujo de registro. */
   const [currentStep, setCurrentStep] = useState<FormStep>('initial');
+  /** Estado: muestra el modal de términos y condiciones. */
   const [showTerms, setShowTerms] = useState(false);
+  /** Estado: indica si el CAPTCHA fue verificado. */
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  /** Estado: token devuelto por reCAPTCHA. */
   const [recaptchaToken, setRecaptchaToken] = useState<string>('');
+  /** Estado: indicador de envío del formulario en curso. */
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /** Estado: indicador de verificación de email en curso. */
   const [isVerifyingEmail, setIsVerifyingEmail] = useState(false);
 
   const { toast } = useToast();
 
+  /** Actualiza un campo del formulario. */
   const handleFieldChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
@@ -54,10 +63,12 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }));
   };
 
+  /** Abre el modal de términos y condiciones. */
   const handleOpenTerms = () => {
     setShowTerms(true);
   };
 
+  /** Acepta los términos y guarda la firma. */
   const handleAcceptTerms = (firma: string) => {
     setFormData(prev => ({
       ...prev,
@@ -71,6 +82,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
+  /** Rechaza los términos y condiciones. */
   const handleRejectTerms = () => {
     setFormData(prev => ({
       ...prev,
@@ -84,6 +96,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
+  /** Maneja la verificación exitosa del CAPTCHA. */
   const handleCaptchaVerify = (token: string) => {
 
     setIsCaptchaVerified(true);
@@ -96,6 +109,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
+  /** Maneja la expiración del token de CAPTCHA. */
   const handleCaptchaExpired = () => {
     setIsCaptchaVerified(false);
     setRecaptchaToken('');
@@ -106,11 +120,13 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
+  /** Cambia a la vista de inicio de sesión. */
   const handleSwitchToLogin = () => {
     onClose();
     openLogin();
   };
 
+  /** Maneja un error en la verificación del CAPTCHA. */
   const handleCaptchaError = () => {
     setIsCaptchaVerified(false);
     setRecaptchaToken('');
@@ -121,6 +137,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     });
   };
 
+  /** Envía la solicitud de registro y el código de verificación al backend. */
   const handleSendVerificationCode = async () => {
     setIsVerifyingEmail(true);
 
@@ -184,6 +201,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
+  /** Reenvía el código de verificación al correo del usuario. */
   const handleResendVerificationCode = async () => {
     try {
       const response = await authAPI.resendCode({
@@ -211,6 +229,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
+  /** Verifica el código ingresado y completa el registro. */
   const handleVerifyEmailCode = async (code: string) => {
     setIsSubmitting(true);
 
@@ -247,6 +266,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
+  /** Valida que los campos obligatorios estén completos antes de enviar. */
   const validateBasicFields = (): boolean => {
     const emptyFields: string[] = [];
 
@@ -269,6 +289,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     return true;
   };
 
+  /** Maneja el envío del formulario de registro. */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -318,6 +339,7 @@ const SigUpForm: React.FC<RegistroProps> = ({ onClose }) => {
     }
   };
 
+  /** Retorna el texto del botón según el estado actual del flujo. */
   const getButtonText = () => {
     if (isSubmitting || isVerifyingEmail) return 'Procesando...';
     if (!isCaptchaVerified) return 'Continuar';

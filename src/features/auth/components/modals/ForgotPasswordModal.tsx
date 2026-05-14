@@ -10,6 +10,7 @@ import React, { useState } from 'react';
 import { useToast } from '@hooks/use-toast';
 import EmailField from '../forms/EmailField';
 
+/** Props del modal de recuperación de contraseña. */
 interface ForgotPasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -21,7 +22,9 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
   onClose,
   onSuccess
 }) => {
+  /** Estado: correo electrónico ingresado. */
   const [email, setEmail] = useState('');
+  /** Estado: indicador de envío en curso. */
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
@@ -33,6 +36,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }
   }, [isOpen]);
 
+  /** Envía la solicitud de restablecimiento de contraseña al backend. */
   const handleSendVerificationCode = async () => {
     if (!email.trim()) {
       toast({
@@ -100,6 +104,7 @@ const ForgotPasswordModal: React.FC<ForgotPasswordModalProps> = ({
     }
   };
 
+  /** Reenvía el código de verificación al correo del usuario. */
   const handleResendVerificationCode = async () => {
     try {
       const { authAPI } = await import('@lib/api');

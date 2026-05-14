@@ -15,6 +15,7 @@ import { useToast } from "@hooks/use-toast";
 import { useAppStore } from "@store/appStore";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 
+/** Props del componente CompleteRegister. */
 interface CompleteRegisterProps {
   isOpen: boolean;
   onSubmit: (data: RegistrationData) => void;
@@ -23,6 +24,7 @@ interface CompleteRegisterProps {
   onComplete?: () => void; // Nueva prop para notificar cuando el registro se completa
 }
 
+/** Datos de registro del usuario. */
 export interface RegistrationData {
   name: string;
   lastName: string;
@@ -42,6 +44,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
   isSubmitting = false,
   onComplete, // Nueva prop
 }) => {
+  /** Estado: datos del formulario de registro. */
   const [formData, setFormData] = useState<RegistrationData>({
     name: "",
     lastName: "",
@@ -54,8 +57,11 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     description: "",
   });
 
+  /** Estado: muestra el modal de preferencias. */
   const [showPreferences, setShowPreferences] = useState(false);
+  /** Estado: ID del usuario actual. */
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  /** Estado: errores de validación del formulario. */
   const [errors, setErrors] = useState<Partial<RegistrationData>>({});
   const { toast } = useToast();
 
@@ -77,6 +83,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   }, [isOpen]);
 
+  /** Maneja el cambio de valor en campos del formulario (excepto fecha). */
   const handleInputChange = (
     field: keyof Omit<RegistrationData, "birthDate">,
     value: string
@@ -95,6 +102,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   };
 
+  /** Maneja el cambio de día, mes o año en la fecha de nacimiento. */
   const handleBirthDateChange = (
     field: "day" | "month" | "year",
     value: string
@@ -108,6 +116,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }));
   };
 
+  /** Valida que todos los campos requeridos estén completos. */
   const validateForm = (): boolean => {
     const newErrors: Partial<RegistrationData> = {};
 
@@ -131,6 +140,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     return Object.keys(newErrors).length === 0;
   };
 
+  /** Envía los datos del formulario al backend para completar el perfil. */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -207,6 +217,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   };
 
+  /** Verifica el estado del perfil después de actualizarlo. */
   const verifyUserStatusAfterUpdate = async () => {
     try {
       const userData = await authAPI.getUserProfile();
@@ -263,6 +274,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     }
   };
 
+  /** Cierra el modal, hace logout y resetea el formulario. */
   const handleCloseCompleteRegister = async () => {
     // Call logout endpoint when closing
     await authAPI.logout();
@@ -291,7 +303,7 @@ const CompleteRegister: React.FC<CompleteRegisterProps> = ({
     onClose();
   };
 
-  // ✅ NUEVA FUNCIÓN para manejar cuando se completan las preferencias
+  /** Maneja la finalización del flujo de preferencias. */
   const handlePreferencesComplete = async () => {
     try {
 

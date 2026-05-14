@@ -8,6 +8,7 @@
 
 import { useToast } from '@hooks/use-toast';
 
+/** Props del hook useEmailVerification. */
 interface UseEmailVerificationProps {
   email: string;
   onVerifySuccess: () => void;
@@ -29,6 +30,7 @@ export const useEmailVerification = ({
 }: UseEmailVerificationProps) => {
   const { toast } = useToast();
 
+  /** Envía el código de verificación al correo del usuario. */
   const sendVerificationCode = async () => {
     setSubmitting(true);
     
@@ -53,6 +55,7 @@ export const useEmailVerification = ({
     }
   };
 
+  /** Reenvía un nuevo código de verificación al correo del usuario. */
   const resendVerificationCode = async () => {
     try {
       
@@ -71,6 +74,7 @@ export const useEmailVerification = ({
     }
   };
 
+  /** Verifica el código ingresado por el usuario contra el enviado al correo. */
   const verifyEmailCode = async (code: string): Promise<boolean> => {
     setSubmitting(true);
     

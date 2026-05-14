@@ -9,6 +9,7 @@
 import React from 'react';
 import EmailRequirements from './EmailRequirements';
 
+/** Props del campo de correo electrónico. */
 interface EmailFieldProps {
   value: string;
   onChange: (value: string) => void;

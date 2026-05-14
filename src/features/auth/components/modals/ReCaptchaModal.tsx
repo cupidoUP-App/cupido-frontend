@@ -1,7 +1,9 @@
-// ReCaptchaModal.tsx - ACTUALIZADO para manejar mejor los errores
+/** Modal de verificación reCAPTCHA v2. Se muestra durante el registro para verificar que el usuario no es un bot. */
+
 import React, { useState } from "react";
 import ReCaptchaV2 from "@lib/recaptcha/ReCaptchaV2";
 
+/** Props del modal de reCAPTCHA. */
 interface ReCaptchaModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -10,36 +12,32 @@ interface ReCaptchaModalProps {
   onError: () => void;
 }
 
-const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({
-  isOpen,
-  onClose,
-  onVerify,
-  onExpired,
-  onError,
-}) => {
+const ReCaptchaModal: React.FC<ReCaptchaModalProps> = ({ isOpen, onClose, onVerify, onExpired, onError }) => {
+  /** Estado: indica si ocurrió un error en la verificación. */
   const [captchaError, setCaptchaError] = useState(false);
 
   if (!isOpen) return null;
 
-  // Clave de sitio de reCAPTCHA desde variables de entorno
   const RECAPTCHA_SITE_KEY = import.meta.env.VITE_RECAPTCHA_SITE_KEY;
 
+  /** Maneja verificación exitosa: limpia errores, notifica al padre y cierra. */
   const handleVerify = (token: string) => {
     setCaptchaError(false);
     onVerify(token);
     onClose();
   };
 
+  /** Maneja expiración del token: limpia errores y notifica al padre. */
   const handleExpired = () => {
-    setCaptchaError(false); // Limpiar error anterior
+    setCaptchaError(false);
     onExpired();
   };
 
-  const handleError = () => {
-  };
+  /** Maneja error del widget reCAPTCHA. */
+  const handleError = () => {};
 
+  /** Maneja cierre manual: limpia estado y notifica al padre. */
   const handleClose = () => {
-    // Limpiar estado de error al cerrar
     setCaptchaError(false);
     onClose();
   };

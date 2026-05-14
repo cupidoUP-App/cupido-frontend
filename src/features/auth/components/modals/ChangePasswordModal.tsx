@@ -1,28 +1,31 @@
+/** Modal para cambiar la contraseña del usuario autenticado. Valida campos localmente antes de llamar a la API. */
+
 import React, { useState } from 'react';
 import { useToast } from '@hooks/use-toast';
 import PasswordField from '../forms/PasswordField';
 import ConfirmPasswordField from '../forms/ConfirmPasswordField';
 import { authAPI } from '@lib/api';
 
+/** Props del modal de cambio de contraseña. */
 interface ChangePasswordModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => void;
 }
 
-const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
-  isOpen,
-  onClose,
-  onSuccess
-}) => {
+const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({ isOpen, onClose, onSuccess }) => {
+  /** Estado: contraseña actual ingresada. */
   const [currentPassword, setCurrentPassword] = useState('');
+  /** Estado: nueva contraseña ingresada. */
   const [newPassword, setNewPassword] = useState('');
+  /** Estado: confirmación de la nueva contraseña. */
   const [confirmPassword, setConfirmPassword] = useState('');
+  /** Estado: indica si se está enviando la solicitud al backend. */
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
 
-  // Reset form when modal opens
+  /** Resetea el formulario cada vez que se abre el modal. */
   React.useEffect(() => {
     if (isOpen) {
       setCurrentPassword('');
@@ -31,73 +34,42 @@ const ChangePasswordModal: React.FC<ChangePasswordModalProps> = ({
     }
   }, [isOpen]);
 
+  /**
+   * Valida los campos localmente y envía el cambio al backend.
+   * Verifica: campos completos, contraseñas coinciden, nueva != actual.
+   */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!currentPassword.trim() || !newPassword.trim() || !confirmPassword.trim()) {
-      toast({
-        title: "Campos incompletos",
-        description: "Por favor completa todos los campos",
-        variant: "destructive"
-      });
+      toast({ title: "Campos incompletos", description: "Por favor completa todos los campos", variant: "destructive" });
       return;
     }
-
     if (newPassword !== confirmPassword) {
-      toast({
-        title: "Contraseñas no coinciden",
-        description: "Las contraseñas deben ser iguales",
-        variant: "destructive"
-      });
+      toast({ title: "Contraseñas no coinciden", description: "Las contraseñas deben ser iguales", variant: "destructive" });
       return;
     }
-
     if (currentPassword === newPassword) {
-      toast({
-        title: "Contraseña inválida",
-        description: "La nueva contraseña debe ser diferente a la actual",
-        variant: "destructive"
-      });
+      toast({ title: "Contraseña inválida", description: "La nueva contraseña debe ser diferente a la actual", variant: "destructive" });
       return;
     }
 
     setIsSubmitting(true);
 
     try {
-      // Call the API with the correct field names matching the backend
-      await authAPI.changePassword({
-        contrasena_actual: currentPassword,
-        nueva_contrasena: newPassword,
-      });
-
-      toast({
-        title: "¡Contraseña cambiada!",
-        description: "Tu contraseña ha sido actualizada exitosamente.",
-      });
-
+      await authAPI.changePassword({ contrasena_actual: currentPassword, nueva_contrasena: newPassword });
+      toast({ title: "¡Contraseña cambiada!", description: "Tu contraseña ha sido actualizada exitosamente." });
       onSuccess?.();
       onClose();
     } catch (error: any) {
-
       let errorMessage = "No pudimos cambiar tu contraseña. Intenta de nuevo.";
-
       if (error.response?.data) {
-        // Handle specific backend validation errors
         const data = error.response.data;
-        if (data.contrasena_actual) {
-          errorMessage = data.contrasena_actual[0] || "La contraseña actual es incorrecta.";
-        } else if (data.nueva_contrasena) {
-          errorMessage = data.nueva_contrasena[0] || "La nueva contraseña no cumple con los requisitos.";
-        } else if (data.detail) {
-          errorMessage = data.detail;
-        }
+        if (data.contrasena_actual) errorMessage = data.contrasena_actual[0] || "La contraseña actual es incorrecta.";
+        else if (data.nueva_contrasena) errorMessage = data.nueva_contrasena[0] || "La nueva contraseña no cumple con los requisitos.";
+        else if (data.detail) errorMessage = data.detail;
       }
-
-      toast({
-        title: "Error",
-        description: errorMessage,
-        variant: "destructive"
-      });
+      toast({ title: "Error", description: errorMessage, variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }

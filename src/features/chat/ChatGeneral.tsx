@@ -17,8 +17,11 @@ const ChatGeneral: React.FC = () => {
   const isMobile = window.innerWidth < 901;
 
   // Estado para guardar el ID del chat seleccionado. Inicializamos en null.
+  /** Estado interno: ID del chat actualmente seleccionado. */
   const [selectedChatId, setSelectedChatId] = useState<number | null>(null);
+  /** Estado interno: muestra/oculta el panel lateral de lista de chats. */
   const [isPanelOpen, setIsPanelOpen] = useState(true);
+  /** Estado interno: muestra/oculta el menú de opciones del encabezado. */
   const [isHeaderMenuOpen, setIsHeaderMenuOpen] = useState(false);
 
   // PALETA DE COLORES
@@ -78,6 +81,7 @@ const ChatGeneral: React.FC = () => {
   } = useChatSocket(selectedChatId);
 
   // 4. DEFINICIONES DE LÓGICA
+  /** Selecciona un chat, marca sus no_leídos como 0 y en móvil cierra el panel. */
   const handleSelectChat = (chatId: number) => {
     setSelectedChatId(chatId);
     setChatList((prev) =>
@@ -134,6 +138,7 @@ const ChatGeneral: React.FC = () => {
     };
   }, [selectedChatId]);
 
+  /** Alterna la visibilidad del panel lateral de lista de chats. */
   const togglePanel = () => {
     if (isMobile) {
       setIsPanelOpen((prev) => !prev);
@@ -143,6 +148,7 @@ const ChatGeneral: React.FC = () => {
   };
 
   // Estado para rastrear si el usuario cerró intencionalmente el chat
+  /** Estado interno: indica si el usuario cerró intencionalmente el chat. */
   const [userClosedChat, setUserClosedChat] = useState(false);
 
   useEffect(() => {
@@ -166,6 +172,7 @@ const ChatGeneral: React.FC = () => {
   }, [selectedChatId]);
 
   // Acciones del menú de 3 puntos en el encabezado del chat activo
+  /** Ejecuta la acción del menú de opciones del encabezado del chat activo. */
   const handleHeaderMenuAction = (
     action: "Bloquear" | "Reportar" | "Vaciar" | "Cerrar"
   ) => {
@@ -209,12 +216,15 @@ const ChatGeneral: React.FC = () => {
     (wsError.includes("No tienes permiso") || wsError.includes("sesión"));
 
   // Estado para el ancho del panel (redimensionable)
+  /** Estado interno: ancho actual del panel lateral en píxeles. */
   const [panelWidth, setPanelWidth] = useState(320);
+  /** Estado interno: indica si el usuario está redimensionando el panel. */
   const [isResizing, setIsResizing] = useState(false);
   const minWidth = 280;
   const maxWidth = 500;
 
   // Función para iniciar el redimensionamiento
+  /** Inicia el redimensionamiento del panel lateral. */
   const startResizing = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsResizing(true);
@@ -263,6 +273,7 @@ const ChatGeneral: React.FC = () => {
   `;
 
   // Obtener URL de la foto del contacto
+  /** Devuelve la URL de la foto de perfil del contacto o un avatar generado por iniciales. */
   const getContactPhotoUrl = (chat: ChatListItemReal) => {
     if (chat.contacto.imagen_principal) {
       return chat.contacto.imagen_principal;
@@ -273,6 +284,7 @@ const ChatGeneral: React.FC = () => {
     )}&background=ec4899&color=fff&size=200`;
   };
 
+  /** Formatea el nombre del contacto mostrando nombre(s) y el primer apellido. */
   const formatContactName = (chat: ChatListItemReal) => {
     const nombres = chat.contacto.nombres || "";
     const apellidos = chat.contacto.apellidos || "";

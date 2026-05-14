@@ -1,11 +1,18 @@
+/** Indicador de validación de email institucional en tiempo real. Verifica formato @unipamplona.edu.co y reglas de sintaxis. */
+
 import React from 'react';
 
+/** Props del indicador de requisitos de email. */
 interface EmailRequirementsProps {
   email: string;
 }
 
 const EmailRequirements: React.FC<EmailRequirementsProps> = ({ email }) => {
-  const getMessage = () => {
+  /**
+   * Evalúa el email contra reglas de formato institucional.
+   * Retorna un mensaje con errores, faltantes o confirmación de éxito.
+   */
+  const getMessage = (): { text: string; className: string } => {
     if (email.length === 0) {
       return {
         text: '@unipamplona.edu.co',

@@ -14,6 +14,7 @@ import { useEmailVerification } from './useEmailVerification';
 import { FormData } from '../types';
 import { RegistrationData } from '../components/modals/CompleteRegister';
 
+/** Props del hook useSignUpForm. */
 interface UseSignUpFormProps {
   onClose: () => void;
 }
@@ -29,6 +30,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
   const { toast } = useToast();
   const { openLogin } = useAppStore();
 
+  /** Estado interno: datos del formulario de registro. */
   const [formData, setFormData] = useState<FormData>({
     email: '',
     password: '',
@@ -55,6 +57,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     setSubmitting: setIsSubmitting,
   });
 
+  /** Actualiza un campo del formulario con el nuevo valor proporcionado. */
   const handleFieldChange = (field: keyof FormData, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
@@ -62,10 +65,12 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     }));
   };
 
+  /** Abre el modal de términos y condiciones. */
   const handleOpenTerms = () => {
     setShowTerms(true);
   };
 
+  /** Acepta los términos y condiciones y cierra el modal. */
   const handleAcceptTerms = () => {
     setFormData(prev => ({
       ...prev,
@@ -78,6 +83,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     });
   };
 
+  /** Rechaza los términos y condiciones y cierra el modal. */
   const handleRejectTerms = () => {
     setFormData(prev => ({
       ...prev,
@@ -91,6 +97,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     });
   };
 
+  /** Maneja la verificación exitosa del CAPTCHA. */
   const handleCaptchaVerify = (token: string) => {
     setIsCaptchaVerified(true);
     setCurrentStep('initial'); // Volver al formulario principal
@@ -101,6 +108,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     });
   };
 
+  /** Maneja la expiración del token CAPTCHA. */
   const handleCaptchaExpired = () => {
     setIsCaptchaVerified(false);
     toast({
@@ -110,6 +118,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     });
   };
 
+  /** Maneja un error durante la verificación CAPTCHA. */
   const handleCaptchaError = () => {
     toast({
       title: "Error de verificación",
@@ -118,11 +127,13 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     });
   };
 
+  /** Cambia del flujo de registro al flujo de inicio de sesión. */
   const handleSwitchToLogin = () => {
     onClose(); // Cerrar el modal de registro
     openLogin(); // Abrir el modal de login directamente
   };
 
+  /** Envía el código de verificación al correo y avanza al paso de verificación. */
   const handleSendVerificationCode = async () => {
     setIsVerifyingEmail(true);
     
@@ -136,10 +147,12 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     }
   };
 
+  /** Reenvía un nuevo código de verificación al correo del usuario. */
   const handleResendVerificationCode = async () => {
     await emailVerification.resendVerificationCode();
   };
 
+  /** Verifica el código ingresado y avanza al registro completo si es correcto. */
   const handleVerifyEmailCode = async (code: string) => {
     const success = await emailVerification.verifyEmailCode(code);
     if (success) {
@@ -148,6 +161,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     }
   };
 
+  /** Envía los datos restantes del registro al backend y finaliza el flujo. */
   const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
     setIsSubmitting(true);
     
@@ -181,6 +195,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     }
   };
 
+  /** Valida que los campos obligatorios del formulario estén completos. */
   const validateBasicFields = (): boolean => {
     const emptyFields: string[] = [];
     
@@ -202,6 +217,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     return true;
   };
 
+  /** Maneja el envío del formulario: valida campos, muestra CAPTCHA o envía código de verificación. */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -225,6 +241,7 @@ export const useSignUpForm = ({ onClose }: UseSignUpFormProps) => {
     }
   };
 
+  /** Devuelve el texto del botón de envío según el estado actual del formulario. */
   const getButtonText = () => {
     if (stepState.isSubmitting || stepState.isVerifyingEmail) return 'Procesando...';
     if (!stepState.isCaptchaVerified) return 'Continuar';

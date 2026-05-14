@@ -27,6 +27,7 @@ import { authAPI } from "@lib/api";
 import PreferencesPage from "@preferences/components/PreferencesPage";
 import PhotoUploadPage from "@photos/PhotoUploadPage";
 
+/** Datos del usuario autenticado. */
 interface User {
   usuario_id: number;
   email: string;
@@ -35,6 +36,7 @@ interface User {
   estadocuenta: string;
 }
 
+/** Props del formulario de inicio de sesión. */
 interface LoginFormProps {
   onClose: () => void;
   onSwitchToRegister: () => void;
@@ -44,23 +46,36 @@ const LoginForm: React.FC<LoginFormProps> = ({
   onClose,
   onSwitchToRegister,
 }) => {
+  /** Estado: correo electrónico del usuario. */
   const [email, setEmail] = useState("");
+  /** Estado: contraseña del usuario. */
   const [password, setPassword] = useState("");
+  /** Estado: indica si el CAPTCHA fue verificado. */
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  /** Estado: muestra el modal de CAPTCHA. */
   const [showCaptcha, setShowCaptcha] = useState(false);
+  /** Estado: muestra el modal de recuperación de contraseña. */
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  /** Estado: muestra el modal de subida de fotos. */
   const [showPhotoUpload, setShowPhotoUpload] = useState(false);
+  /** Estado: indicador de envío del formulario en curso. */
   const [isSubmitting, setIsSubmitting] = useState(false);
+  /** Estado: muestra el modal para completar el registro. */
   const [showCompleteRegister, setShowCompleteRegister] = useState(false);
+  /** Estado: token devuelto por reCAPTCHA. */
   const [recaptchaToken, setRecaptchaToken] = useState<string>("");
 
+  /** Estado: muestra el modal de preferencias. */
   const [showPreferences, setShowPreferences] = useState(false);
+  /** Estado: ID del usuario actual. */
   const [currentUserId, setCurrentUserId] = useState<string>("");
+  /** Estado: muestra el modal de bienvenida. */
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const { toast } = useToast();
   const { login, setLoading } = useAppStore();
 
+  /** Estado: paso actual del flujo de registro (0 = ninguno, 1-3 = pasos). */
   const [registrationStep, setRegistrationStep] = useState<number>(0);
   const navigate = useNavigate();
 
@@ -123,6 +138,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   }, [registrationStep]);
 
+  /** Maneja el envío del formulario de inicio de sesión. */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -261,6 +277,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
+  /** Maneja la verificación exitosa del CAPTCHA y procede con el login. */
   const handleCaptchaVerify = (token: string) => {
     setIsCaptchaVerified(true);
     setRecaptchaToken(token);
@@ -270,6 +287,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     handleSubmit(new Event("submit") as any);
   };
 
+  /** Cierra el modal de recuperación de contraseña al enviar con éxito. */
   const handleForgotPasswordSuccess = () => {
     setShowForgotPassword(false);
     toast({
@@ -278,6 +296,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     });
   };
 
+  /** Envía los datos para completar el perfil del usuario. */
   const handleCompleteRegisterSubmit = async (userData: RegistrationData) => {
     setIsSubmitting(true);
     setLoading(true);
@@ -356,6 +375,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
+  /** Guarda las preferencias y avanza al paso de subida de fotos. */
   const handlePreferencesComplete = async () => {
     try {
 
@@ -386,6 +406,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
     }
   };
 
+  /** Retrocede desde preferencias al paso anterior (completar perfil). */
   const handleBackFromPreferences = async () => {
     try {
       if (registrationStep === 2) {
